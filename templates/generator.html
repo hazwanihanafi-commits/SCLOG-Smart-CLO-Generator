@@ -390,7 +390,7 @@
     // Load mapping (IEGs/PEOs/PLOs) from backend
     async function loadMapping() {
       try {
-        const res = await fetch('/api/mapping');
+        const res = await fetch('${API_BASE}/api/mapping');
         MAP = await res.json();
         // Populate IEGs
         iegSel.innerHTML = '<option value="">Select IEG</option>';
@@ -416,14 +416,14 @@
 
       if (!ieg) return;
       try {
-        const r = await fetch(`/api/get_peos/${encodeURIComponent(ieg)}`);
+        const r = await fetch(`${API_BASE}/api/get_peos/${encodeURIComponent(ieg)}`);
         const peos = await r.json();
         peoSel.innerHTML = '<option value="">Select PEO</option>';
         (peos || []).forEach(p => peoSel.add(new Option(p, p)));
       } catch (e) { console.error(e); }
 
       try {
-        const r2 = await fetch(`/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
+        const r2 = await fetch(`${API_BASE}/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
         const txt = await r2.text();
         iegLogicBox.textContent = txt && txt.trim() ? txt : 'No logic explanation available.';
       } catch (e) { console.error(e); iegLogicBox.textContent = 'Logic unavailable.'; }
@@ -441,7 +441,7 @@
 
       if (!peo) return;
       try {
-        const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+        const r = await fetch(`${API_BASE}/api/get_plos/${encodeURIComponent(peo)}`);
         const plos = await r.json();
         ploSel.innerHTML = '<option value="">Select PLO</option>';
         (plos || []).forEach(p => ploSel.add(new Option(p, p)));
@@ -449,7 +449,7 @@
 
       try {
         const level = levelSel.value || 'Degree';
-        const sres = await fetch(`/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`);
+        const sres = await fetch(`${API_BASE}/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`);
         const stmt = await sres.json();
         peoStatementEl.textContent = stmt || '—';
       } catch(e) { console.error(e); }
@@ -474,13 +474,13 @@
       if (!plo) return;
 
       try {
-        const r = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}/${encodeURIComponent(plo)}`);
+        const r = await fetch(`${API_BASE}/api/logic/peo_plo/${encodeURIComponent(peo)}/${encodeURIComponent(plo)}`);
         const txt = await r.text();
         peoPloLogicBox.textContent = txt && txt.trim() ? txt : 'No logic explanation available.';
       } catch(e) { console.error(e); peoPloLogicBox.textContent = 'Logic unavailable.'; }
 
       try {
-        const res = await fetch(`/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`);
+        const res = await fetch(`${API_BASE}/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`);
         const blooms = await res.json();
         bloomSel.innerHTML = '<option value="">Select Bloom</option>';
         (blooms || []).forEach(b => bloomSel.add(new Option(b, b)));
@@ -498,7 +498,7 @@
       } catch(e){ ploIndicatorEl.textContent = '—'; }
 
       try {
-        const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloomSel.value || '')}`);
+        const mres = await fetch(`${API_BASE}/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloomSel.value || '')}`);
         const meta = await mres.json();
         scCodeEl.textContent = meta.sc_code || '—';
         scDescEl.textContent = meta.sc_desc || '—';
@@ -516,14 +516,14 @@
       logEvent('bloom_select', { bloom, plo });
 
       try {
-        const vres = await fetch(`/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
+        const vres = await fetch(`${API_BASE}/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
         const verbs = await vres.json();
         verbSel.innerHTML = '<option value="">Select Verb</option>';
         (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
       } catch(e){ console.error(e); verbSel.innerHTML = '<option value="">Error</option>'; }
 
       try {
-        const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
+        const mres = await fetch(`${API_BASE}/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
         const meta = await mres.json();
         scCodeEl.textContent = meta.sc_code || '—';
         scDescEl.textContent = meta.sc_desc || '—';
@@ -542,7 +542,7 @@
       logEvent('field_select', { field });
       if (!field) return;
       try {
-        const res = await fetch(`/api/content/${encodeURIComponent(field)}`);
+        const res = await fetch(`${API_BASE}/api/content/${encodeURIComponent(field)}`);
         const list = await res.json();
         (list || []).forEach(s => {
           const btn = document.createElement('button');
@@ -582,7 +582,7 @@
       logEvent('generate_clo_attempt', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
       try {
-        const res = await fetch('/generate', { method:'POST', body: fd });
+        const res = await fetch('${API_BASE}/generate', { method:'POST', body: fd });
         if (!res.ok) { const err = await res.text().catch(()=> 'server error'); throw new Error(err); }
         const data = await res.json();
         LAST_CLO = data;
