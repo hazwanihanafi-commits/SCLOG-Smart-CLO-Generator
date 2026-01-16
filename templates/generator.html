@@ -673,20 +673,21 @@ iegSel.addEventListener("change", async () => {
   }
 });
 
-   
 /* =========================
-   PEO → PLO (SAFE VERSION)
+   PEO → PLO (FIXED & SAFE)
 ========================= */
 peoSel.addEventListener("change", async () => {
   const peo = peoSel.value;
 
   ploSel.innerHTML = '<option value="">Select PLO</option>';
   peoPloLogicBox.textContent = "—";
+  peoStatementEl.textContent = "—";
   ploStatementEl.textContent = "—";
   ploIndicatorEl.textContent = "—";
 
   if (!peo) return;
 
+  /* 1️⃣ Load PLO list */
   try {
     const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
     const plos = await r.json();
@@ -695,22 +696,21 @@ peoSel.addEventListener("change", async () => {
     console.error("PEO → PLO list error", e);
   }
 
-  // 🔒 SAFE: DO NOT SHOW HTML IF ROUTE DOES NOT EXIST
+  /* 2️⃣ Why PEO → PLO logic (safe) */
   try {
     const logicRes = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}`);
     if (!logicRes.ok) {
       peoPloLogicBox.textContent = "—";
-      return;
+    } else {
+      const txt = await logicRes.text();
+      peoPloLogicBox.textContent = txt?.trim() || "—";
     }
-    const txt = await logicRes.text();
-    peoPloLogicBox.textContent = txt?.trim() || "—";
   } catch (e) {
     console.error("PEO → PLO logic error", e);
     peoPloLogicBox.textContent = "—";
   }
-});
 
-  /* 3️⃣ PEO statement */
+  /* 3️⃣ PEO statement (THIS WAS BREAKING BEFORE) */
   try {
     const level = levelSel.value || "Degree";
     const stmtRes = await fetch(
@@ -720,6 +720,7 @@ peoSel.addEventListener("change", async () => {
     peoStatementEl.textContent = stmt || "—";
   } catch (e) {
     console.error("PEO statement error", e);
+    peoStatementEl.textContent = "—";
   }
 });
     
