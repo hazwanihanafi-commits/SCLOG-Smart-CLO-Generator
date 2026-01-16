@@ -248,6 +248,12 @@
     Select a Bloom level to see its description.
   </div>
 </div>
+                <div class="form-check form-switch mt-2">
+  <input class="form-check-input" type="checkbox" id="autoShowAssessment" checked>
+  <label class="form-check-label muted" for="autoShowAssessment">
+    Auto show assessment & evidence
+  </label>
+</div>
 
 
                 <div class="col-md-6">
@@ -421,6 +427,16 @@ const bloomDescEl = $('bloom_desc');
 ========================= */
 let MAP = {};
 let LAST_CLO = null;
+let AUTO_SHOW_ASSESSMENT = true;
+
+const autoShowToggle = document.getElementById("autoShowAssessment");
+if (autoShowToggle) {
+  AUTO_SHOW_ASSESSMENT = autoShowToggle.checked;
+  autoShowToggle.addEventListener("change", () => {
+    AUTO_SHOW_ASSESSMENT = autoShowToggle.checked;
+  });
+}
+    
 
 /* =========================
    BLOOM DESCRIPTIONS
@@ -627,6 +643,14 @@ if (ae) {
   assessList.innerHTML = "—";
   evidenceList.innerHTML = "—";
 }
+
+  // 🔥 Auto show Assessment tab (if enabled)
+if (AUTO_SHOW_ASSESSMENT) {
+  const assessTabBtn = document.querySelector('[data-bs-target="#assessmentTab"]');
+  if (assessTabBtn) {
+    new bootstrap.Tab(assessTabBtn).show();
+  }
+}
   
   /* Backend verbs + meta */
   if (!plo || !key) return;
@@ -736,13 +760,19 @@ peoSel.addEventListener("change", async () => {
 });
 
 /* =========================
-   PLO → STATEMENT + INDICATOR
+   PLO → STATEMENT + INDICATOR + BLOOM (SINGLE SOURCE)
 ========================= */
 ploSel.addEventListener("change", async () => {
   const plo = ploSel.value;
 
+  // 🔹 Reset UI related to PLO
   ploStatementEl.textContent = "—";
   ploIndicatorEl.textContent = "—";
+  bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+  bloomDescEl.textContent = "Select a Bloom level to see its description.";
+  assessList.innerHTML = "—";
+  evidenceList.innerHTML = "—";
 
   if (!plo) return;
 
@@ -765,44 +795,26 @@ ploSel.addEventListener("change", async () => {
   } catch (e) {
     console.error("PLO indicator error", e);
   }
-});
 
-    
-/* =========================
-   PLO → BLOOM (RESTORED)
-========================= */
-ploSel.addEventListener("change", async () => {
-  const plo = ploSel.value;
-
-  bloomSel.innerHTML = '<option value="">Select Bloom</option>';
-  verbSel.innerHTML = '<option value="">Select Verb</option>';
-
-  bloomDescEl.textContent = "Select a Bloom level to see its description.";
-  
-  if (!plo) return;
-
+  /* 3️⃣ Load Bloom list */
   try {
     const res = await fetch(
       `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
     );
     const blooms = await res.json();
-    (blooms || []).forEach(b =>
-      bloomSel.add(new Option(b, b))
-    );
 
-    // 🔥 SET BLOOM VALUE DULU
-if (blooms && blooms.length > 0) {
-  bloomSel.value = blooms[0];   // contoh: "Receiving"
-}
+    (blooms || []).forEach(b => bloomSel.add(new Option(b, b)));
 
-// 🔥 BARU trigger change
-bloomSel.dispatchEvent(new Event("change", { bubbles: true }));
-    
+    // 🔥 Auto-select first Bloom & force change
+    if (blooms && blooms.length > 0) {
+      bloomSel.value = blooms[0];
+      bloomSel.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   } catch (e) {
     console.error("PLO → Bloom error", e);
   }
 });
-
+    
     /* Generate CLO */
     generateBtn.addEventListener('click', async () => {
       if (!ploSel.value || !bloomSel.value || !verbSel.value || !contentInput.value.trim()) {
