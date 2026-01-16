@@ -1,4 +1,4 @@
-<!doctype html>
+my original code is this, variant assess,emt working before using this code: <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
@@ -67,133 +67,140 @@
       box-shadow: var(--shadow);
       transition: transform .12s ease, box-shadow .12s ease;
     }
-
-    .brand {
-      font-weight:900;
-      font-size:1.22rem;
-      background: linear-gradient(90deg,var(--usm-purple),var(--usm-purple-2));
-      -webkit-background-clip:text;
-      color:transparent;
-      display:flex;
-      gap:10px;
-      align-items:center;
+    body[data-theme="dark"] .card-box {
+      background: rgba(24,14,33,0.64);
+      border-color: rgba(255,255,255,0.04);
+      box-shadow: 0 14px 36px rgba(0,0,0,0.5);
     }
+    .card-box:hover { transform: translateY(-2px); box-shadow: 0 20px 44px rgba(109,40,217,0.08); }
 
+    .brand { font-weight:900; font-size:1.22rem; background: linear-gradient(90deg,var(--usm-purple),var(--usm-purple-2)); -webkit-background-clip:text; color:transparent; display:flex; gap:10px; align-items:center; }
     .subtitle { color:var(--muted); font-size:.95rem; }
-    label.form-label { font-weight:600; font-size:.92rem; color:var(--muted); }
-    .logic-box { background:#f7f2ff; padding:10px; border-radius:10px; min-height:56px; }
+
+    label.form-label { font-weight:600; font-size:.92rem; color:var(--muted); margin-bottom:6px; display:block; }
+    .form-control, .form-select {
+      border-radius:12px;
+      padding:10px 12px;
+      font-size:.95rem;
+      background:#fbf8ff;
+      border:1px solid rgba(109,40,217,0.06);
+    }
+    body[data-theme="dark"] .form-control, body[data-theme="dark"] .form-select {
+      background: rgba(22,12,34,0.54);
+      color: #efe6ff;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .form-control:focus, .form-select:focus { box-shadow: 0 0 0 6px rgba(167,139,250,0.14); outline:none; border-color:var(--usm-purple); }
+
+    .logic-box {
+      background:#f7f2ff;
+      padding:10px;
+      border-radius:10px;
+      color:#3b2a63;
+      min-height:56px;
+    }
+    body[data-theme="dark"] .logic-box { background: rgba(34,16,48,0.4); color:#efe6ff; }
+
+    .btn { border-radius:12px; font-weight:700; }
+    .btn-primary { background: linear-gradient(90deg,var(--usm-purple),var(--usm-purple-2)); border:none; color:#fff; }
+    .btn-outline-secondary { color:var(--usm-purple); border-color:var(--usm-purple); border-radius:12px; }
+    .btn-outline-secondary:hover { background:var(--usm-purple); color:#fff; }
+
+    .nav-tabs { border-bottom:none; overflow:auto; white-space:nowrap; padding-bottom:6px; }
+    .nav-tabs .nav-link { border:0; margin-right:6px; background:#f3eefe; color:var(--usm-purple); border-radius:10px; padding:7px 12px; }
+    .nav-tabs .nav-link.active { background:var(--usm-purple); color:#fff; font-weight:700; }
+
     .muted { color:var(--muted); }
+    .meta-item { margin-bottom:10px; }
+
+    footer { margin-top:18px; text-align:center; color:var(--muted); font-size:.88rem; }
+
+    @media (max-width: 991px) { .profile-row { flex-direction:column; gap:10px; } }
+    @media (max-width: 575px) {
+      .card-box { padding:12px; border-radius:12px; }
+      .brand { font-size:1.05rem; }
+      .form-control, .form-select { padding:8px 10px; }
+      .btn { padding:7px 10px; font-size:.92rem; }
+    }
   </style>
 </head>
 
 <body data-theme="light">
-<div class="container-app">
+  <div class="container-app">
 
-  <!-- HEADER -->
-  <div class="card-box mb-3 d-flex justify-content-between align-items-center">
-    <div>
-      <div class="brand"><i class="bi bi-stars"></i> SCLOG</div>
-      <div class="subtitle">Smart Course Learning Outcome Generator — logic & mapping</div>
-    </div>
-    <button id="darkToggle" class="btn btn-outline-secondary">
-  <i class="bi bi-moon"></i> Dark
-</button>
-  </div>
-
-  <!-- STEP 1 -->
-  <div class="card-box mb-3">
-
-    <!-- STEP DESCRIPTION -->
-    <div class="muted mb-2">
-      <strong>Step 1:</strong> Define the programme context (discipline and level) to ensure
-      appropriate Bloom level, verbs and CLO complexity.
+    <!-- HEADER -->
+    <div class="card-box mb-3 d-flex justify-content-between align-items-center">
+      <div>
+        <div class="brand"><i class="bi bi-stars" style="font-size:1.1rem"></i> SCLOG</div>
+        <div class="subtitle">Smart Course Learning Outcome Generator — logic & mapping</div>
+      </div>
+      <div>
+        <button id="darkToggle" class="btn btn-outline-secondary"><i class="bi bi-moon"></i> Dark</button>
+      </div>
     </div>
 
-    <div class="row g-3 profile-row">
-      <div class="col-12 col-md-4">
-        <label class="form-label">Academic profile</label>
-        <select id="profile" class="form-select">
-          <option value="">Select Academic profile</option>
-          <option value="health">Medical & Health</option>
-          <option value="sc">Computer Science & IT</option>
-          <option value="eng">Engineering & Technology</option>
-          <option value="socs">Social Sciences</option>
-          <option value="edu">Education</option>
-          <option value="bus">Business & Management</option>
-          <option value="arts">Arts & Humanities</option>
-        </select>
-      </div>
+    <!-- 1) Academic profile + Level + IEG + PEO -->
+    <div class="card-box mb-3">
+      <div class="row g-3 profile-row">
+        <div class="col-12 col-md-4">
+          <label class="form-label">Academic profile</label>
+          <select id="profile" class="form-select">
+            <option value="">Select Academic profile</option>
+            <option value="health">Medical & Health</option>
+            <option value="sc">Computer Science & IT</option>
+            <option value="eng">Engineering & Technology</option>
+            <option value="socs">Social Sciences</option>
+            <option value="edu">Education</option>
+            <option value="bus">Business & Management</option>
+            <option value="arts">Arts & Humanities</option>
+          </select>
+        </div>
 
-      <div class="col-12 col-md-2">
-        <label class="form-label">Level</label>
-        <select id="level" class="form-select">
-          <option value="">Select Level</option>
-          <option>Diploma</option>
-          <option>Degree</option>
-          <option>Master</option>
-          <option>PhD</option>
-        </select>
-      </div>
+        <div class="col-12 col-md-2">
+          <label class="form-label">Level</label>
+          <select id="level" class="form-select">
+            <option value="">Select Level</option>
+            <option>Diploma</option>
+            <option>Degree</option>
+            <option>Master</option>
+            <option>PhD</option>
+          </select>
+        </div>
 
-      <!-- STEP 2 DESCRIPTION -->
-      <div class="col-12">
-        <div class="muted mt-2">
-          <strong>Step 2:</strong> Select programme outcome mapping
-          (<em>IEG → PEO</em>) to ensure alignment with Outcome-Based Education (OBE).
+        <div class="col-12 col-md-3">
+          <label class="form-label">IEG</label>
+          <select id="ieg" class="form-select"><option value="">Select IEG</option></select>
+        </div>
+
+        <div class="col-12 col-md-3">
+          <label class="form-label">PEO (mapped)</label>
+          <select id="peo" class="form-select"><option value="">Select PEO</option></select>
         </div>
       </div>
 
-      <div class="col-12 col-md-3">
-        <label class="form-label">IEG</label>
-        <select id="ieg" class="form-select"><option value="">Select IEG</option></select>
-      </div>
-
-      <div class="col-12 col-md-3">
-        <label class="form-label">PEO (mapped)</label>
-        <select id="peo" class="form-select"><option value="">Select PEO</option></select>
+      <div style="margin-top:12px;">
+        <div class="form-label">Why this IEG → PEO?</div>
+        <div id="ieg_peo_logic" class="logic-box">—</div>
       </div>
     </div>
 
-    <div class="mt-3">
-      <div class="form-label">Why this IEG → PEO?</div>
-      <div id="ieg_peo_logic" class="logic-box">—</div>
-    </div>
-  </div>
+    <!-- 2) PLO for selected PEO -->
+    <div id="plo_block" class="card-box mb-3">
+      <label class="form-label">PLO for selected PEO</label>
+      <select id="plo" class="form-select mb-3"><option value="">Select PLO</option></select>
 
-  <!-- STEP 3 -->
-  <div id="plo_block" class="card-box mb-3">
+      <div class="mb-3">
+        <div class="form-label">Why PEO → PLO?</div>
+        <div id="peo_plo_logic" class="logic-box">—</div>
+      </div>
 
-    <!-- STEP DESCRIPTION -->
-    <div class="muted mb-2">
-      <strong>Step 3:</strong> Choose the Programme Learning Outcome (PLO)
-      that this course directly addresses.
-    </div>
-
-    <label class="form-label">PLO for selected PEO</label>
-    <select id="plo" class="form-select mb-3"><option value="">Select PLO</option></select>
-
-    <div class="mb-3">
-      <div class="form-label">Why PEO → PLO?</div>
-      <div id="peo_plo_logic" class="logic-box">—</div>
+      <div>
+        <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
+        <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
+        <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
+      </div>
     </div>
 
-    <div>
-      <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
-      <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
-      <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
-    </div>
-  </div>
-
-  <!-- STEP 4 -->
-  <div class="card-box mb-3">
-
-    <!-- STEP DESCRIPTION -->
-    <div class="muted mb-2">
-      <strong>Step 4:</strong> Construct a clear, measurable and assessable
-      Course Learning Outcome (CLO).
-    </div>
-
-    
     <!-- 3) Smart CLO Builder (main) -->
     <div class="card-box mb-3">
       <div class="row">
@@ -212,24 +219,11 @@
             <!-- BUILDER -->
             <div class="tab-pane fade show active" id="builderTab">
               <div class="row g-3">
-                  <div class="col-md-6">
-  <label class="form-label">Bloom</label>
+                <div class="col-md-6">
+                  <label class="form-label">Bloom</label>
+                  <select id="bloom" class="form-select"><option value="">Select Bloom</option></select>
+                </div>
 
-  <select id="bloom" class="form-select">
-    <option value="">Select Bloom</option>
-    <!-- options populated by JS -->
-  </select>
-
-  <!-- Bloom description -->
-  <div id="bloom_domain" class="muted mt-1" style="font-size:0.85rem;">
-  Domain: —
-</div>
-
-<div id="bloom_desc" class="muted mt-1">
-  Select a Bloom level to see its description.
-</div>
-
-                  
                 <div class="col-md-6">
                   <label class="form-label">Verb</label>
                   <select id="verb" class="form-select"><option value="">Select Verb</option></select>
@@ -344,7 +338,6 @@
   <script>
     // Short helper
     const $ = id => document.getElementById(id);
-    const API_BASE = window.location.origin;
 
     // DOM refs (must match backend IDs)
     const profileSel = $('profile');
@@ -391,150 +384,6 @@
     const contentSuggestionsEl = $('content_suggestions');
     const contentSuggestionsRight = $('content_suggestions_right');
 
-   const bloomDesc = document.getElementById('bloom_desc');
-const bloomDomain = document.getElementById('bloom_domain'); // optional label
-
-const BLOOM_INFO = {
-
-  /* COGNITIVE */
-  "remember": {
-    domain: "Cognitive (Knowledge)",
-    desc: "Recall facts, terms, or basic concepts without interpretation."
-  },
-  "understand": {
-    domain: "Cognitive (Comprehension)",
-    desc: "Explain ideas or concepts in your own words."
-  },
-  "apply": {
-    domain: "Cognitive (Application)",
-    desc: "Use knowledge in new but familiar situations to solve problems."
-  },
-  "analyze": {
-    domain: "Cognitive (Analysis)",
-    desc: "Break information into parts and examine relationships or patterns."
-  },
-  "evaluate": {
-    domain: "Cognitive (Evaluation)",
-    desc: "Make judgments based on criteria, evidence, or standards."
-  },
-  "create": {
-    domain: "Cognitive (Creation)",
-    desc: "Combine elements to form a new structure, idea, or solution."
-  },
-
-  /* PSYCHOMOTOR */
-  "perception": {
-    domain: "Psychomotor (Sensory)",
-    desc: "Recognise sensory cues required to guide movement or action."
-  },
-  "set": {
-    domain: "Psychomotor (Readiness)",
-    desc: "Demonstrate mental, physical, and emotional readiness to perform a skill."
-  },
-  "guided response": {
-    domain: "Psychomotor (Imitation)",
-    desc: "Perform skills under guidance through imitation and trial-and-error."
-  },
-  "mechanism": {
-    domain: "Psychomotor (Basic Proficiency)",
-    desc: "Perform skills confidently and competently with some independence."
-  },
-  "complex overt response": {
-    domain: "Psychomotor (Skilled Performance)",
-    desc: "Execute complex skills smoothly, accurately, and efficiently."
-  },
-  "adaptation": {
-    domain: "Psychomotor (Adaptation)",
-    desc: "Modify learned skills to suit new or special situations."
-  },
-  "origination": {
-    domain: "Psychomotor (Creation)",
-    desc: "Create new movement patterns or procedures to meet specific needs."
-  },
-
-  /* AFFECTIVE (KRATHWOHL) */
-  "receiving": {
-    domain: "Affective (Receiving)",
-    desc: "Willingness to attend to, listen to, or be aware of values, stimuli, or phenomena."
-  },
-  "responding": {
-    domain: "Affective (Responding)",
-    desc: "Active participation through responding, reacting, or engaging with values or ideas."
-  },
-  "valuing": {
-    domain: "Affective (Valuing)",
-    desc: "Demonstrating commitment, preference, or belief in a value."
-  },
-  "organization": {
-    domain: "Affective (Organization)",
-    desc: "Integrating different values into a consistent and coherent value system."
-  },
-  "organisation": {
-    domain: "Affective (Organization)",
-    desc: "Integrating different values into a consistent and coherent value system."
-  },
-  "characterization": {
-    domain: "Affective (Characterization)",
-    desc: "Consistently acting in accordance with internalised values and professional ethics."
-  }
-};  // ✅ THIS LINE WAS MISSING
-
-// Normalisation (affective short forms)
-const NORMALISE = {
-  receive: "receiving",
-  respond: "responding",
-  value: "valuing"
-};
-
-// Assessment & Evidence mapping
-const ASSESSMENT_MAP = {
-  remember: {
-    assessments: ["Quiz", "MCQ", "True/False", "Matching test"],
-    evidence: ["Exam paper", "Answer key", "LMS report"]
-  },
-  understand: {
-    assessments: ["Short essay", "Concept map", "Oral questioning"],
-    evidence: ["Essay script", "Rubric", "Marking guide"]
-  },
-  apply: {
-    assessments: ["Lab report", "Simulation", "Problem-solving exercise"],
-    evidence: ["Lab report", "Simulation output", "Checklist"]
-  },
-  analyze: {
-    assessments: ["Case study analysis", "Data interpretation"],
-    evidence: ["Analytical report", "Annotated scripts"]
-  },
-  evaluate: {
-    assessments: ["Presentation", "Debate", "Critical review"],
-    evidence: ["Slides", "Peer evaluation", "Reflection"]
-  },
-  create: {
-    assessments: ["Project", "Prototype", "Research proposal"],
-    evidence: ["Project report", "Prototype", "Supervisor feedback"]
-  },
-  perception: {
-    assessments: ["Skill observation"],
-    evidence: ["Observation checklist"]
-  },
-  set: {
-    assessments: ["Equipment setup"],
-    evidence: ["Setup checklist"]
-  },
-  "guided response": {
-    assessments: ["Supervised practice"],
-    evidence: ["Skills checklist"]
-  },
-  mechanism: {
-    assessments: ["Practical exam", "OSCE"],
-    evidence: ["Examiner scoring sheet"]
-  },
-  adaptation: {
-    assessments: ["Adaptive task"],
-    evidence: ["Assessor report"]
-  }
-};
-
-
     let MAP = {};
     let LAST_CLO = null;
 
@@ -550,7 +399,7 @@ const ASSESSMENT_MAP = {
     // Load mapping (IEGs/PEOs/PLOs) from backend
     async function loadMapping() {
       try {
-        const res = await fetch(`${API_BASE}/api/mapping`);
+        const res = await fetch('/api/mapping');
         MAP = await res.json();
         // Populate IEGs
         iegSel.innerHTML = '<option value="">Select IEG</option>';
@@ -576,14 +425,14 @@ const ASSESSMENT_MAP = {
 
       if (!ieg) return;
       try {
-        const r = await fetch(`${API_BASE}/api/get_peos/${encodeURIComponent(ieg)}`);
+        const r = await fetch(`/api/get_peos/${encodeURIComponent(ieg)}`);
         const peos = await r.json();
         peoSel.innerHTML = '<option value="">Select PEO</option>';
         (peos || []).forEach(p => peoSel.add(new Option(p, p)));
       } catch (e) { console.error(e); }
 
       try {
-        const r2 = await fetch(`${API_BASE}/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
+        const r2 = await fetch(`/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
         const txt = await r2.text();
         iegLogicBox.textContent = txt && txt.trim() ? txt : 'No logic explanation available.';
       } catch (e) { console.error(e); iegLogicBox.textContent = 'Logic unavailable.'; }
@@ -601,7 +450,7 @@ const ASSESSMENT_MAP = {
 
       if (!peo) return;
       try {
-        const r = await fetch(`${API_BASE}/api/get_plos/${encodeURIComponent(peo)}`);
+        const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
         const plos = await r.json();
         ploSel.innerHTML = '<option value="">Select PLO</option>';
         (plos || []).forEach(p => ploSel.add(new Option(p, p)));
@@ -609,7 +458,7 @@ const ASSESSMENT_MAP = {
 
       try {
         const level = levelSel.value || 'Degree';
-        const sres = await fetch(`${API_BASE}/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`);
+        const sres = await fetch(`/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`);
         const stmt = await sres.json();
         peoStatementEl.textContent = stmt || '—';
       } catch(e) { console.error(e); }
@@ -634,13 +483,13 @@ const ASSESSMENT_MAP = {
       if (!plo) return;
 
       try {
-        const r = await fetch(`${API_BASE}/api/logic/peo_plo/${encodeURIComponent(peo)}/${encodeURIComponent(plo)}`);
+        const r = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}/${encodeURIComponent(plo)}`);
         const txt = await r.text();
         peoPloLogicBox.textContent = txt && txt.trim() ? txt : 'No logic explanation available.';
       } catch(e) { console.error(e); peoPloLogicBox.textContent = 'Logic unavailable.'; }
 
       try {
-        const res = await fetch(`${API_BASE}/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`);
+        const res = await fetch(`/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`);
         const blooms = await res.json();
         bloomSel.innerHTML = '<option value="">Select Bloom</option>';
         (blooms || []).forEach(b => bloomSel.add(new Option(b, b)));
@@ -656,44 +505,43 @@ const ASSESSMENT_MAP = {
       try {
         ploIndicatorEl.textContent = (MAP.PLOIndicators && MAP.PLOIndicators[plo]) || '—';
       } catch(e){ ploIndicatorEl.textContent = '—'; }
-      
-}); // ✅ CLOSE ploSel.addEventListener
-      
 
-  
-/* ================================
-   SINGLE BLOOM CHANGE HANDLER
-================================ */
-bloomSel.addEventListener('change', async () => {
-  const raw = bloomSel.value.trim().toLowerCase();
-  const val = NORMALISE[raw] || raw;
-  const plo = ploSel.value;
+      try {
+        const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloomSel.value || '')}`);
+        const meta = await mres.json();
+        scCodeEl.textContent = meta.sc_code || '—';
+        scDescEl.textContent = meta.sc_desc || '—';
+        vbeEl.textContent = meta.vbe || '—';
+        domainEl.textContent = meta.domain || '—';
+        conditionEl.textContent = meta.condition || '—';
+        criterionEl.textContent = meta.criterion || '—';
+      } catch(e){ console.error(e); }
+    });
 
-  logEvent('bloom_select', { bloom: val, plo });
+    /* Bloom -> verbs + meta when bloom chosen */
+    bloomSel.addEventListener('change', async () => {
+      const bloom = bloomSel.value; const plo = ploSel.value;
+      if (!bloom || !plo) return;
+      logEvent('bloom_select', { bloom, plo });
 
-  /* ---------- Bloom description ---------- */
-  if (BLOOM_INFO[val]) {
-    bloomDomain.textContent = `Domain: ${BLOOM_INFO[val].domain}`;
-    bloomDesc.textContent = BLOOM_INFO[val].desc;
-  } else {
-    bloomDomain.textContent = "Domain: —";
-    bloomDesc.textContent = "Select a Bloom level to see its description.";
-  }
+      try {
+        const vres = await fetch(`/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
+        const verbs = await vres.json();
+        verbSel.innerHTML = '<option value="">Select Verb</option>';
+        (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
+      } catch(e){ console.error(e); verbSel.innerHTML = '<option value="">Error</option>'; }
 
-  /* ---------- Verbs (backend) ---------- */
-  if (!plo || !val) return;
-
-  try {
-    const vres = await fetch(
-      `${API_BASE}/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(val)}`
-    );
-    const verbs = await vres.json();
-    verbSel.innerHTML = '<option value="">Select Verb</option>';
-    (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-  } catch (e) {
-    console.error("Verb fetch error", e);
-  }
-});
+      try {
+        const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
+        const meta = await mres.json();
+        scCodeEl.textContent = meta.sc_code || '—';
+        scDescEl.textContent = meta.sc_desc || '—';
+        vbeEl.textContent = meta.vbe || '—';
+        domainEl.textContent = meta.domain || '—';
+        conditionEl.textContent = meta.condition || '—';
+        criterionEl.textContent = meta.criterion || '—';
+      } catch(e){ console.error(e); }
+    });
 
     /* Field -> content suggestions */
     fieldSel.addEventListener('change', async () => {
@@ -703,7 +551,7 @@ bloomSel.addEventListener('change', async () => {
       logEvent('field_select', { field });
       if (!field) return;
       try {
-        const res = await fetch(`${API_BASE}/api/content/${encodeURIComponent(field)}`);
+        const res = await fetch(`/api/content/${encodeURIComponent(field)}`);
         const list = await res.json();
         (list || []).forEach(s => {
           const btn = document.createElement('button');
@@ -743,7 +591,7 @@ bloomSel.addEventListener('change', async () => {
       logEvent('generate_clo_attempt', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
       try {
-        const res = await fetch(`${API_BASE}/generate`, { method:'POST', body: fd });
+        const res = await fetch('/generate', { method:'POST', body: fd });
         if (!res.ok) { const err = await res.text().catch(()=> 'server error'); throw new Error(err); }
         const data = await res.json();
         LAST_CLO = data;
@@ -769,42 +617,10 @@ bloomSel.addEventListener('change', async () => {
           variants_list.appendChild(p);
         });
 
-        // -------- Assessment methods --------
-const assessments =
-  data.assessments ||
-  data.assessment ||
-  data.assessment_methods ||
-  [];
-
-if (Array.isArray(assessments) && assessments.length) {
-  assessList.innerHTML =
-    '<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>';
-} else if (typeof assessments === 'string') {
-  assessList.innerHTML = assessments;
-} else {
-  assessList.innerHTML = '—';
-}
-
-// -------- Evidence --------
-const evidence =
-  data.evidence ||
-  data.evidences ||
-  data.assessment_evidence ||
-  {};
-
-if (evidence && typeof evidence === 'object' && Object.keys(evidence).length) {
-  evidenceList.innerHTML = Object.entries(evidence)
-    .map(([k, v]) => {
-      if (Array.isArray(v)) {
-        return `<div><strong>${k}</strong>: ${v.join('; ')}</div>`;
-      }
-      return `<div><strong>${k}</strong>: ${v}</div>`;
-    })
-    .join('');
-} else {
-  evidenceList.innerHTML = '—';
-}
-
+        const assessments = data.assessments || [];
+        assessList.innerHTML = assessments.length ? ('<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>') : '—';
+        const evidence = data.evidence || {};
+        evidenceList.innerHTML = Object.keys(evidence).length ? Object.entries(evidence).map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`).join('') : '—';
 
         peoStatementEl.textContent = data.peo_statement || '—';
         ploStatementEl.textContent = data.plo_statement || '—';
