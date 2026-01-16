@@ -702,13 +702,37 @@
 
     // Bloom descriptions (UI-only, no backend logic)
 const BLOOM_DESC = {
+  /* =====================
+     COGNITIVE
+  ===================== */
   remember: "Recall facts, terms, or basic concepts.",
   understand: "Explain ideas or concepts in your own words.",
   apply: "Use knowledge in new but familiar situations.",
   analyze: "Break information into parts and examine relationships.",
   evaluate: "Make judgments based on criteria or standards.",
-  create: "Produce new or original work by combining elements."
+  create: "Produce new or original work by combining elements.",
+
+  /* =====================
+     AFFECTIVE (KRATHWOHL)
+  ===================== */
+  receiving: "Willingness to attend to or be aware of stimuli.",
+  responding: "Active participation by responding or reacting.",
+  valuing: "Demonstrating commitment or belief in a value.",
+  organization: "Integrating values into a consistent value system.",
+  characterization: "Acting consistently according to internalised values.",
+
+  /* =====================
+     PSYCHOMOTOR (SIMPSON)
+  ===================== */
+  perception: "Use sensory cues to guide motor activity.",
+  set: "Demonstrate readiness to perform a skill (mental, physical, emotional).",
+  "guided response": "Perform skill under guidance or imitation.",
+  mechanism: "Carry out skill with confidence and proficiency.",
+  "complex overt response": "Perform complex skills smoothly and accurately.",
+  adaptation: "Modify learned skills to suit new situations.",
+  origination: "Create new movement patterns or procedures."
 };
+
 
 const bloomDescEl = document.getElementById('bloom_desc');
 
