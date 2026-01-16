@@ -842,8 +842,11 @@ ploSel.addEventListener("change", async () => {
           variants_list.appendChild(p);
         });
 
-        const assessments = data.assessments || [];
-        assessList.innerHTML = assessments.length ? ('<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>') : '—';
+        if (Array.isArray(data.assessments) && data.assessments.length) {
+  assessList.innerHTML =
+    '<ul>' + data.assessments.map(a => `<li>${a}</li>`).join('') + '</ul>';
+}
+// else: BIARKAN assessment sedia ada (dari ASSESSMENT_MAP)
         const evidence = data.evidence || {};
         evidenceList.innerHTML = Object.keys(evidence).length ? Object.entries(evidence).map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`).join('') : '—';
 
