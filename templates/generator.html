@@ -626,28 +626,26 @@ bloomSel.addEventListener("change", async () => {
 /* =========================
    INIT
 ========================= */
-* init() - call last, after listeners defined */
-    (function init(){
-      loadMapping();
+(function init(){
+  loadMapping();
 
-      // Make field default to "— Select Field —"
-      if (fieldSel) {
-        fieldSel.value = "";
-        fieldSel.selectedIndex = 0;
-      }
+  // Make field default to "— Select Field —"
+  if (fieldSel) {
+    fieldSel.value = "";
+    fieldSel.selectedIndex = 0;
+  }
 
-      // Clear suggestions on page load
-      if (contentSuggestionsEl) {
-        contentSuggestionsEl.innerHTML = "";
-      }
-      if (contentSuggestionsRight) {
-        contentSuggestionsRight.innerHTML = "";
-      }
+  // Clear suggestions on page load
+  if (contentSuggestionsEl) {
+    contentSuggestionsEl.innerHTML = "";
+  }
+  if (contentSuggestionsRight) {
+    contentSuggestionsRight.innerHTML = "";
+  }
 
-      // track page init
-      logEvent('page_init', { page: 'generator' });
-
-    })();
+  // track page init
+  logEvent('page_init', { page: 'generator' });
+})();
   </script>
 </body>
 </html>  
