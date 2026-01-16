@@ -744,7 +744,6 @@ ploSel.addEventListener("change", async () => {
       `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
     );
     const blooms = await res.json();
-
     (blooms || []).forEach(b =>
       bloomSel.add(new Option(b, b))
     );
@@ -752,32 +751,26 @@ ploSel.addEventListener("change", async () => {
     console.error("PLO → Bloom error", e);
   }
 });
-</script>
-    
+
 /* =========================
    INIT
 ========================= */
 (function init(){
   loadMapping();
 
-  // Make field default to "— Select Field —"
   if (fieldSel) {
     fieldSel.value = "";
     fieldSel.selectedIndex = 0;
   }
 
-  // Clear suggestions on page load
-  if (contentSuggestionsEl) {
-    contentSuggestionsEl.innerHTML = "";
-  }
-  if (contentSuggestionsRight) {
-    contentSuggestionsRight.innerHTML = "";
-  }
+  if (contentSuggestionsEl) contentSuggestionsEl.innerHTML = "";
+  if (contentSuggestionsRight) contentSuggestionsRight.innerHTML = "";
 
-  // track page init
   logEvent('page_init', { page: 'generator' });
 })();
-  </script>
+</script>
+
+  
 </body>
 </html>  
 
