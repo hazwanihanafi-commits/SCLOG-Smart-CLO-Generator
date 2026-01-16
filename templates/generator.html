@@ -544,31 +544,8 @@
       } catch(e){ console.error(e); }
     });
 
-    /* Bloom -> verbs + meta when bloom chosen */
-    bloomSel.addEventListener('change', async () => {
-      const bloom = bloomSel.value; const plo = ploSel.value;
-      if (!bloom || !plo) return;
-      logEvent('bloom_select', { bloom, plo });
-
-      try {
-        const vres = await fetch(`/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
-        const verbs = await vres.json();
-        verbSel.innerHTML = '<option value="">Select Verb</option>';
-        (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-      } catch(e){ console.error(e); verbSel.innerHTML = '<option value="">Error</option>'; }
-
-      try {
-        const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
-        const meta = await mres.json();
-        scCodeEl.textContent = meta.sc_code || '—';
-        scDescEl.textContent = meta.sc_desc || '—';
-        vbeEl.textContent = meta.vbe || '—';
-        domainEl.textContent = meta.domain || '—';
-        conditionEl.textContent = meta.condition || '—';
-        criterionEl.textContent = meta.criterion || '—';
-      } catch(e){ console.error(e); }
-    });
-
+ 
+   
     /* Field -> content suggestions */
     fieldSel.addEventListener('change', async () => {
       const field = fieldSel.value;
@@ -733,13 +710,358 @@ const BLOOM_DESC = {
   origination: "Create new movement patterns or procedures."
 };
 
+const NORMALISE = {
+  receive: "receiving",
+  respond: "responding",
+  value: "valuing"
+};
+
+
+    
+const ASSESSMENT_MAP = {
+
+  /* =====================
+     COGNITIVE DOMAIN
+  ===================== */
+  remember: {
+    assessments: [
+      "MCQ",
+      "True/False",
+      "Matching test",
+      "Labeling exercise",
+      "Short-answer test",
+      "Online quiz"
+    ],
+    evidence: [
+      "Exam paper",
+      "Answer key",
+      "LMS quiz report",
+      "Item analysis",
+      "Student response sheets"
+    ]
+  },
+
+  understand: {
+    assessments: [
+      "Short essay",
+      "Concept map",
+      "Oral questioning",
+      "Viva (conceptual)",
+      "Summary writing",
+      "Explainer video"
+    ],
+    evidence: [
+      "Essay script",
+      "Concept map",
+      "Viva scoring sheet",
+      "Rubric",
+      "Instructor feedback"
+    ]
+  },
+
+  apply: {
+    assessments: [
+      "Problem-solving task",
+      "Case-based question",
+      "Simulation",
+      "Practical exercise",
+      "Lab / studio task",
+      "Short case"
+    ],
+    evidence: [
+      "Worked solutions",
+      "Simulation output",
+      "Lab / practical report",
+      "Checklist",
+      "Assessor notes"
+    ]
+  },
+
+  analyze: {
+    assessments: [
+      "Case study analysis",
+      "Long case analysis",
+      "Data analysis task",
+      "Comparative analysis",
+      "Scenario-based questions"
+    ],
+    evidence: [
+      "Analytical report",
+      "Case study script",
+      "Marking rubric",
+      "Annotated work",
+      "Examiner comments"
+    ]
+  },
+
+  evaluate: {
+    assessments: [
+      "Critical review",
+      "Viva (judgement & justification)",
+      "Debate",
+      "Peer evaluation",
+      "Decision-making scenario"
+    ],
+    evidence: [
+      "Review paper",
+      "Viva rubric",
+      "Peer evaluation form",
+      "Reflection report",
+      "Assessor feedback"
+    ]
+  },
+
+  create: {
+    assessments: [
+      "Project",
+      "Capstone project",
+      "Research proposal",
+      "Design task",
+      "Business plan",
+      "Creative artefact"
+    ],
+    evidence: [
+      "Project report",
+      "Prototype / artefact",
+      "Proposal document",
+      "Evaluation rubric",
+      "Supervisor feedback"
+    ]
+  },
+
+  /* =====================
+     AFFECTIVE DOMAIN
+     (KRATHWOHL)
+  ===================== */
+  receiving: {
+    assessments: [
+      "Attendance-based task",
+      "Observation of engagement",
+      "Participation log",
+      "Awareness quiz"
+    ],
+    evidence: [
+      "Attendance record",
+      "Observation checklist",
+      "Instructor notes"
+    ]
+  },
+
+  responding: {
+    assessments: [
+      "Class participation",
+      "Reflective journal",
+      "Guided discussion",
+      "Forum participation",
+      "Viva (attitude & response)"
+    ],
+    evidence: [
+      "Participation rubric",
+      "Reflection log",
+      "Discussion transcript",
+      "Instructor feedback"
+    ]
+  },
+
+  valuing: {
+    assessments: [
+      "Reflective essay",
+      "Ethics case reflection",
+      "Position statement",
+      "Personal learning statement"
+    ],
+    evidence: [
+      "Reflection essay",
+      "Rubric",
+      "Assessor comments",
+      "Ethics evaluation form"
+    ]
+  },
+
+  organization: {
+    assessments: [
+      "Portfolio",
+      "Value prioritisation task",
+      "Ethical reasoning assignment",
+      "Professional development plan"
+    ],
+    evidence: [
+      "Portfolio artefacts",
+      "Evaluation rubric",
+      "Reflection summary",
+      "Supervisor feedback"
+    ]
+  },
+
+  characterization: {
+    assessments: [
+      "Professional behaviour assessment",
+      "Workplace-based assessment (WBA)",
+      "Teaching / leadership evaluation",
+      "Longitudinal performance review"
+    ],
+    evidence: [
+      "Behaviour checklist",
+      "Supervisor evaluation",
+      "Professional logbook",
+      "Performance report"
+    ]
+  },
+
+  /* =====================
+     PSYCHOMOTOR DOMAIN
+     (SIMPSON)
+  ===================== */
+  perception: {
+    assessments: [
+      "Skill observation",
+      "Tool / interface recognition",
+      "Cue recognition task"
+    ],
+    evidence: [
+      "Observation checklist",
+      "Assessor notes",
+      "Video evidence"
+    ]
+  },
+
+  set: {
+    assessments: [
+      "Equipment / system setup",
+      "Pre-task readiness check",
+      "Environment preparation"
+    ],
+    evidence: [
+      "Setup checklist",
+      "Preparation record",
+      "Instructor verification"
+    ]
+  },
+
+  "guided response": {
+    assessments: [
+      "Supervised practice",
+      "Guided demonstration",
+      "Tutorial-based task",
+      "OSPE / structured practical"
+    ],
+    evidence: [
+      "Skills checklist",
+      "Supervision log",
+      "Instructor feedback"
+    ]
+  },
+
+  mechanism: {
+    assessments: [
+      "Practical exam",
+      "OSCE / OSPE",
+      "Studio performance",
+      "Standardised skills test"
+    ],
+    evidence: [
+      "Scoring rubric",
+      "Performance checklist",
+      "Examiner scoring sheet"
+    ]
+  },
+
+  "complex overt response": {
+    assessments: [
+      "Integrated task",
+      "Long case (performance-based)",
+      "Short case (performance-based)",
+      "Timed task",
+      "Advanced practical exam"
+    ],
+    evidence: [
+      "Performance rubric",
+      "Video evidence",
+      "Evaluator report"
+    ]
+  },
+
+  adaptation: {
+    assessments: [
+      "Adaptive scenario",
+      "Troubleshooting task",
+      "Modified procedure / solution"
+    ],
+    evidence: [
+      "Assessor report",
+      "Reflective log",
+      "Advanced checklist"
+    ]
+  },
+
+  origination: {
+    assessments: [
+      "Skill or system design",
+      "Innovation project",
+      "Custom solution development"
+    ],
+    evidence: [
+      "Project artefact",
+      "Design documentation",
+      "Evaluation rubric",
+      "Supervisor assessment"
+    ]
+  }
+};
 
 const bloomDescEl = document.getElementById('bloom_desc');
 
-bloomSel.addEventListener('change', () => {
-  const key = bloomSel.value.toLowerCase();
+    bloomSel.addEventListener("change", async () => {
+  const raw = bloomSel.value.trim().toLowerCase();
+  const key = NORMALISE[raw] || raw;
+  const plo = ploSel.value;
+
+  logEvent("bloom_select", { bloom: key, plo });
+
+  /* 1️⃣ Bloom description */
   bloomDescEl.textContent =
     BLOOM_DESC[key] || "Select a Bloom level to see its description.";
+
+  /* 2️⃣ Assessment & Evidence (UI guidance) */
+  const ae = ASSESSMENT_MAP[key];
+  if (ae) {
+    assessList.innerHTML =
+      "<ul>" + ae.assessments.map(a => `<li>${a}</li>`).join("") + "</ul>";
+    evidenceList.innerHTML =
+      "<ul>" + ae.evidence.map(e => `<li>${e}</li>`).join("") + "</ul>";
+  } else {
+    assessList.innerHTML = "—";
+    evidenceList.innerHTML = "—";
+  }
+
+  /* 3️⃣ Backend verbs + metadata */
+  if (!plo || !key) return;
+
+  try {
+    const vres = await fetch(
+      `/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`
+    );
+    const verbs = await vres.json();
+    verbSel.innerHTML = '<option value="">Select Verb</option>';
+    (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
+  } catch (e) {
+    console.error("Verb fetch error", e);
+  }
+
+  try {
+    const mres = await fetch(
+      `/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`
+    );
+    const meta = await mres.json();
+    scCodeEl.textContent = meta.sc_code || "—";
+    scDescEl.textContent = meta.sc_desc || "—";
+    vbeEl.textContent = meta.vbe || "—";
+    domainEl.textContent = meta.domain || "—";
+    conditionEl.textContent = meta.condition || "—";
+    criterionEl.textContent = meta.criterion || "—";
+  } catch (e) {
+    console.error("Meta fetch error", e);
+  }
 });
 
     
