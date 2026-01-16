@@ -505,33 +505,40 @@ const BLOOM_DESC = {
   origination: "Create new movement patterns or procedures."
 };
 
-    const BLOOM_RECOMMENDATION_BY_LEVEL = {
+    /* =========================
+   BLOOM RECOMMENDATION BY LEVEL
+   (Cognitive, Affective, Psychomotor)
+========================= */
+const BLOOM_RECOMMENDATION_BY_LEVEL = {
   Diploma: {
-    recommended: ["Remember", "Understand", "Apply"],
-    caution: ["Evaluate", "Create"]
+    cognitive: ["Remember", "Understand", "Apply"],
+    affective: ["Receiving", "Responding"],
+    psychomotor: ["Perception", "Set", "Guided Response"],
+    caution: ["Evaluate", "Create", "Adaptation", "Origination"]
   },
+
   Degree: {
-    recommended: ["Understand", "Apply", "Analyze"],
-    caution: ["Remember", "Create"]
+    cognitive: ["Understand", "Apply", "Analyze"],
+    affective: ["Responding", "Valuing"],
+    psychomotor: ["Guided Response", "Mechanism"],
+    caution: ["Remember", "Create", "Origination"]
   },
+
   Master: {
-    recommended: [
-      "Analyze",
-      "Evaluate",
-      "Create",
-      "Mechanism",
-      "Complex Overt Response",
-      "Adaptation"
-    ],
+    cognitive: ["Analyze", "Evaluate", "Create"],
+    affective: ["Valuing", "Organization"],
+    psychomotor: ["Mechanism", "Complex Overt Response", "Adaptation"],
     caution: ["Remember", "Understand"]
   },
+
   PhD: {
-    recommended: ["Create", "Adaptation", "Origination"],
+    cognitive: ["Create"],
+    affective: ["Characterization"],
+    psychomotor: ["Adaptation", "Origination"],
     caution: ["Remember", "Understand", "Apply"]
   }
 };
-
-
+    
 /* =========================
    ASSESSMENT & EVIDENCE
 ========================= */
@@ -721,17 +728,17 @@ async function loadMapping() {
     return;
   }
 
-  const { recommended, caution } = BLOOM_RECOMMENDATION_BY_LEVEL[level];
+  const { cognitive, affective, psychomotor, caution } =
+    BLOOM_RECOMMENDATION_BY_LEVEL[level];
 
   hintEl.innerHTML = `
-    <div style="color:#166534;">
-      ✅ <strong>Recommended for ${level}:</strong>
-      ${recommended.join(", ")}
-    </div>
+    <div><strong>🧠 Cognitive:</strong> ${cognitive.join(", ")}</div>
+    <div><strong>❤️ Affective:</strong> ${affective.join(", ")}</div>
+    <div><strong>✋ Psychomotor:</strong> ${psychomotor.join(", ")}</div>
     ${
       caution?.length
-        ? `<div style="color:#92400e;">
-             ⚠️ <strong>Use sparingly:</strong> ${caution.join(", ")}
+        ? `<div class="mt-1" style="color:#92400e;">
+            ⚠️ <strong>Use sparingly:</strong> ${caution.join(", ")}
            </div>`
         : ""
     }
