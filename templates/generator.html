@@ -392,111 +392,100 @@ const bloomDomain = document.getElementById('bloom_domain'); // optional label
 
 const BLOOM_INFO = {
 
-  /* =====================
-     COGNITIVE DOMAIN
-     ===================== */
-  "Remember": {
+  /* COGNITIVE */
+  "remember": {
     domain: "Cognitive (Knowledge)",
     desc: "Recall facts, terms, or basic concepts without interpretation."
   },
-  "Understand": {
+  "understand": {
     domain: "Cognitive (Comprehension)",
     desc: "Explain ideas or concepts in your own words."
   },
-  "Apply": {
+  "apply": {
     domain: "Cognitive (Application)",
     desc: "Use knowledge in new but familiar situations to solve problems."
   },
-  "Analyze": {
+  "analyze": {
     domain: "Cognitive (Analysis)",
     desc: "Break information into parts and examine relationships or patterns."
   },
-  "Evaluate": {
+  "evaluate": {
     domain: "Cognitive (Evaluation)",
     desc: "Make judgments based on criteria, evidence, or standards."
   },
-  "Create": {
+  "create": {
     domain: "Cognitive (Creation)",
     desc: "Combine elements to form a new structure, idea, or solution."
   },
 
-  /* =====================
-     PSYCHOMOTOR DOMAIN
-     ===================== */
-  "Perception": {
+  /* PSYCHOMOTOR */
+  "perception": {
     domain: "Psychomotor (Sensory)",
-    desc: "Recognise sensory cues or signals required to guide movement or action."
+    desc: "Recognise sensory cues required to guide movement or action."
   },
-  "Set": {
+  "set": {
     domain: "Psychomotor (Readiness)",
     desc: "Demonstrate mental, physical, and emotional readiness to perform a skill."
   },
-  "Guided Response": {
+  "guided response": {
     domain: "Psychomotor (Imitation)",
     desc: "Perform skills under guidance through imitation and trial-and-error."
   },
-  "Mechanism": {
+  "mechanism": {
     domain: "Psychomotor (Basic Proficiency)",
     desc: "Perform skills confidently and competently with some independence."
   },
-  "Complex Overt Response": {
+  "complex overt response": {
     domain: "Psychomotor (Skilled Performance)",
     desc: "Execute complex skills smoothly, accurately, and efficiently."
   },
-  "Adaptation": {
+  "adaptation": {
     domain: "Psychomotor (Adaptation)",
     desc: "Modify learned skills to suit new or special situations."
   },
-  "Origination": {
+  "origination": {
     domain: "Psychomotor (Creation)",
     desc: "Create new movement patterns or procedures to meet specific needs."
   },
 
-  /* =====================
-     AFFECTIVE DOMAIN
-     ===================== */
-  "Receiving": {
+  /* AFFECTIVE */
+  "receiving": {
     domain: "Affective (Awareness)",
     desc: "Willingness to listen, attend to, or be aware of values or stimuli."
   },
-  "Responding": {
+  "responding": {
     domain: "Affective (Participation)",
     desc: "Active participation or reaction to values, ideas, or activities."
   },
-  "Valuing": {
+  "valuing": {
     domain: "Affective (Value Adoption)",
     desc: "Demonstrate commitment or preference for a value or belief."
   },
-  "Organization": {
+  "organization": {
     domain: "Affective (Value Integration)",
     desc: "Integrate different values into a coherent value system."
   },
-  "Characterization": {
+  "organisation": {   // UK spelling support ✅
+    domain: "Affective (Value Integration)",
+    desc: "Integrate different values into a coherent value system."
+  },
+  "characterization": {
     domain: "Affective (Internalisation)",
     desc: "Consistently act according to internalised values and professional ethics."
   }
 };
 
-/* =====================
-   LISTENER (SAFE)
-   ===================== */
 bloomSel.addEventListener('change', () => {
   const val = bloomSel.value.trim().toLowerCase();
 
-
   if (BLOOM_INFO[val]) {
-    if (bloomDomain) {
-      bloomDomain.textContent = `Domain: ${BLOOM_INFO[val].domain}`;
-    }
+    bloomDomain.textContent = `Domain: ${BLOOM_INFO[val].domain}`;
     bloomDesc.textContent = BLOOM_INFO[val].desc;
   } else {
-    if (bloomDomain) {
-      bloomDomain.textContent = "Domain: —";
-    }
+    bloomDomain.textContent = "Domain: —";
     bloomDesc.textContent = "Select a Bloom level to see its description.";
   }
 });
-;
 
 
     let MAP = {};
