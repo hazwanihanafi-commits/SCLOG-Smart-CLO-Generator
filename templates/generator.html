@@ -541,29 +541,18 @@ function normaliseBloomKey(value) {
 
   const v = value.toLowerCase();
 
-  // Tangkap AFFECTIVE secara explicit
-  if (v.includes("receiving")) return "receiving";
-  if (v.includes("responding")) return "responding";
-  if (v.includes("valuing")) return "valuing";
+  if (v.includes("receive")) return "receiving";
+  if (v.includes("respond")) return "responding";
+  if (v.includes("value")) return "valuing";
   if (v.includes("organization") || v.includes("organisation")) return "organization";
   if (v.includes("characterization")) return "characterization";
 
-  // Cognitive
   if (v.includes("remember")) return "remember";
   if (v.includes("understand")) return "understand";
   if (v.includes("apply")) return "apply";
   if (v.includes("analyze") || v.includes("analyse")) return "analyze";
   if (v.includes("evaluate")) return "evaluate";
   if (v.includes("create")) return "create";
-
-  // Psychomotor
-  if (v.includes("perception")) return "perception";
-  if (v.includes("set")) return "set";
-  if (v.includes("guided")) return "guided response";
-  if (v.includes("mechanism")) return "mechanism";
-  if (v.includes("complex")) return "complex overt response";
-  if (v.includes("adaptation")) return "adaptation";
-  if (v.includes("origination")) return "origination";
 
   return "";
 }
