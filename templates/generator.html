@@ -673,8 +673,9 @@ iegSel.addEventListener("change", async () => {
   }
 });
 
-    /* =========================
-   PEO → PLO
+   
+/* =========================
+   PEO → PLO (SAFE VERSION)
 ========================= */
 peoSel.addEventListener("change", async () => {
   const peo = peoSel.value;
@@ -686,26 +687,28 @@ peoSel.addEventListener("change", async () => {
 
   if (!peo) return;
 
-  /* 1️⃣ Load PLOs */
   try {
-    const res = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-    const plos = await res.json();
-
-    (plos || []).forEach(p =>
-      ploSel.add(new Option(p, p))
-    );
+    const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+    const plos = await r.json();
+    (plos || []).forEach(p => ploSel.add(new Option(p, p)));
   } catch (e) {
-    console.error("PEO → PLO error", e);
+    console.error("PEO → PLO list error", e);
   }
 
-  /* 2️⃣ PEO → PLO logic */
+  // 🔒 SAFE: DO NOT SHOW HTML IF ROUTE DOES NOT EXIST
   try {
     const logicRes = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}`);
+    if (!logicRes.ok) {
+      peoPloLogicBox.textContent = "—";
+      return;
+    }
     const txt = await logicRes.text();
     peoPloLogicBox.textContent = txt?.trim() || "—";
   } catch (e) {
-    console.error("PEO→PLO logic error", e);
+    console.error("PEO → PLO logic error", e);
+    peoPloLogicBox.textContent = "—";
   }
+});
 
   /* 3️⃣ PEO statement */
   try {
