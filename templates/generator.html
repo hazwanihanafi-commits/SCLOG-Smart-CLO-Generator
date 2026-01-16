@@ -452,32 +452,34 @@ const BLOOM_INFO = {
     desc: "Create new movement patterns or procedures to meet specific needs."
   },
 
-  /* AFFECTIVE */
-  "receive": {
-    domain: "Affective (Awareness)",
-    desc: "Willingness to listen, attend to, or be aware of values or stimuli."
-  },
-  "respond": {
-    domain: "Affective (Participation)",
-    desc: "Active participation or reaction to values, ideas, or activities."
-  },
-  "valuE": {
-    domain: "Affective (Value Adoption)",
-    desc: "Demonstrate commitment or preference for a value or belief."
-  },
-  "organization": {
-    domain: "Affective (Value Integration)",
-    desc: "Integrate different values into a coherent value system."
-  },
-  "organisation": {   // UK spelling support ✅
-    domain: "Affective (Value Integration)",
-    desc: "Integrate different values into a coherent value system."
-  },
-  "characterization": {
-    domain: "Affective (Internalisation)",
-    desc: "Consistently act according to internalised values and professional ethics."
-  }
-};
+  /* =====================
+   AFFECTIVE DOMAIN (KRATHWOHL)
+   ===================== */
+"receiving": {
+  domain: "Affective (Receiving)",
+  desc: "Willingness to attend to, listen to, or be aware of values, stimuli, or phenomena."
+},
+"responding": {
+  domain: "Affective (Responding)",
+  desc: "Active participation through responding, reacting, or engaging with values or ideas."
+},
+"valuing": {
+  domain: "Affective (Valuing)",
+  desc: "Demonstrating commitment, preference, or belief in a value."
+},
+"organization": {
+  domain: "Affective (Organization)",
+  desc: "Integrating different values into a consistent and coherent value system."
+},
+"organisation": { // UK spelling support
+  domain: "Affective (Organization)",
+  desc: "Integrating different values into a consistent and coherent value system."
+},
+"characterization": {
+  domain: "Affective (Characterization)",
+  desc: "Consistently acting in accordance with internalised values and professional ethics."
+}
+
 
 bloomSel.addEventListener('change', () => {
   const val = bloomSel.value.trim().toLowerCase();
