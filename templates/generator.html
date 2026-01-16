@@ -538,8 +538,12 @@ const ASSESSMENT_MAP = {
 ========================= */
 function normaliseBloomKey(value) {
   if (!value) return "";
-  let v = value.toLowerCase().trim();
-  v = v.replace(/\(.*?\)/g, "").trim();
+
+  let v = value
+    .toLowerCase()
+    .replace(/\(.*?\)/g, "")   // remove (affective)
+    .replace(/\s+/g, " ")      // normalize spaces
+    .trim();
 
   const MAP = {
     receive: "receiving",
@@ -547,7 +551,10 @@ function normaliseBloomKey(value) {
     respond: "responding",
     responding: "responding",
     value: "valuing",
-    valuing: "valuing"
+    valuing: "valuing",
+    organisation: "organization", // safety
+    organization: "organization",
+    characterization: "characterization"
   };
 
   return MAP[v] || v;
