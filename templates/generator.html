@@ -721,7 +721,15 @@ const NORMALISE = {
   value: "valuing",
   valuing: "valuing",
 
-  function normaliseBloomKey(value) {
+
+  
+
+  // Psychomotor safety
+  "guided response": "guided response",
+  "complex overt response": "complex overt response"
+};
+
+function normaliseBloomKey(value) {
   if (!value) return "";
 
   let v = value.toLowerCase().trim();
@@ -734,14 +742,6 @@ const NORMALISE = {
 
   return v;
 }
-  
-
-  // Psychomotor safety
-  "guided response": "guided response",
-  "complex overt response": "complex overt response"
-};
-
-
 
     
 const ASSESSMENT_MAP = {
