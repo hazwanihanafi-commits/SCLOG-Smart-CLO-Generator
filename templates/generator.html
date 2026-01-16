@@ -623,6 +623,43 @@ bloomSel.addEventListener("change", async () => {
   criterionEl.textContent = meta.criterion || '—';
 });
 
+    /* =========================
+   IEG → PEO
+========================= */
+iegSel.addEventListener("change", async () => {
+  const ieg = iegSel.value;
+
+  peoSel.innerHTML = '<option value="">Select PEO</option>';
+  ploSel.innerHTML = '<option value="">Select PLO</option>';
+
+  iegLogicBox.textContent = "—";
+  peoPloLogicBox.textContent = "—";
+  peoStatementEl.textContent = "—";
+  ploStatementEl.textContent = "—";
+  ploIndicatorEl.textContent = "—";
+
+  if (!ieg) return;
+
+  try {
+    const res = await fetch(`/api/get_peos/${encodeURIComponent(ieg)}`);
+    const peos = await res.json();
+
+    (peos || []).forEach(p =>
+      peoSel.add(new Option(p, p))
+    );
+  } catch (e) {
+    console.error("IEG → PEO error", e);
+  }
+
+  try {
+    const logicRes = await fetch(`/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
+    const txt = await logicRes.text();
+    iegLogicBox.textContent = txt?.trim() || "—";
+  } catch (e) {
+    console.error("IEG logic error", e);
+  }
+});
+    
 /* =========================
    INIT
 ========================= */
