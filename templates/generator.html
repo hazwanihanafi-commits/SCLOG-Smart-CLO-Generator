@@ -592,18 +592,24 @@ bloomSel.addEventListener("change", async () => {
   bloomDescEl.textContent =
     BLOOM_DESC[key] || "Select a Bloom level to see its description.";
 
-  /* Assessment + Evidence */
-  const ae = ASSESSMENT_MAP[key];
-  if (ae) {
-    assessList.innerHTML =
-      "<ul>" + ae.assessments.map(a => `<li>${a}</li>`).join("") + "</ul>";
-    evidenceList.innerHTML =
-      "<ul>" + ae.evidence.map(e => `<li>${e}</li>`).join("") + "</ul>";
-  } else {
-    assessList.innerHTML = "—";
-    evidenceList.innerHTML = "—";
-  }
+/* Assessment + Evidence */
+const ae = ASSESSMENT_MAP[key];
 
+if (ae) {
+  assessList.innerHTML =
+    "<ul>" +
+    ae.assessments.map(a => `<li>${a}</li>`).join("") +
+    "</ul>";
+
+  evidenceList.innerHTML =
+    "<ul>" +
+    ae.evidence.map(e => `<li>${e}</li>`).join("") +
+    "</ul>";
+} else {
+  assessList.innerHTML = "—";
+  evidenceList.innerHTML = "—";
+}
+  
   /* Backend verbs + meta */
   if (!plo || !key) return;
 
