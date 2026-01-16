@@ -481,7 +481,8 @@ const BLOOM_INFO = {
    LISTENER (SAFE)
    ===================== */
 bloomSel.addEventListener('change', () => {
-  const val = bloomSel.value;
+  const val = bloomSel.value.trim().toLowerCase();
+
 
   if (BLOOM_INFO[val]) {
     if (bloomDomain) {
