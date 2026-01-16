@@ -867,10 +867,14 @@ ploSel.addEventListener("change", async () => {
   assessList.innerHTML =
     '<ul>' + data.assessments.map(a => `<li>${a}</li>`).join('') + '</ul>';
 }
-// else: BIARKAN assessment sedia ada (dari ASSESSMENT_MAP)
-        const evidence = data.evidence || {};
-        evidenceList.innerHTML = Object.keys(evidence).length ? Object.entries(evidence).map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`).join('') : '—';
-
+// ✅ Evidence: backend override HANYA jika ada
+if (data.evidence && Object.keys(data.evidence).length) {
+  evidenceList.innerHTML =
+    Object.entries(data.evidence)
+      .map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`)
+      .join('');
+}
+// ❌ JANGAN letak else → biar evidence dari ASSESSMENT_MAP
         peoStatementEl.textContent = data.peo_statement || '—';
         ploStatementEl.textContent = data.plo_statement || '—';
         ploIndicatorEl.textContent = data.plo_indicator || '—';
