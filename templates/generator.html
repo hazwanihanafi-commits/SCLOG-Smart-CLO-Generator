@@ -672,6 +672,53 @@ iegSel.addEventListener("change", async () => {
     console.error("IEG logic error", e);
   }
 });
+
+    /* =========================
+   PEO → PLO
+========================= */
+peoSel.addEventListener("change", async () => {
+  const peo = peoSel.value;
+
+  ploSel.innerHTML = '<option value="">Select PLO</option>';
+  peoPloLogicBox.textContent = "—";
+  ploStatementEl.textContent = "—";
+  ploIndicatorEl.textContent = "—";
+
+  if (!peo) return;
+
+  /* 1️⃣ Load PLOs */
+  try {
+    const res = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+    const plos = await res.json();
+
+    (plos || []).forEach(p =>
+      ploSel.add(new Option(p, p))
+    );
+  } catch (e) {
+    console.error("PEO → PLO error", e);
+  }
+
+  /* 2️⃣ PEO → PLO logic */
+  try {
+    const logicRes = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}`);
+    const txt = await logicRes.text();
+    peoPloLogicBox.textContent = txt?.trim() || "—";
+  } catch (e) {
+    console.error("PEO→PLO logic error", e);
+  }
+
+  /* 3️⃣ PEO statement */
+  try {
+    const level = levelSel.value || "Degree";
+    const stmtRes = await fetch(
+      `/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`
+    );
+    const stmt = await stmtRes.json();
+    peoStatementEl.textContent = stmt || "—";
+  } catch (e) {
+    console.error("PEO statement error", e);
+  }
+});
     
 /* =========================
    INIT
