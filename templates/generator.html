@@ -657,17 +657,7 @@ const ASSESSMENT_MAP = {
         ploIndicatorEl.textContent = (MAP.PLOIndicators && MAP.PLOIndicators[plo]) || '—';
       } catch(e){ ploIndicatorEl.textContent = '—'; }
 
-      try {
-        const mres = await fetch(`${API_BASE}/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloomSel.value || '')}`);
-        const meta = await mres.json();
-        scCodeEl.textContent = meta.sc_code || '—';
-        scDescEl.textContent = meta.sc_desc || '—';
-        vbeEl.textContent = meta.vbe || '—';
-        domainEl.textContent = meta.domain || '—';
-        conditionEl.textContent = meta.condition || '—';
-        criterionEl.textContent = meta.criterion || '—';
-      } catch(e){ console.error(e); }
-    });
+      
 
   
 /* ================================
