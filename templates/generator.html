@@ -141,6 +141,12 @@ my original code is this, variant assess,emt working before using this code: <!d
 
     <!-- 1) Academic profile + Level + IEG + PEO -->
     <div class="card-box mb-3">
+      
+      <div class="muted mb-2">
+  <strong>Step 1:</strong> Define the programme context (discipline and level) to guide
+  appropriate outcome mapping and CLO complexity.
+</div>
+
       <div class="row g-3 profile-row">
         <div class="col-12 col-md-4">
           <label class="form-label">Academic profile</label>
@@ -186,6 +192,12 @@ my original code is this, variant assess,emt working before using this code: <!d
 
     <!-- 2) PLO for selected PEO -->
     <div id="plo_block" class="card-box mb-3">
+
+      <div class="muted mb-2">
+  <strong>Step 2:</strong> Select the Programme Learning Outcome (PLO) aligned
+  to the chosen PEO.
+</div>
+
       <label class="form-label">PLO for selected PEO</label>
       <select id="plo" class="form-select mb-3"><option value="">Select PLO</option></select>
 
@@ -206,6 +218,12 @@ my original code is this, variant assess,emt working before using this code: <!d
       <div class="row">
         <div class="col-12 col-xl-8">
           <h5 class="mb-1">Smart CLO Builder</h5>
+
+          <div class="muted mb-2">
+  <strong>Step 3:</strong> Construct a measurable Course Learning Outcome (CLO)
+  using Bloom’s Taxonomy, appropriate verbs, and content focus.
+</div>
+
           <div class="muted mb-2">Create measurable course learning outcomes quickly</div>
 
           <ul class="nav nav-tabs mb-3" id="tabNav" role="tablist">
@@ -220,9 +238,17 @@ my original code is this, variant assess,emt working before using this code: <!d
             <div class="tab-pane fade show active" id="builderTab">
               <div class="row g-3">
                 <div class="col-md-6">
-                  <label class="form-label">Bloom</label>
-                  <select id="bloom" class="form-select"><option value="">Select Bloom</option></select>
-                </div>
+  <label class="form-label">Bloom</label>
+  <select id="bloom" class="form-select">
+    <option value="">Select Bloom</option>
+  </select>
+
+  <!-- Bloom description (UI only) -->
+  <div id="bloom_desc" class="muted mt-1" style="font-size:0.85rem;">
+    Select a Bloom level to see its description.
+  </div>
+</div>
+
 
                 <div class="col-md-6">
                   <label class="form-label">Verb</label>
@@ -674,6 +700,25 @@ my original code is this, variant assess,emt working before using this code: <!d
 
     ploSel.addEventListener('change', () => logEvent('peo_plo_check', { peo: peoSel.value, plo: ploSel.value }));
 
+    // Bloom descriptions (UI-only, no backend logic)
+const BLOOM_DESC = {
+  remember: "Recall facts, terms, or basic concepts.",
+  understand: "Explain ideas or concepts in your own words.",
+  apply: "Use knowledge in new but familiar situations.",
+  analyze: "Break information into parts and examine relationships.",
+  evaluate: "Make judgments based on criteria or standards.",
+  create: "Produce new or original work by combining elements."
+};
+
+const bloomDescEl = document.getElementById('bloom_desc');
+
+bloomSel.addEventListener('change', () => {
+  const key = bloomSel.value.toLowerCase();
+  bloomDescEl.textContent =
+    BLOOM_DESC[key] || "Select a Bloom level to see its description.";
+});
+
+    
     /* init() - call last, after listeners defined */
     (function init(){
       loadMapping();
