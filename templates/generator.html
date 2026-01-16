@@ -212,11 +212,20 @@
             <!-- BUILDER -->
             <div class="tab-pane fade show active" id="builderTab">
               <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Bloom</label>
-                  <select id="bloom" class="form-select"><option value="">Select Bloom</option></select>
-                </div>
+                  <div class="col-md-6">
+  <label class="form-label">Bloom</label>
 
+  <select id="bloom" class="form-select">
+    <option value="">Select Bloom</option>
+    <!-- options populated by JS -->
+  </select>
+
+  <!-- Bloom description -->
+  <div id="bloom_desc" class="muted mt-2">
+    Select a Bloom level to see its description.
+  </div>
+</div>
+                  
                 <div class="col-md-6">
                   <label class="form-label">Verb</label>
                   <select id="verb" class="form-select"><option value="">Select Verb</option></select>
@@ -377,6 +386,24 @@
 
     const contentSuggestionsEl = $('content_suggestions');
     const contentSuggestionsRight = $('content_suggestions_right');
+
+    const bloomDesc = document.getElementById('bloom_desc');
+
+const BLOOM_COGNITIVE_DESC = {
+  "Remember": "Recall facts, terms, or basic concepts without interpretation.",
+  "Understand": "Explain ideas or concepts in your own words.",
+  "Apply": "Use knowledge in new but familiar situations to solve problems.",
+  "Analyze": "Break information into parts and examine relationships or patterns.",
+  "Evaluate": "Make judgments based on criteria, evidence, or standards.",
+  "Create": "Combine elements to form a new structure, idea, or solution."
+};
+
+bloomSel.addEventListener('change', () => {
+  const val = bloomSel.value;
+  bloomDesc.textContent =
+    BLOOM_COGNITIVE_DESC[val] || "Select a Bloom level to see its description.";
+});
+
 
     let MAP = {};
     let LAST_CLO = null;
