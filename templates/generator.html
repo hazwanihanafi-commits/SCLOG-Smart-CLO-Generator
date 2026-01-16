@@ -790,7 +790,13 @@ ploSel.addEventListener("change", async () => {
       bloomSel.add(new Option(b, b))
     );
 
-    bloomSel.dispatchEvent(new Event("change"));
+    // 🔥 SET BLOOM VALUE DULU
+if (blooms && blooms.length > 0) {
+  bloomSel.value = blooms[0];   // contoh: "Receiving"
+}
+
+// 🔥 BARU trigger change
+bloomSel.dispatchEvent(new Event("change", { bubbles: true }));
     
   } catch (e) {
     console.error("PLO → Bloom error", e);
