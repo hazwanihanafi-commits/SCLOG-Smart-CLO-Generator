@@ -726,10 +726,42 @@ bloomSel.addEventListener('change', () => {
           variants_list.appendChild(p);
         });
 
-        const assessments = data.assessments || [];
-        assessList.innerHTML = assessments.length ? ('<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>') : '—';
-        const evidence = data.evidence || {};
-        evidenceList.innerHTML = Object.keys(evidence).length ? Object.entries(evidence).map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`).join('') : '—';
+        // -------- Assessment methods --------
+const assessments =
+  data.assessments ||
+  data.assessment ||
+  data.assessment_methods ||
+  [];
+
+if (Array.isArray(assessments) && assessments.length) {
+  assessList.innerHTML =
+    '<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>';
+} else if (typeof assessments === 'string') {
+  assessList.innerHTML = assessments;
+} else {
+  assessList.innerHTML = '—';
+}
+
+// -------- Evidence --------
+const evidence =
+  data.evidence ||
+  data.evidences ||
+  data.assessment_evidence ||
+  {};
+
+if (evidence && typeof evidence === 'object' && Object.keys(evidence).length) {
+  evidenceList.innerHTML = Object.entries(evidence)
+    .map(([k, v]) => {
+      if (Array.isArray(v)) {
+        return `<div><strong>${k}</strong>: ${v.join('; ')}</div>`;
+      }
+      return `<div><strong>${k}</strong>: ${v}</div>`;
+    })
+    .join('');
+} else {
+  evidenceList.innerHTML = '—';
+}
+
 
         peoStatementEl.textContent = data.peo_statement || '—';
         ploStatementEl.textContent = data.plo_statement || '—';
