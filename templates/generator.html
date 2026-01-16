@@ -362,326 +362,71 @@
 
   <!-- App JS -->
   <script>
-    // Short helper
-    const $ = id => document.getElementById(id);
+/* =========================
+   SHORT HELPER
+========================= */
+const $ = id => document.getElementById(id);
 
-    // DOM refs (must match backend IDs)
-    const profileSel = $('profile');
-    const levelSel = $('level');
-    const iegSel = $('ieg');
-    const peoSel = $('peo');
-    const ploSel = $('plo');
+/* =========================
+   DOM REFERENCES
+========================= */
+const profileSel = $('profile');
+const levelSel = $('level');
+const iegSel = $('ieg');
+const peoSel = $('peo');
+const ploSel = $('plo');
 
-    const bloomSel = $('bloom');
-    const verbSel = $('verb');
-    const fieldSel = $('field');
-    const contentInput = $('content');
+const bloomSel = $('bloom');
+const verbSel = $('verb');
+const fieldSel = $('field');
+const contentInput = $('content');
 
-    const iegLogicBox = $('ieg_peo_logic');
-    const peoPloLogicBox = $('peo_plo_logic');
+const iegLogicBox = $('ieg_peo_logic');
+const peoPloLogicBox = $('peo_plo_logic');
 
-    const peoStatementEl = $('peo_statement');
-    const ploStatementEl = $('plo_statement');
-    const ploIndicatorEl = $('plo_indicator');
+const peoStatementEl = $('peo_statement');
+const ploStatementEl = $('plo_statement');
+const ploIndicatorEl = $('plo_indicator');
 
-    const scCodeEl = $('sc_code');
-    const scDescEl = $('sc_desc');
-    const vbeEl = $('vbe');
-    const domainEl = $('domain');
-    const conditionEl = $('condition');
-    const criterionEl = $('criterion');
+const scCodeEl = $('sc_code');
+const scDescEl = $('sc_desc');
+const vbeEl = $('vbe');
+const domainEl = $('domain');
+const conditionEl = $('condition');
+const criterionEl = $('criterion');
 
-    const generateBtn = $('generateBtn');
-    const copyBtn = $('copyBtn');
-    const busyEl = $('busy');
-    const cloCard = $('cloCard');
-    const cloText = $('clo_text');
-    const toggleVariantsBtn = $('toggleVariants');
-    const variantsPanel = $('variantsPanel');
-    const variants_list = $('variants_list');
+const generateBtn = $('generateBtn');
+const copyBtn = $('copyBtn');
+const busyEl = $('busy');
+const cloCard = $('cloCard');
+const cloText = $('clo_text');
+const toggleVariantsBtn = $('toggleVariants');
+const variantsPanel = $('variantsPanel');
+const variants_list = $('variants_list');
 
-    const assessList = $('assess_list');
-    const evidenceList = $('evidence_list');
+const assessList = $('assess_list');
+const evidenceList = $('evidence_list');
 
-    const downloadBtn = $('downloadBtn');
-    const downloadRubricBtn = $('downloadRubricBtn');
-    const darkToggle = $('darkToggle');
+const downloadBtn = $('downloadBtn');
+const downloadRubricBtn = $('downloadRubricBtn');
+const darkToggle = $('darkToggle');
 
-    const contentSuggestionsEl = $('content_suggestions');
-    const contentSuggestionsRight = $('content_suggestions_right');
+const contentSuggestionsEl = $('content_suggestions');
+const contentSuggestionsRight = $('content_suggestions_right');
 
-    let MAP = {};
-    let LAST_CLO = null;
+const bloomDescEl = $('bloom_desc');
 
-    // Theme toggle
-    darkToggle.addEventListener('click', () => {
-      const curr = document.body.getAttribute('data-theme') || 'light';
-      const next = curr === 'light' ? 'dark' : 'light';
-      document.body.setAttribute('data-theme', next);
-      darkToggle.innerHTML = next === 'dark' ? '<i class="bi bi-sun"></i> Light' : '<i class="bi bi-moon"></i> Dark';
-      logEvent('toggle_theme', { theme: next });
-    });
+/* =========================
+   STATE
+========================= */
+let MAP = {};
+let LAST_CLO = null;
 
-    // Load mapping (IEGs/PEOs/PLOs) from backend
-    async function loadMapping() {
-      try {
-        const res = await fetch('/api/mapping');
-        MAP = await res.json();
-        // Populate IEGs
-        iegSel.innerHTML = '<option value="">Select IEG</option>';
-        (MAP.IEGs || []).forEach(i => iegSel.add(new Option(i, i)));
-        // Set PLO fallback list if present
-        ploSel.innerHTML = '<option value="">Select PLO</option>';
-        (MAP.PLOs || []).forEach(p => ploSel.add(new Option(p, p)));
-      } catch (e) {
-        console.error('loadMapping error', e);
-      }
-    }
-
-    /* IEG -> PEO mapping + logic */
-    iegSel.addEventListener('change', async () => {
-      const ieg = iegSel.value;
-      peoSel.innerHTML = '<option value="">Select PEO</option>';
-      ploSel.innerHTML = '<option value="">Select PLO</option>';
-      iegLogicBox.textContent = '—';
-      peoStatementEl.textContent = '—';
-      ploStatementEl.textContent = '—';
-      ploIndicatorEl.textContent = '—';
-      logEvent('ieg_select', { ieg });
-
-      if (!ieg) return;
-      try {
-        const r = await fetch(`/api/get_peos/${encodeURIComponent(ieg)}`);
-        const peos = await r.json();
-        peoSel.innerHTML = '<option value="">Select PEO</option>';
-        (peos || []).forEach(p => peoSel.add(new Option(p, p)));
-      } catch (e) { console.error(e); }
-
-      try {
-        const r2 = await fetch(`/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
-        const txt = await r2.text();
-        iegLogicBox.textContent = txt && txt.trim() ? txt : 'No logic explanation available.';
-      } catch (e) { console.error(e); iegLogicBox.textContent = 'Logic unavailable.'; }
-    });
-
-    /* PEO -> PLO mapping + statements */
-    peoSel.addEventListener('change', async () => {
-      const peo = peoSel.value;
-      ploSel.innerHTML = '<option value="">Select PLO</option>';
-      peoPloLogicBox.textContent = '—';
-      peoStatementEl.textContent = '—';
-      ploStatementEl.textContent = '—';
-      ploIndicatorEl.textContent = '—';
-      logEvent('peo_select', { peo });
-
-      if (!peo) return;
-      try {
-        const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-        const plos = await r.json();
-        ploSel.innerHTML = '<option value="">Select PLO</option>';
-        (plos || []).forEach(p => ploSel.add(new Option(p, p)));
-      } catch (e) { console.error(e); }
-
-      try {
-        const level = levelSel.value || 'Degree';
-        const sres = await fetch(`/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`);
-        const stmt = await sres.json();
-        peoStatementEl.textContent = stmt || '—';
-      } catch(e) { console.error(e); }
-    });
-
-    /* PLO -> blooms + PEO→PLO logic + statements + indicator + meta */
-    ploSel.addEventListener('change', async () => {
-      const plo = ploSel.value;
-      const peo = peoSel.value;
-      bloomSel.innerHTML = '<option value="">Select Bloom</option>';
-      peoPloLogicBox.textContent = '—';
-      ploStatementEl.textContent = '—';
-      ploIndicatorEl.textContent = '—';
-      scCodeEl.textContent = '—';
-      scDescEl.textContent = '—';
-      vbeEl.textContent = '—';
-      domainEl.textContent = '—';
-      conditionEl.textContent = '—';
-      criterionEl.textContent = '—';
-      logEvent('plo_select', { plo, peo });
-
-      if (!plo) return;
-
-      try {
-        const r = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}/${encodeURIComponent(plo)}`);
-        const txt = await r.text();
-        peoPloLogicBox.textContent = txt && txt.trim() ? txt : 'No logic explanation available.';
-      } catch(e) { console.error(e); peoPloLogicBox.textContent = 'Logic unavailable.'; }
-
-      try {
-        const res = await fetch(`/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`);
-        const blooms = await res.json();
-        bloomSel.innerHTML = '<option value="">Select Bloom</option>';
-        (blooms || []).forEach(b => bloomSel.add(new Option(b, b)));
-      } catch(e) { console.error(e); bloomSel.innerHTML = '<option value="">Error</option>'; }
-
-      try {
-        const level = levelSel.value || 'Degree';
-        const sres = await fetch(`/api/get_statement/${encodeURIComponent(level)}/PLO/${encodeURIComponent(plo)}`);
-        const stmt = await sres.json();
-        ploStatementEl.textContent = stmt || '—';
-      } catch(e){ console.error(e); }
-
-      try {
-        ploIndicatorEl.textContent = (MAP.PLOIndicators && MAP.PLOIndicators[plo]) || '—';
-      } catch(e){ ploIndicatorEl.textContent = '—'; }
-
-      try {
-        const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloomSel.value || '')}`);
-        const meta = await mres.json();
-        scCodeEl.textContent = meta.sc_code || '—';
-        scDescEl.textContent = meta.sc_desc || '—';
-        vbeEl.textContent = meta.vbe || '—';
-        domainEl.textContent = meta.domain || '—';
-        conditionEl.textContent = meta.condition || '—';
-        criterionEl.textContent = meta.criterion || '—';
-      } catch(e){ console.error(e); }
-    });
-
- 
-   
-    /* Field -> content suggestions */
-    fieldSel.addEventListener('change', async () => {
-      const field = fieldSel.value;
-      contentSuggestionsEl.innerHTML = '';
-      contentSuggestionsRight.innerHTML = '';
-      logEvent('field_select', { field });
-      if (!field) return;
-      try {
-        const res = await fetch(`/api/content/${encodeURIComponent(field)}`);
-        const list = await res.json();
-        (list || []).forEach(s => {
-          const btn = document.createElement('button');
-          btn.className = 'btn btn-sm btn-light me-1 mb-1';
-          btn.textContent = s;
-          btn.onclick = () => { contentInput.value = s; };
-          contentSuggestionsEl.appendChild(btn);
-
-          const small = document.createElement('div');
-          small.className = 'muted mb-1';
-          small.textContent = s;
-          contentSuggestionsRight.appendChild(small);
-        });
-      } catch(e){ console.error(e); }
-    });
-
-    profileSel.addEventListener('change', () => logEvent('profile_select', { profile: profileSel.value }));
-    levelSel.addEventListener('change', () => logEvent('level_select', { level: levelSel.value }));
-
-    /* Generate CLO */
-    generateBtn.addEventListener('click', async () => {
-      if (!ploSel.value || !bloomSel.value || !verbSel.value || !contentInput.value.trim()) {
-        alert('Please fill PLO, Bloom, Verb and Content.');
-        return;
-      }
-      busyEl.style.display = 'inline';
-      generateBtn.disabled = true;
-
-      const fd = new FormData();
-      fd.append('profile', profileSel.value);
-      fd.append('level', levelSel.value);
-      fd.append('plo', ploSel.value);
-      fd.append('bloom', bloomSel.value);
-      fd.append('verb', verbSel.value);
-      fd.append('content', contentInput.value);
-
-      logEvent('generate_clo_attempt', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
-
-      try {
-        const res = await fetch('/generate', { method:'POST', body: fd });
-        if (!res.ok) { const err = await res.text().catch(()=> 'server error'); throw new Error(err); }
-        const data = await res.json();
-        LAST_CLO = data;
-
-        cloText.innerText = data.clo || '';
-        cloCard.style.display = 'block';
-
-        variantsPanel.innerHTML = '';
-        const opts = data.variants || data.clo_options || {};
-        Object.entries(opts).forEach(([label, text]) => {
-          const div = document.createElement('div');
-          div.className = 'logic-box mb-2';
-          div.style.cursor = 'pointer';
-          div.innerHTML = `<strong>${label}</strong><div class="mt-1">${text}</div>`;
-          div.onclick = () => cloText.innerText = text;
-          variantsPanel.appendChild(div);
-        });
-
-        variants_list.innerHTML = '';
-        Object.entries(opts).forEach(([label, text]) => {
-          const p = document.createElement('p');
-          p.innerHTML = `<strong>${label}:</strong> ${text}`;
-          variants_list.appendChild(p);
-        });
-
-        const assessments = data.assessments || [];
-        assessList.innerHTML = assessments.length ? ('<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>') : '—';
-        const evidence = data.evidence || {};
-        evidenceList.innerHTML = Object.keys(evidence).length ? Object.entries(evidence).map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`).join('') : '—';
-
-        peoStatementEl.textContent = data.peo_statement || '—';
-        ploStatementEl.textContent = data.plo_statement || '—';
-        ploIndicatorEl.textContent = data.plo_indicator || '—';
-
-        logEvent('generate_clo', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
-
-      } catch (e) {
-        console.error(e);
-        alert('Error generating CLO. See console for details.');
-        logEvent('generate_clo_error', { error: (e.message || String(e)) });
-      } finally {
-        busyEl.style.display = 'none';
-        generateBtn.disabled = false;
-      }
-    });
-
-    /* Copy CLO */
-    copyBtn.addEventListener('click', async () => {
-      if (!cloText.innerText) return;
-      try {
-        await navigator.clipboard.writeText(cloText.innerText);
-        copyBtn.innerText = 'Copied';
-        setTimeout(()=> copyBtn.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copy', 1200);
-        logEvent('copy_clo', { plo: ploSel.value || null });
-      } catch(e) { alert('Copy failed'); }
-    });
-
-    /* Downloads */
-    downloadBtn.addEventListener('click', () => {
-      logEvent('download_clo', { plo: ploSel.value || null });
-      window.location = '/download';
-    });
-    downloadRubricBtn.addEventListener('click', () => {
-      logEvent('download_rubric', { plo: ploSel.value || null });
-      window.location = '/download_rubric';
-    });
-
-    /* Toggle variants */
-    toggleVariantsBtn.addEventListener('click', () => {
-      const hidden = variantsPanel.style.display === 'none' || variantsPanel.style.display === '';
-      variantsPanel.style.display = hidden ? 'block' : 'none';
-      toggleVariantsBtn.innerText = hidden ? 'Hide variants' : 'Show variants';
-      logEvent('variants_toggle', { visible: hidden });
-    });
-
-    // tab click events
-    document.querySelectorAll('#tabNav .nav-link').forEach(tab => {
-      tab.addEventListener('click', () => logEvent('tab_click', { tab: tab.textContent.trim() }));
-    });
-
-    ploSel.addEventListener('change', () => logEvent('peo_plo_check', { peo: peoSel.value, plo: ploSel.value }));
-
-    // Bloom descriptions (UI-only, no backend logic)
+/* =========================
+   BLOOM DESCRIPTIONS
+========================= */
 const BLOOM_DESC = {
-  /* =====================
-     COGNITIVE
-  ===================== */
+  /* Cognitive */
   remember: "Recall facts, terms, or basic concepts.",
   understand: "Explain ideas or concepts in your own words.",
   apply: "Use knowledge in new but familiar situations.",
@@ -689,20 +434,16 @@ const BLOOM_DESC = {
   evaluate: "Make judgments based on criteria or standards.",
   create: "Produce new or original work by combining elements.",
 
-  /* =====================
-     AFFECTIVE (KRATHWOHL)
-  ===================== */
+  /* Affective */
   receiving: "Willingness to attend to or be aware of stimuli.",
   responding: "Active participation by responding or reacting.",
   valuing: "Demonstrating commitment or belief in a value.",
   organization: "Integrating values into a consistent value system.",
   characterization: "Acting consistently according to internalised values.",
 
-  /* =====================
-     PSYCHOMOTOR (SIMPSON)
-  ===================== */
+  /* Psychomotor */
   perception: "Use sensory cues to guide motor activity.",
-  set: "Demonstrate readiness to perform a skill (mental, physical, emotional).",
+  set: "Demonstrate readiness to perform a skill.",
   "guided response": "Perform skill under guidance or imitation.",
   mechanism: "Carry out skill with confidence and proficiency.",
   "complex overt response": "Perform complex skills smoothly and accurately.",
@@ -710,352 +451,152 @@ const BLOOM_DESC = {
   origination: "Create new movement patterns or procedures."
 };
 
-const NORMALISE = {
-  // Affective (short forms from dropdown)
-  receive: "receiving",
-  receiving: "receiving",
-
-  respond: "responding",
-  responding: "responding",
-
-  value: "valuing",
-  valuing: "valuing",
-
-
-  
-
-  // Psychomotor safety
-  "guided response": "guided response",
-  "complex overt response": "complex overt response"
-};
-
-function normaliseBloomKey(value) {
-  if (!value) return "";
-
-  let v = value.toLowerCase().trim();
-
-  // remove anything in brackets e.g. "(affective)"
-  v = v.replace(/\(.*?\)/g, "").trim();
-
-  // normalise known short forms
-  if (NORMALISE[v]) return NORMALISE[v];
-
-  return v;
-}
-
-    
+/* =========================
+   ASSESSMENT & EVIDENCE
+========================= */
 const ASSESSMENT_MAP = {
-
-  /* =====================
-     COGNITIVE DOMAIN
-  ===================== */
   remember: {
-    assessments: [
-      "MCQ",
-      "True/False",
-      "Matching test",
-      "Labeling exercise",
-      "Short-answer test",
-      "Online quiz"
-    ],
-    evidence: [
-      "Exam paper",
-      "Answer key",
-      "LMS quiz report",
-      "Item analysis",
-      "Student response sheets"
-    ]
+    assessments: ["MCQ","True/False","Matching","Short-answer","Online quiz"],
+    evidence: ["Exam paper","Answer key","LMS report"]
   },
-
   understand: {
-    assessments: [
-      "Short essay",
-      "Concept map",
-      "Oral questioning",
-      "Viva (conceptual)",
-      "Summary writing",
-      "Explainer video"
-    ],
-    evidence: [
-      "Essay script",
-      "Concept map",
-      "Viva scoring sheet",
-      "Rubric",
-      "Instructor feedback"
-    ]
+    assessments: ["Short essay","Concept map","Oral questioning","Viva"],
+    evidence: ["Essay script","Rubric","Viva sheet"]
   },
-
   apply: {
-    assessments: [
-      "Problem-solving task",
-      "Case-based question",
-      "Simulation",
-      "Practical exercise",
-      "Lab / studio task",
-      "Short case"
-    ],
-    evidence: [
-      "Worked solutions",
-      "Simulation output",
-      "Lab / practical report",
-      "Checklist",
-      "Assessor notes"
-    ]
+    assessments: ["Problem-solving","Simulation","Practical task","Short case"],
+    evidence: ["Lab report","Checklist","Assessor notes"]
   },
-
   analyze: {
-    assessments: [
-      "Case study analysis",
-      "Long case analysis",
-      "Data analysis task",
-      "Comparative analysis",
-      "Scenario-based questions"
-    ],
-    evidence: [
-      "Analytical report",
-      "Case study script",
-      "Marking rubric",
-      "Annotated work",
-      "Examiner comments"
-    ]
+    assessments: ["Case study","Long case","Data analysis"],
+    evidence: ["Analytical report","Annotated script"]
   },
-
   evaluate: {
-    assessments: [
-      "Critical review",
-      "Viva (judgement & justification)",
-      "Debate",
-      "Peer evaluation",
-      "Decision-making scenario"
-    ],
-    evidence: [
-      "Review paper",
-      "Viva rubric",
-      "Peer evaluation form",
-      "Reflection report",
-      "Assessor feedback"
-    ]
+    assessments: ["Critical review","Debate","Viva"],
+    evidence: ["Review paper","Peer evaluation","Reflection"]
   },
-
   create: {
-    assessments: [
-      "Project",
-      "Capstone project",
-      "Research proposal",
-      "Design task",
-      "Business plan",
-      "Creative artefact"
-    ],
-    evidence: [
-      "Project report",
-      "Prototype / artefact",
-      "Proposal document",
-      "Evaluation rubric",
-      "Supervisor feedback"
-    ]
+    assessments: ["Project","Capstone","Research proposal"],
+    evidence: ["Project report","Prototype","Supervisor feedback"]
   },
 
-  /* =====================
-     AFFECTIVE DOMAIN
-     (KRATHWOHL)
-  ===================== */
+  /* Affective */
   receiving: {
-    assessments: [
-      "Attendance-based task",
-      "Observation of engagement",
-      "Participation log",
-      "Awareness quiz"
-    ],
-    evidence: [
-      "Attendance record",
-      "Observation checklist",
-      "Instructor notes"
-    ]
+    assessments: ["Observation","Attendance-based task"],
+    evidence: ["Observation checklist","Attendance record"]
   },
-
   responding: {
-    assessments: [
-      "Class participation",
-      "Reflective journal",
-      "Guided discussion",
-      "Forum participation",
-      "Viva (attitude & response)"
-    ],
-    evidence: [
-      "Participation rubric",
-      "Reflection log",
-      "Discussion transcript",
-      "Instructor feedback"
-    ]
+    assessments: ["Class participation","Reflective journal","Forum discussion"],
+    evidence: ["Participation rubric","Reflection log"]
   },
-
   valuing: {
-    assessments: [
-      "Reflective essay",
-      "Ethics case reflection",
-      "Position statement",
-      "Personal learning statement"
-    ],
-    evidence: [
-      "Reflection essay",
-      "Rubric",
-      "Assessor comments",
-      "Ethics evaluation form"
-    ]
+    assessments: ["Reflective essay","Ethics case reflection"],
+    evidence: ["Reflection essay","Rubric","Assessor comments"]
   },
-
   organization: {
-    assessments: [
-      "Portfolio",
-      "Value prioritisation task",
-      "Ethical reasoning assignment",
-      "Professional development plan"
-    ],
-    evidence: [
-      "Portfolio artefacts",
-      "Evaluation rubric",
-      "Reflection summary",
-      "Supervisor feedback"
-    ]
+    assessments: ["Portfolio","Ethical reasoning task"],
+    evidence: ["Portfolio artefact","Evaluation rubric"]
   },
-
   characterization: {
-    assessments: [
-      "Professional behaviour assessment",
-      "Workplace-based assessment (WBA)",
-      "Teaching / leadership evaluation",
-      "Longitudinal performance review"
-    ],
-    evidence: [
-      "Behaviour checklist",
-      "Supervisor evaluation",
-      "Professional logbook",
-      "Performance report"
-    ]
+    assessments: ["Professional behaviour assessment","WBA"],
+    evidence: ["Supervisor evaluation","Professional logbook"]
   },
 
-  /* =====================
-     PSYCHOMOTOR DOMAIN
-     (SIMPSON)
-  ===================== */
+  /* Psychomotor */
   perception: {
-    assessments: [
-      "Skill observation",
-      "Tool / interface recognition",
-      "Cue recognition task"
-    ],
-    evidence: [
-      "Observation checklist",
-      "Assessor notes",
-      "Video evidence"
-    ]
+    assessments: ["Skill observation"],
+    evidence: ["Observation checklist"]
   },
-
   set: {
-    assessments: [
-      "Equipment / system setup",
-      "Pre-task readiness check",
-      "Environment preparation"
-    ],
-    evidence: [
-      "Setup checklist",
-      "Preparation record",
-      "Instructor verification"
-    ]
+    assessments: ["Equipment setup","Readiness check"],
+    evidence: ["Setup checklist"]
   },
-
   "guided response": {
-    assessments: [
-      "Supervised practice",
-      "Guided demonstration",
-      "Tutorial-based task",
-      "OSPE / structured practical"
-    ],
-    evidence: [
-      "Skills checklist",
-      "Supervision log",
-      "Instructor feedback"
-    ]
+    assessments: ["Supervised practice","OSPE"],
+    evidence: ["Skills checklist"]
   },
-
   mechanism: {
-    assessments: [
-      "Practical exam",
-      "OSCE / OSPE",
-      "Studio performance",
-      "Standardised skills test"
-    ],
-    evidence: [
-      "Scoring rubric",
-      "Performance checklist",
-      "Examiner scoring sheet"
-    ]
+    assessments: ["OSCE","Practical exam"],
+    evidence: ["Scoring rubric","Examiner sheet"]
   },
-
   "complex overt response": {
-    assessments: [
-      "Integrated task",
-      "Long case (performance-based)",
-      "Short case (performance-based)",
-      "Timed task",
-      "Advanced practical exam"
-    ],
-    evidence: [
-      "Performance rubric",
-      "Video evidence",
-      "Evaluator report"
-    ]
+    assessments: ["Integrated task","Long case","Short case"],
+    evidence: ["Performance rubric","Video evidence"]
   },
-
   adaptation: {
-    assessments: [
-      "Adaptive scenario",
-      "Troubleshooting task",
-      "Modified procedure / solution"
-    ],
-    evidence: [
-      "Assessor report",
-      "Reflective log",
-      "Advanced checklist"
-    ]
+    assessments: ["Adaptive scenario"],
+    evidence: ["Assessor report"]
   },
-
   origination: {
-    assessments: [
-      "Skill or system design",
-      "Innovation project",
-      "Custom solution development"
-    ],
-    evidence: [
-      "Project artefact",
-      "Design documentation",
-      "Evaluation rubric",
-      "Supervisor assessment"
-    ]
+    assessments: ["Innovation project"],
+    evidence: ["Project artefact","Evaluation rubric"]
   }
 };
 
-const bloomDescEl = document.getElementById('bloom_desc');
+/* =========================
+   NORMALISE BLOOM
+========================= */
+function normaliseBloomKey(value) {
+  if (!value) return "";
+  let v = value.toLowerCase().trim();
+  v = v.replace(/\(.*?\)/g, "").trim();
 
+  const MAP = {
+    receive: "receiving",
+    receiving: "receiving",
+    respond: "responding",
+    responding: "responding",
+    value: "valuing",
+    valuing: "valuing"
+  };
+
+  return MAP[v] || v;
+}
+
+/* =========================
+   THEME TOGGLE
+========================= */
+darkToggle.addEventListener('click', () => {
+  const curr = document.body.getAttribute('data-theme') || 'light';
+  const next = curr === 'light' ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', next);
+  darkToggle.innerHTML = next === 'dark'
+    ? '<i class="bi bi-sun"></i> Light'
+    : '<i class="bi bi-moon"></i> Dark';
+});
+
+/* =========================
+   LOAD MAPPING
+========================= */
+async function loadMapping() {
+  const res = await fetch('/api/mapping');
+  MAP = await res.json();
+
+  iegSel.innerHTML = '<option value="">Select IEG</option>';
+  (MAP.IEGs || []).forEach(i => iegSel.add(new Option(i, i)));
+
+  ploSel.innerHTML = '<option value="">Select PLO</option>';
+}
+
+/* =========================
+   BLOOM CHANGE (ONLY ONE)
+========================= */
 bloomSel.addEventListener("change", async () => {
   const raw = bloomSel.value;
   const key = normaliseBloomKey(raw);
   const plo = ploSel.value;
 
-  console.log("BLOOM RAW:", raw);
-  console.log("BLOOM KEY:", key);
+  console.log("BLOOM:", raw, "→", key);
 
-  /* 1️⃣ Bloom description */
+  /* Description */
   bloomDescEl.textContent =
     BLOOM_DESC[key] || "Select a Bloom level to see its description.";
 
-  /* 2️⃣ Assessment & Evidence */
+  /* Assessment + Evidence */
   const ae = ASSESSMENT_MAP[key];
-
   if (ae) {
     assessList.innerHTML =
       "<ul>" + ae.assessments.map(a => `<li>${a}</li>`).join("") + "</ul>";
-
     evidenceList.innerHTML =
       "<ul>" + ae.evidence.map(e => `<li>${e}</li>`).join("") + "</ul>";
   } else {
@@ -1063,38 +604,29 @@ bloomSel.addEventListener("change", async () => {
     evidenceList.innerHTML = "—";
   }
 
-  /* 3️⃣ Backend verbs + metadata */
+  /* Backend verbs + meta */
   if (!plo || !key) return;
 
-  try {
-    const vres = await fetch(
-      `/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`
-    );
-    const verbs = await vres.json();
-    verbSel.innerHTML = '<option value="">Select Verb</option>';
-    (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-  } catch (e) {
-    console.error("Verb fetch error", e);
-  }
+  const vres = await fetch(`/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`);
+  const verbs = await vres.json();
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+  (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
 
-  try {
-    const mres = await fetch(
-      `/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`
-    );
-    const meta = await mres.json();
-    scCodeEl.textContent = meta.sc_code || "—";
-    scDescEl.textContent = meta.sc_desc || "—";
-    vbeEl.textContent = meta.vbe || "—";
-    domainEl.textContent = meta.domain || "—";
-    conditionEl.textContent = meta.condition || "—";
-    criterionEl.textContent = meta.criterion || "—";
-  } catch (e) {
-    console.error("Meta fetch error", e);
-  }
+  const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`);
+  const meta = await mres.json();
+
+  scCodeEl.textContent = meta.sc_code || '—';
+  scDescEl.textContent = meta.sc_desc || '—';
+  vbeEl.textContent = meta.vbe || '—';
+  domainEl.textContent = meta.domain || '—';
+  conditionEl.textContent = meta.condition || '—';
+  criterionEl.textContent = meta.criterion || '—';
 });
 
-    
-    /* init() - call last, after listeners defined */
+/* =========================
+   INIT
+========================= */
+* init() - call last, after listeners defined */
     (function init(){
       loadMapping();
 
@@ -1119,3 +651,6 @@ bloomSel.addEventListener("change", async () => {
   </script>
 </body>
 </html>  
+
+
+    
