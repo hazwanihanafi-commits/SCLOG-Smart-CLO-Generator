@@ -785,75 +785,131 @@ ploSel.addEventListener("change", async () => {
   }
 });
 
-    /* =========================
-   GENERATE CLO (FIX)
-========================= */
-generateBtn.addEventListener("click", () => {
-  const bloomRaw = bloomSel.value;
-  const verb = verbSel.value;
-  const content = contentInput.value.trim();
+    /* Generate CLO */
+    generateBtn.addEventListener('click', async () => {
+      if (!ploSel.value || !bloomSel.value || !verbSel.value || !contentInput.value.trim()) {
+        alert('Please fill PLO, Bloom, Verb and Content.');
+        return;
+      }
+      busyEl.style.display = 'inline';
+      generateBtn.disabled = true;
 
-  if (!bloomRaw || !verb || !content) {
-    alert("Please select Bloom, Verb, and enter Content.");
-    return;
-  }
+      const fd = new FormData();
+      fd.append('profile', profileSel.value);
+      fd.append('level', levelSel.value);
+      fd.append('plo', ploSel.value);
+      fd.append('bloom', bloomSel.value);
+      fd.append('verb', verbSel.value);
+      fd.append('content', contentInput.value);
 
-  busyEl.style.display = "inline";
+      logEvent('generate_clo_attempt', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
-  const clo =
-    verb.charAt(0).toUpperCase() +
-    verb.slice(1) +
-    " " +
-    content +
-    ".";
+      try {
+        const res = await fetch('/generate', { method:'POST', body: fd });
+        if (!res.ok) { const err = await res.text().catch(()=> 'server error'); throw new Error(err); }
+        const data = await res.json();
+        LAST_CLO = data;
 
-  cloText.textContent = clo;
-  cloCard.style.display = "block";
-  busyEl.style.display = "none";
+        cloText.innerText = data.clo || '';
+        cloCard.style.display = 'block';
 
-  LAST_CLO = clo;
+        variantsPanel.innerHTML = '';
+        const opts = data.variants || data.clo_options || {};
+        Object.entries(opts).forEach(([label, text]) => {
+          const div = document.createElement('div');
+          div.className = 'logic-box mb-2';
+          div.style.cursor = 'pointer';
+          div.innerHTML = `<strong>${label}</strong><div class="mt-1">${text}</div>`;
+          div.onclick = () => cloText.innerText = text;
+          variantsPanel.appendChild(div);
+        });
 
-  logEvent("generate_clo", {
-    bloom: bloomRaw,
-    verb,
-    field: fieldSel.value || "",
-    profile: profileSel.value || ""
-  });
-});
+        variants_list.innerHTML = '';
+        Object.entries(opts).forEach(([label, text]) => {
+          const p = document.createElement('p');
+          p.innerHTML = `<strong>${label}:</strong> ${text}`;
+          variants_list.appendChild(p);
+        });
 
-    copyBtn.addEventListener("click", async () => {
-  if (!LAST_CLO) {
-    alert("No CLO to copy.");
-    return;
-  }
-  await navigator.clipboard.writeText(LAST_CLO);
-  alert("CLO copied to clipboard.");
-});
+        const assessments = data.assessments || [];
+        assessList.innerHTML = assessments.length ? ('<ul>' + assessments.map(a => `<li>${a}</li>`).join('') + '</ul>') : '—';
+        const evidence = data.evidence || {};
+        evidenceList.innerHTML = Object.keys(evidence).length ? Object.entries(evidence).map(([k,v]) => `<div><strong>${k}</strong>: ${v.join('; ')}</div>`).join('') : '—';
 
-   
-    
+        peoStatementEl.textContent = data.peo_statement || '—';
+        ploStatementEl.textContent = data.plo_statement || '—';
+        ploIndicatorEl.textContent = data.plo_indicator || '—';
 
-/* =========================
-   INIT
-========================= */
-(function init(){
-  loadMapping();
+        logEvent('generate_clo', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
-  if (fieldSel) {
-    fieldSel.value = "";
-    fieldSel.selectedIndex = 0;
-  }
+      } catch (e) {
+        console.error(e);
+        alert('Error generating CLO. See console for details.');
+        logEvent('generate_clo_error', { error: (e.message || String(e)) });
+      } finally {
+        busyEl.style.display = 'none';
+        generateBtn.disabled = false;
+      }
+    });
 
-  if (contentSuggestionsEl) contentSuggestionsEl.innerHTML = "";
-  if (contentSuggestionsRight) contentSuggestionsRight.innerHTML = "";
+    /* Copy CLO */
+    copyBtn.addEventListener('click', async () => {
+      if (!cloText.innerText) return;
+      try {
+        await navigator.clipboard.writeText(cloText.innerText);
+        copyBtn.innerText = 'Copied';
+        setTimeout(()=> copyBtn.innerHTML = '<i class="bi bi-clipboard me-1"></i> Copy', 1200);
+        logEvent('copy_clo', { plo: ploSel.value || null });
+      } catch(e) { alert('Copy failed'); }
+    });
 
-  logEvent('page_init', { page: 'generator' });
-})();
-</script>
+    /* Downloads */
+    downloadBtn.addEventListener('click', () => {
+      logEvent('download_clo', { plo: ploSel.value || null });
+      window.location = '/download';
+    });
+    downloadRubricBtn.addEventListener('click', () => {
+      logEvent('download_rubric', { plo: ploSel.value || null });
+      window.location = '/download_rubric';
+    });
 
-  
+    /* Toggle variants */
+    toggleVariantsBtn.addEventListener('click', () => {
+      const hidden = variantsPanel.style.display === 'none' || variantsPanel.style.display === '';
+      variantsPanel.style.display = hidden ? 'block' : 'none';
+      toggleVariantsBtn.innerText = hidden ? 'Hide variants' : 'Show variants';
+      logEvent('variants_toggle', { visible: hidden });
+    });
+
+    // tab click events
+    document.querySelectorAll('#tabNav .nav-link').forEach(tab => {
+      tab.addEventListener('click', () => logEvent('tab_click', { tab: tab.textContent.trim() }));
+    });
+
+    ploSel.addEventListener('change', () => logEvent('peo_plo_check', { peo: peoSel.value, plo: ploSel.value }));
+
+    /* init() - call last, after listeners defined */
+    (function init(){
+      loadMapping();
+
+      // Make field default to "— Select Field —"
+      if (fieldSel) {
+        fieldSel.value = "";
+        fieldSel.selectedIndex = 0;
+      }
+
+      // Clear suggestions on page load
+      if (contentSuggestionsEl) {
+        contentSuggestionsEl.innerHTML = "";
+      }
+      if (contentSuggestionsRight) {
+        contentSuggestionsRight.innerHTML = "";
+      }
+
+      // track page init
+      logEvent('page_init', { page: 'generator' });
+
+    })();
+  </script>
 </body>
-</html>  
-
-
-    
+</html>
