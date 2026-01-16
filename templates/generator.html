@@ -725,6 +725,39 @@ peoSel.addEventListener("change", async () => {
 });
 
 /* =========================
+   PLO → STATEMENT + INDICATOR
+========================= */
+ploSel.addEventListener("change", async () => {
+  const plo = ploSel.value;
+
+  ploStatementEl.textContent = "—";
+  ploIndicatorEl.textContent = "—";
+
+  if (!plo) return;
+
+  /* 1️⃣ PLO statement */
+  try {
+    const level = levelSel.value || "Degree";
+    const res = await fetch(
+      `/api/get_statement/${encodeURIComponent(level)}/PLO/${encodeURIComponent(plo)}`
+    );
+    const stmt = await res.json();
+    ploStatementEl.textContent = stmt || "—";
+  } catch (e) {
+    console.error("PLO statement error", e);
+  }
+
+  /* 2️⃣ PLO indicator */
+  try {
+    ploIndicatorEl.textContent =
+      (MAP.PLOIndicators && MAP.PLOIndicators[plo]) || "—";
+  } catch (e) {
+    console.error("PLO indicator error", e);
+  }
+});
+
+    
+/* =========================
    PLO → BLOOM (RESTORED)
 ========================= */
 ploSel.addEventListener("change", async () => {
