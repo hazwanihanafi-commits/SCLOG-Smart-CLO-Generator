@@ -785,6 +785,39 @@ ploSel.addEventListener("change", async () => {
   }
 });
 
+
+    generateBtn.addEventListener("click", () => {
+  const bloom = bloomSel.value;
+  const verb = verbSel.value;
+  const content = contentInput.value.trim();
+
+  if (!bloom || !verb || !content) {
+    alert("Please select Bloom, Verb, and enter Content.");
+    return;
+  }
+
+  busyEl.style.display = "inline";
+
+  // CLO sentence (basic version)
+  const clo = `${verb.charAt(0).toUpperCase() + verb.slice(1)} ${content}.`;
+
+  // Show result
+  cloText.textContent = clo;
+  cloCard.style.display = "block";
+  busyEl.style.display = "none";
+
+  LAST_CLO = clo;
+
+  // Log analytics
+  logEvent("generate_clo", {
+    bloom,
+    verb,
+    field: fieldSel.value || "",
+    profile: profileSel.value || ""
+  });
+});
+    
+
 /* =========================
    INIT
 ========================= */
