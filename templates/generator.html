@@ -785,37 +785,52 @@ ploSel.addEventListener("change", async () => {
   }
 });
 
-
-    generateBtn.addEventListener("click", () => {
-  const bloom = bloomSel.value;
+    /* =========================
+   GENERATE CLO (FIX)
+========================= */
+generateBtn.addEventListener("click", () => {
+  const bloomRaw = bloomSel.value;
   const verb = verbSel.value;
   const content = contentInput.value.trim();
 
-  if (!bloom || !verb || !content) {
+  if (!bloomRaw || !verb || !content) {
     alert("Please select Bloom, Verb, and enter Content.");
     return;
   }
 
   busyEl.style.display = "inline";
 
-  // CLO sentence (basic version)
-  const clo = `${verb.charAt(0).toUpperCase() + verb.slice(1)} ${content}.`;
+  const clo =
+    verb.charAt(0).toUpperCase() +
+    verb.slice(1) +
+    " " +
+    content +
+    ".";
 
-  // Show result
   cloText.textContent = clo;
   cloCard.style.display = "block";
   busyEl.style.display = "none";
 
   LAST_CLO = clo;
 
-  // Log analytics
   logEvent("generate_clo", {
-    bloom,
+    bloom: bloomRaw,
     verb,
     field: fieldSel.value || "",
     profile: profileSel.value || ""
   });
 });
+
+    copyBtn.addEventListener("click", async () => {
+  if (!LAST_CLO) {
+    alert("No CLO to copy.");
+    return;
+  }
+  await navigator.clipboard.writeText(LAST_CLO);
+  alert("CLO copied to clipboard.");
+});
+
+   
     
 
 /* =========================
