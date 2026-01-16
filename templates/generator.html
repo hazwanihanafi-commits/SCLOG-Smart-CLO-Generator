@@ -723,6 +723,36 @@ peoSel.addEventListener("change", async () => {
     peoStatementEl.textContent = "—";
   }
 });
+
+/* =========================
+   PLO → BLOOM (RESTORED)
+========================= */
+ploSel.addEventListener("change", async () => {
+  const plo = ploSel.value;
+
+  bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+
+  bloomDescEl.textContent = "Select a Bloom level to see its description.";
+  assessList.innerHTML = "—";
+  evidenceList.innerHTML = "—";
+
+  if (!plo) return;
+
+  try {
+    const res = await fetch(
+      `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
+    );
+    const blooms = await res.json();
+
+    (blooms || []).forEach(b =>
+      bloomSel.add(new Option(b, b))
+    );
+  } catch (e) {
+    console.error("PLO → Bloom error", e);
+  }
+});
+</script>
     
 /* =========================
    INIT
