@@ -272,6 +272,11 @@
     Select a Bloom level to see its description.
   </div>
 </div>
+
+ <div id="bloom_hint" class="mt-1" style="font-size:0.85rem; line-height:1.4;">
+  <span class="muted">Select a Bloom level to see recommendations.</span>
+</div>
+                
                 <div class="form-check form-switch mt-2">
   <input class="form-check-input" type="checkbox" id="autoShowAssessment" checked>
   <label class="form-check-label muted" for="autoShowAssessment">
@@ -500,6 +505,33 @@ const BLOOM_DESC = {
   origination: "Create new movement patterns or procedures."
 };
 
+    const BLOOM_RECOMMENDATION_BY_LEVEL = {
+  Diploma: {
+    recommended: ["Remember", "Understand", "Apply"],
+    caution: ["Evaluate", "Create"]
+  },
+  Degree: {
+    recommended: ["Understand", "Apply", "Analyze"],
+    caution: ["Remember", "Create"]
+  },
+  Master: {
+    recommended: [
+      "Analyze",
+      "Evaluate",
+      "Create",
+      "Mechanism",
+      "Complex Overt Response",
+      "Adaptation"
+    ],
+    caution: ["Remember", "Understand"]
+  },
+  PhD: {
+    recommended: ["Create", "Adaptation", "Origination"],
+    caution: ["Remember", "Understand", "Apply"]
+  }
+};
+
+
 /* =========================
    ASSESSMENT & EVIDENCE
 ========================= */
@@ -676,6 +708,42 @@ async function loadMapping() {
   ploSel.innerHTML = '<option value="">Select PLO</option>';
 }
 
+ 
+  
+
+  function renderBloomHint() {
+  const level = levelSel.value;
+  const hintEl = document.getElementById("bloom_hint");
+
+  if (!level || !BLOOM_RECOMMENDATION_BY_LEVEL[level]) {
+    hintEl.innerHTML =
+      `<span class="muted">Select programme level to see Bloom recommendations.</span>`;
+    return;
+  }
+
+  const { recommended, caution } = BLOOM_RECOMMENDATION_BY_LEVEL[level];
+
+  hintEl.innerHTML = `
+    <div style="color:#166534;">
+      ✅ <strong>Recommended for ${level}:</strong>
+      ${recommended.join(", ")}
+    </div>
+    ${
+      caution?.length
+        ? `<div style="color:#92400e;">
+             ⚠️ <strong>Use sparingly:</strong> ${caution.join(", ")}
+           </div>`
+        : ""
+    }
+  `;
+}
+
+  /* =========================
+   BLOOM LEVEL AUTO-HINT
+========================= */
+levelSel.addEventListener("change", renderBloomHint);
+
+    
 /* =========================
    BLOOM CHANGE (ONLY ONE)
 ========================= */
@@ -686,9 +754,10 @@ bloomSel.addEventListener("change", async () => {
 
   console.log("BLOOM:", raw, "→", key);
 
-  /* Description */
+   /* Description */
   bloomDescEl.textContent =
     BLOOM_DESC[key] || "Select a Bloom level to see its description.";
+
 
 /* Assessment + Evidence */
 renderAssessmentFromBloom(key);
@@ -1003,6 +1072,7 @@ if (data.evidence && Object.keys(data.evidence).length) {
     /* init() - call last, after listeners defined */
     (function init(){
       loadMapping();
+      renderBloomHint();
 
       // Make field default to "— Select Field —"
       if (fieldSel) {
