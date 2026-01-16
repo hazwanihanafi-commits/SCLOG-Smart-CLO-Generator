@@ -801,6 +801,8 @@ ploSel.addEventListener("change", async () => {
       fd.append('bloom', bloomSel.value);
       fd.append('verb', verbSel.value);
       fd.append('content', contentInput.value);
+      fd.append('domain', domainEl.textContent);
+      fd.append('vbe', vbeEl.textContent);
 
       logEvent('generate_clo_attempt', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
@@ -850,7 +852,17 @@ ploSel.addEventListener("change", async () => {
         busyEl.style.display = 'none';
         generateBtn.disabled = false;
       }
-    });
+      
+      console.log({
+      plo: ploSel.value,
+      bloom: bloomSel.value,
+      verb: verbSel.value,
+      domain: domainEl.textContent,
+      vbe: vbeEl.textContent
+      });
+
+  });
+      
 
     /* Copy CLO */
     copyBtn.addEventListener('click', async () => {
