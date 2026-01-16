@@ -481,7 +481,18 @@ const BLOOM_INFO = {
 
 
 bloomSel.addEventListener('change', () => {
-  const val = bloomSel.value.trim().toLowerCase();
+  const raw = bloomSel.value.trim().toLowerCase();
+
+  const NORMALISE = {
+    "receive": "receiving",
+    "respond": "responding",
+    "value": "valuing",
+    "organization": "organization",
+    "organisation": "organisation",
+    "characterization": "characterization"
+  };
+
+  const val = NORMALISE[raw] || raw;
 
   if (BLOOM_INFO[val]) {
     bloomDomain.textContent = `Domain: ${BLOOM_INFO[val].domain}`;
