@@ -38,6 +38,19 @@
       --shadow: 0 10px 30px rgba(15,23,42,0.06);
     }
 
+    .smart-title {
+  font-weight: 900;
+  color: var(--usm-purple);
+  letter-spacing: 0.2px;
+}
+
+    .smart-divider {
+  height: 3px;
+  width: 60px;
+  background: linear-gradient(90deg, var(--usm-purple), var(--usm-purple-2));
+  border-radius: 2px;
+}
+
     html,body{height:100%;}
     body {
       margin:0;
@@ -239,7 +252,11 @@
     <div class="card-box mb-3">
       <div class="row">
         <div class="col-12 col-xl-8">
-          <h5 class="mb-1">Smart CLO Builder</h5>
+          <h4 class="smart-title mb-1">
+  <i class="bi bi-lightning-charge-fill me-1"></i>
+  Smart CLO Builder
+</h4>
+<div class="smart-divider mb-2"></div>
 
           <div class="step-header">Step 3 · Course Learning Outcome (CLO) Construction</div>
 <div class="step-desc">
@@ -306,9 +323,15 @@
                 </div>
 
                 <div class="col-12">
-                  <label class="form-label">Content (topic / object)</label>
-                  <input id="content" class="form-control" placeholder="e.g., interpret ECG waveforms">
-                </div>
+                  <label class="form-label">
+  Content (learning focus / object)
+</label>
+<div class="muted mb-1" style="font-size:0.85rem">
+  Specify <strong>what</strong> the student will work on (procedure, concept,
+  skill, case, or professional task).
+</div>
+<input id="content" class="form-control"
+       placeholder="e.g., ECG waveform interpretation, laboratory testing procedure, ethical case scenario">
 
                 <div class="col-12 d-flex gap-2 align-items-center">
                   <button id="generateBtn" class="btn btn-primary"><i class="bi bi-magic me-1"></i> Generate CLO</button>
@@ -750,6 +773,40 @@ async function loadMapping() {
 ========================= */
 levelSel.addEventListener("change", renderBloomHint);
 
+
+function renderContentSuggestions(domain) {
+  const box = contentSuggestionsRight;
+  if (!box) return;
+
+  const MAP = {
+    cognitive: [
+      "clinical concepts",
+      "research data analysis",
+      "case-based reasoning",
+      "theoretical models",
+      "evidence-based guidelines"
+    ],
+    affective: [
+      "professional ethics",
+      "patient-centred values",
+      "interprofessional collaboration",
+      "professional responsibility",
+      "reflective practice"
+    ],
+    psychomotor: [
+      "laboratory procedures",
+      "clinical skill performance",
+      "diagnostic testing protocols",
+      "equipment handling techniques",
+      "professional practice simulations"
+    ]
+  };
+
+  const list = MAP[domain] || [];
+  box.innerHTML = list.length
+    ? `<ul class="muted">${list.map(i => `<li>${i}</li>`).join("")}</ul>`
+    : `<span class="muted">No suggestions available.</span>`;
+}
     
 /* =========================
    BLOOM CHANGE (ONLY ONE)
@@ -795,6 +852,8 @@ if (AUTO_SHOW_ASSESSMENT) {
   domainEl.textContent = meta.domain || '—';
   conditionEl.textContent = meta.condition || '—';
   criterionEl.textContent = meta.criterion || '—';
+
+  renderContentSuggestions(meta.domain);
 });
 
     /* =========================
