@@ -789,6 +789,9 @@ ploSel.addEventListener("change", async () => {
     (blooms || []).forEach(b =>
       bloomSel.add(new Option(b, b))
     );
+
+    bloomSel.dispatchEvent(new Event("change"));
+    
   } catch (e) {
     console.error("PLO → Bloom error", e);
   }
