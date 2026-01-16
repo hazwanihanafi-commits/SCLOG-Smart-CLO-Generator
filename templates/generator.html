@@ -680,20 +680,6 @@ bloomSel.addEventListener('change', async () => {
     bloomDesc.textContent = "Select a Bloom level to see its description.";
   }
 
-  /* ---------- Assessment & Evidence ---------- */
-  const ae = ASSESSMENT_MAP[val];
-
-  if (ae) {
-    assessList.innerHTML =
-      "<ul>" + ae.assessments.map(a => `<li>${a}</li>`).join("") + "</ul>";
-
-    evidenceList.innerHTML =
-      "<ul>" + ae.evidence.map(e => `<li>${e}</li>`).join("") + "</ul>";
-  } else {
-    assessList.innerHTML = "—";
-    evidenceList.innerHTML = "—";
-  }
-
   /* ---------- Verbs (backend) ---------- */
   if (!plo || !val) return;
 
