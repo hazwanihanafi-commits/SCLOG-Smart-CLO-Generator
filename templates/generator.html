@@ -479,29 +479,60 @@ const BLOOM_INFO = {
   }
 };  // ✅ THIS LINE WAS MISSING
 
+// Normalisation (affective short forms)
+const NORMALISE = {
+  receive: "receiving",
+  respond: "responding",
+  value: "valuing"
+};
 
-bloomSel.addEventListener('change', () => {
-  const raw = bloomSel.value.trim().toLowerCase();
-
-  const NORMALISE = {
-    "receive": "receiving",
-    "respond": "responding",
-    "value": "valuing",
-    "organization": "organization",
-    "organisation": "organisation",
-    "characterization": "characterization"
-  };
-
-  const val = NORMALISE[raw] || raw;
-
-  if (BLOOM_INFO[val]) {
-    bloomDomain.textContent = `Domain: ${BLOOM_INFO[val].domain}`;
-    bloomDesc.textContent = BLOOM_INFO[val].desc;
-  } else {
-    bloomDomain.textContent = "Domain: —";
-    bloomDesc.textContent = "Select a Bloom level to see its description.";
+// Assessment & Evidence mapping
+const ASSESSMENT_MAP = {
+  remember: {
+    assessments: ["Quiz", "MCQ", "True/False", "Matching test"],
+    evidence: ["Exam paper", "Answer key", "LMS report"]
+  },
+  understand: {
+    assessments: ["Short essay", "Concept map", "Oral questioning"],
+    evidence: ["Essay script", "Rubric", "Marking guide"]
+  },
+  apply: {
+    assessments: ["Lab report", "Simulation", "Problem-solving exercise"],
+    evidence: ["Lab report", "Simulation output", "Checklist"]
+  },
+  analyze: {
+    assessments: ["Case study analysis", "Data interpretation"],
+    evidence: ["Analytical report", "Annotated scripts"]
+  },
+  evaluate: {
+    assessments: ["Presentation", "Debate", "Critical review"],
+    evidence: ["Slides", "Peer evaluation", "Reflection"]
+  },
+  create: {
+    assessments: ["Project", "Prototype", "Research proposal"],
+    evidence: ["Project report", "Prototype", "Supervisor feedback"]
+  },
+  perception: {
+    assessments: ["Skill observation"],
+    evidence: ["Observation checklist"]
+  },
+  set: {
+    assessments: ["Equipment setup"],
+    evidence: ["Setup checklist"]
+  },
+  "guided response": {
+    assessments: ["Supervised practice"],
+    evidence: ["Skills checklist"]
+  },
+  mechanism: {
+    assessments: ["Practical exam", "OSCE"],
+    evidence: ["Examiner scoring sheet"]
+  },
+  adaptation: {
+    assessments: ["Adaptive task"],
+    evidence: ["Assessor report"]
   }
-});
+};
 
 
     let MAP = {};
@@ -638,30 +669,54 @@ bloomSel.addEventListener('change', () => {
       } catch(e){ console.error(e); }
     });
 
-    /* Bloom -> verbs + meta when bloom chosen */
-    bloomSel.addEventListener('change', async () => {
-      const bloom = bloomSel.value; const plo = ploSel.value;
-      if (!bloom || !plo) return;
-      logEvent('bloom_select', { bloom, plo });
+  
+/* ================================
+   SINGLE BLOOM CHANGE HANDLER
+================================ */
+bloomSel.addEventListener('change', async () => {
+  const raw = bloomSel.value.trim().toLowerCase();
+  const val = NORMALISE[raw] || raw;
+  const plo = ploSel.value;
 
-      try {
-        const vres = await fetch(`${API_BASE}/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
-        const verbs = await vres.json();
-        verbSel.innerHTML = '<option value="">Select Verb</option>';
-        (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-      } catch(e){ console.error(e); verbSel.innerHTML = '<option value="">Error</option>'; }
+  logEvent('bloom_select', { bloom: val, plo });
 
-      try {
-        const mres = await fetch(`${API_BASE}/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`);
-        const meta = await mres.json();
-        scCodeEl.textContent = meta.sc_code || '—';
-        scDescEl.textContent = meta.sc_desc || '—';
-        vbeEl.textContent = meta.vbe || '—';
-        domainEl.textContent = meta.domain || '—';
-        conditionEl.textContent = meta.condition || '—';
-        criterionEl.textContent = meta.criterion || '—';
-      } catch(e){ console.error(e); }
-    });
+  /* ---------- Bloom description ---------- */
+  if (BLOOM_INFO[val]) {
+    bloomDomain.textContent = `Domain: ${BLOOM_INFO[val].domain}`;
+    bloomDesc.textContent = BLOOM_INFO[val].desc;
+  } else {
+    bloomDomain.textContent = "Domain: —";
+    bloomDesc.textContent = "Select a Bloom level to see its description.";
+  }
+
+  /* ---------- Assessment & Evidence ---------- */
+  const ae = ASSESSMENT_MAP[val];
+
+  if (ae) {
+    assessList.innerHTML =
+      "<ul>" + ae.assessments.map(a => `<li>${a}</li>`).join("") + "</ul>";
+
+    evidenceList.innerHTML =
+      "<ul>" + ae.evidence.map(e => `<li>${e}</li>`).join("") + "</ul>";
+  } else {
+    assessList.innerHTML = "—";
+    evidenceList.innerHTML = "—";
+  }
+
+  /* ---------- Verbs (backend) ---------- */
+  if (!plo || !val) return;
+
+  try {
+    const vres = await fetch(
+      `${API_BASE}/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(val)}`
+    );
+    const verbs = await vres.json();
+    verbSel.innerHTML = '<option value="">Select Verb</option>';
+    (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
+  } catch (e) {
+    console.error("Verb fetch error", e);
+  }
+});
 
     /* Field -> content suggestions */
     fieldSel.addEventListener('change', async () => {
