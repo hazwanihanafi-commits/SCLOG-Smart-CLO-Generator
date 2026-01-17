@@ -471,7 +471,7 @@
   <div class="row g-3">
     <div class="col-md-6">
       <div class="card-box">
-        <h6>Assessment methods</h6>
+        <h6>Suggested Assessment methods</h6>
         <div id="assess_list" class="muted">—</div>
       </div>
     </div>
@@ -628,16 +628,8 @@ const bloomDescEl = $('bloom_desc');
 ========================= */
 let MAP = {};
 let LAST_CLO = null;
-let AUTO_SHOW_ASSESSMENT = true;
 
-const autoShowToggle = document.getElementById("autoShowAssessment");
-if (autoShowToggle) {
-  AUTO_SHOW_ASSESSMENT = autoShowToggle.checked;
-  autoShowToggle.addEventListener("change", () => {
-    AUTO_SHOW_ASSESSMENT = autoShowToggle.checked;
-  });
-}
-    
+
 
 /* =========================
    BLOOM DESCRIPTIONS
@@ -1067,32 +1059,15 @@ function generatePEOFromProgramme(programmeName, level){
   ];
 }
 
-/* ---------- Generate PEO when Programme Name + Level available ---------- */
-function refreshAutoPEO(){
-  const programmeName =
-    document.querySelector('#programmeName')?.value?.trim()
-    || document.querySelector('#programme_name')?.value?.trim();
 
-  const level = levelSel.value;
-  if (!programmeName || !level) return;
 
-  const peos = generatePEOFromProgramme(programmeName, level);
-
-  /* Populate PEO dropdown */
-  peoSel.innerHTML = '<option value="">Select PEO</option>';
-  peos.forEach(p => peoSel.add(new Option(p.code, p.code)));
-  peoSel.dataset.map = JSON.stringify(peos);
-
-  /* Clear logic boxes */
-  iegLogicBox.textContent = "—";
-}
 
 /* ---------- Trigger auto-PEO ---------- */
 levelSel.addEventListener("change", refreshAutoPEO);
 
 document
-  .querySelector('#programmeName, #programme_name')
-  ?.addEventListener("blur", refreshAutoPEO);
+  .getElementById("programmeName")
+  ?.addEventListener("input", refreshAutoPEO);
 
 /* ---------- PEO selection (RATIONALE ONLY) ---------- */
 peoSel.addEventListener("change", () => {
