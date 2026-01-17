@@ -225,6 +225,7 @@
 </div>
 
     <!-- STEP 1 -->
+<!-- STEP 1 · Programme Context -->
 <div class="card-box mb-3">
 
   <div class="d-flex align-items-center gap-2 mb-1">
@@ -235,57 +236,65 @@
   </div>
 
   <div class="step-desc">
-    Define the academic discipline, level, and intended graduate attributes
-    to guide appropriate outcome mapping.
+    Define the Programme Level, Institutional Educational Goals (IEG), and Programme Educational Objectives (PEO) to guide appropriate outcome mapping.
   </div>
 
-    <div class="step-divider"></div>
-      
-      <<div class="row g-3 profile-row">
+  <div class="step-divider"></div>
 
-  <div class="col-12 col-md-4">
-          <label class="form-label">Academic profile</label>
-          <select id="profile" class="form-select">
-            <option value="">Select Academic profile</option>
-            <option value="health">Medical & Health</option>
-            <option value="sc">Computer Science & IT</option>
-            <option value="eng">Engineering & Technology</option>
-            <option value="socs">Social Sciences</option>
-            <option value="edu">Education</option>
-            <option value="bus">Business & Management</option>
-            <option value="arts">Arts & Humanities</option>
-          </select>
-        </div>
+  <div class="row g-3 profile-row">
 
-        <div class="col-12 col-md-2">
-          <label class="form-label">Level</label>
-          <select id="level" class="form-select">
-            <option value="">Select Level</option>
-            <option>Diploma</option>
-            <option>Degree</option>
-            <option>Master</option>
-            <option>PhD</option>
-          </select>
-        </div>
-
-        <div class="col-12 col-md-3">
-          <label class="form-label">IEG</label>
-          <select id="ieg" class="form-select"><option value="">Select IEG</option></select>
-        </div>
-
-
-        <div class="col-12 col-md-3">
-          <label class="form-label">PEO (mapped)</label>
-          <select id="peo" class="form-select"><option value="">Select PEO</option></select>
-        </div>
-      </div>
-
-        <div style="margin-top:12px;">
-        <div class="form-label">Why this IEG → PEO?</div>
-        <div id="ieg_peo_logic" class="logic-box">—</div>
-      </div>
+    <!-- Academic Profile (hidden, retained for extensibility) -->
+    <div class="col-12 col-md-4 d-none" id="profile_block">
+      <label class="form-label">Academic profile</label>
+      <select id="profile" class="form-select">
+        <option value="">Select Academic profile</option>
+        <option value="health">Medical & Health</option>
+        <option value="sc">Computer Science & IT</option>
+        <option value="eng">Engineering & Technology</option>
+        <option value="socs">Social Sciences</option>
+        <option value="edu">Education</option>
+        <option value="bus">Business & Management</option>
+        <option value="arts">Arts & Humanities</option>
+      </select>
     </div>
 
+    <!-- Programme Level -->
+    <div class="col-12 col-md-2">
+      <label class="form-label">Programme Level</label>
+      <select id="level" class="form-select">
+        <option value="">Select Level</option>
+        <option>Diploma</option>
+        <option>Degree</option>
+        <option>Master</option>
+        <option>PhD</option>
+      </select>
+    </div>
+
+    <!-- IEG -->
+    <div class="col-12 col-md-3">
+      <label class="form-label">Institutional Educational Goal (IEG)</label>
+      <select id="ieg" class="form-select">
+        <option value="">Select IEG</option>
+      </select>
+    </div>
+
+    <!-- PEO -->
+    <div class="col-12 col-md-3">
+      <label class="form-label">Programme Educational Objective (PEO)</label>
+      <select id="peo" class="form-select">
+        <option value="">Select PEO</option>
+      </select>
+    </div>
+
+  </div>
+
+  <!-- IEG → PEO Justification -->
+  <div class="mt-3">
+    <div class="form-label">Why is this IEG mapped to the selected PEO?</div>
+    <div id="ieg_peo_logic" class="logic-box">—</div>
+  </div>
+
+</div>
       
 
     <!-- 2) PLO for selected PEO -->
