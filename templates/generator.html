@@ -273,17 +273,19 @@
           <select id="ieg" class="form-select"><option value="">Select IEG</option></select>
         </div>
 
+        <div style="margin-top:12px;">
+        <div class="form-label">Why this IEG → PEO?</div>
+        <div id="ieg_peo_logic" class="logic-box">—</div>
+      </div>
+    </div>
+
         <div class="col-12 col-md-3">
           <label class="form-label">PEO (mapped)</label>
           <select id="peo" class="form-select"><option value="">Select PEO</option></select>
         </div>
       </div>
 
-      <div style="margin-top:12px;">
-        <div class="form-label">Why this IEG → PEO?</div>
-        <div id="ieg_peo_logic" class="logic-box">—</div>
-      </div>
-    </div>
+      
 
     <!-- 2) PLO for selected PEO -->
 
@@ -304,15 +306,17 @@
 
   <div class="step-divider"></div>
 
+  <div class="mb-3">
+    <div class="form-label">Why PEO → PLO?</div>
+    <div id="peo_plo_logic" class="logic-box">—</div>
+  </div>
+
   <label class="form-label">PLO for selected PEO</label>
   <select id="plo" class="form-select mb-3">
     <option value="">Select PLO</option>
   </select>
 
-  <div class="mb-3">
-    <div class="form-label">Why PEO → PLO?</div>
-    <div id="peo_plo_logic" class="logic-box">—</div>
-  </div>
+  
 
   <div>
     <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
