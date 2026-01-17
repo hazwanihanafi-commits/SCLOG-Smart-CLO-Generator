@@ -369,12 +369,6 @@
     <option value="">Select PLO</option>
   </select>
 
-  <!-- Alignment rationale -->
-  <div class="mb-3">
-    <div class="form-label">Why is this PLO aligned with the selected PEO?</div>
-    <div id="peo_plo_logic" class="logic-box">—</div>
-  </div>
-
   <!-- Statements & indicator -->
   <div class="mb-3">
     <div class="form-label">PEO, PLO and Indicator of Achievement</div>
@@ -446,12 +440,7 @@
   <span class="muted">Select a Bloom level to see recommendations.</span>
 </div>
                 
-                <div class="form-check form-switch mt-2">
-  <input class="form-check-input" type="checkbox" id="autoShowAssessment" checked>
-  <label class="form-check-label muted" for="autoShowAssessment">
-    Auto show assessment & evidence
-  </label>
-</div>
+  
 
 
                 <div class="col-md-6">
@@ -531,7 +520,7 @@
   <div class="row g-3">
     <div class="col-md-6">
       <div class="card-box">
-        <h6>Assessment methods</h6>
+        <h6>Suggested Assessment methods</h6>
         <div id="assess_list" class="muted">—</div>
       </div>
     </div>
@@ -668,16 +657,7 @@ modeSel.addEventListener("change", () => {
 ========================= */
 let MAP = {};
 let LAST_CLO = null;
-let AUTO_SHOW_ASSESSMENT = true;
 
-const autoShowToggle = document.getElementById("autoShowAssessment");
-if (autoShowToggle) {
-  AUTO_SHOW_ASSESSMENT = autoShowToggle.checked;
-  autoShowToggle.addEventListener("change", () => {
-    AUTO_SHOW_ASSESSMENT = autoShowToggle.checked;
-  });
-}
-    
 
 /* =========================
    BLOOM DESCRIPTIONS
@@ -1105,18 +1085,6 @@ bloomSel.addEventListener("change", async () => {
   bloomDescEl.textContent =
     BLOOM_DESC[key] || "Select a Bloom level to see its description.";
 
-
-/* Assessment + Evidence */
-renderAssessmentFromBloom(key);
-
-
-  // 🔥 Auto show Assessment tab (if enabled)
-if (AUTO_SHOW_ASSESSMENT) {
-  const assessTabBtn = document.querySelector('[data-bs-target="#assessmentTab"]');
-  if (assessTabBtn) {
-    new bootstrap.Tab(assessTabBtn).show();
-  }
-}
   
   /* Backend verbs + meta */
   if (!plo || !key) return;
