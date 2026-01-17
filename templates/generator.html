@@ -224,10 +224,10 @@
   </div>
 </div>
 
-    <!-- STEP 1 -->
 <!-- STEP 1 · Programme Context -->
-<div class="card-box mb-3">
+<div class="card-box mb-3" id="step1">
 
+  <!-- Header -->
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 1</span>
     <div class="step-header mb-0">
@@ -235,19 +235,65 @@
     </div>
   </div>
 
+  <!-- Mode selection -->
+  <label class="form-label mt-2">How do you want to start?</label>
+  <select id="mode" class="form-select mb-3">
+    <option value="with_ieg">
+      I do not have a PEO yet (start from Institutional Educational Goals)
+    </option>
+    <option value="with_peo">
+      I already have a PEO (refine PLO & CLO only)
+    </option>
+  </select>
+
+  <!-- Description -->
   <div class="step-desc">
-    Define the Discipline, Programme Level, Institutional Educational Goals (IEG), and Programme Educational Objectives (PEO) to guide appropriate outcome mapping.
+    Establish the programme context by defining the academic discipline and
+    programme level, and by providing either an Institutional Educational Goal (IEG)
+    or an existing Programme Educational Objective (PEO) as the foundation
+    for outcome mapping.
   </div>
 
   <div class="step-divider"></div>
 
-  <div class="row g-3 profile-row">
+  <!-- IEG (paste) -->
+  <label class="form-label">
+    Institutional Educational Goal (IEG)
+  </label>
+  <div class="muted mb-1" style="font-size:0.85rem">
+    Paste the official IEG statement defined by your institution.
+  </div>
+  <textarea
+    id="ieg_text"
+    class="form-control mb-3"
+    rows="3"
+    placeholder="e.g. To produce graduates with strong ethical values, leadership qualities, and the ability to contribute effectively to society.">
+  </textarea>
 
-    <!-- Academic Profile -->
-   <div class="col-12 col-md-4" id="profile_block">
+  <!-- PEO (paste, optional) -->
+  <label class="form-label">
+    Programme Educational Objective (PEO)
+    <span class="muted">(optional)</span>
+  </label>
+  <div class="muted mb-1" style="font-size:0.85rem">
+    If available, paste your programme’s PEO.  
+    If left blank, the system will suggest appropriate PEOs based on the IEG provided.
+  </div>
+  <textarea
+    id="peo_text"
+    class="form-control mb-3"
+    rows="3"
+    placeholder="e.g. Graduates will apply professional knowledge and ethical principles in their respective fields within five years of graduation.">
+  </textarea>
+
+  <!-- Structured selections -->
+  <div class="row g-3 mt-2">
+
+    <!-- Discipline -->
+    <div class="col-12 col-md-4">
       <label class="form-label">Discipline (programme context)</label>
-      <select id="profile" class="form-select">
-        <option value="">Select Academic profile</option>
+      <select id="profile" class="form-select" required>
+        <option value="">Select discipline</option>
         <option value="health">Medical & Health</option>
         <option value="sc">Computer Science & IT</option>
         <option value="eng">Engineering & Technology</option>
@@ -258,11 +304,11 @@
       </select>
     </div>
 
-    <!-- Programme Level -->
+    <!-- Programme level -->
     <div class="col-12 col-md-2">
       <label class="form-label">Programme Level</label>
       <select id="level" class="form-select">
-        <option value="">Select Level</option>
+        <option value="">Select level</option>
         <option>Diploma</option>
         <option>Degree</option>
         <option>Master</option>
@@ -270,15 +316,15 @@
       </select>
     </div>
 
-    <!-- IEG -->
+    <!-- IEG (structured select, optional if pasted) -->
     <div class="col-12 col-md-3">
       <label class="form-label">Institutional Educational Goal (IEG)</label>
       <select id="ieg" class="form-select">
-        <option value="">Select IEG</option>
+        <option value="">Select IEG (optional)</option>
       </select>
     </div>
 
-    <!-- PEO -->
+    <!-- PEO (structured select or suggested) -->
     <div class="col-12 col-md-3">
       <label class="form-label">Programme Educational Objective (PEO)</label>
       <select id="peo" class="form-select">
@@ -288,15 +334,16 @@
 
   </div>
 
-  <!-- IEG → PEO Justification -->
+  <!-- IEG → PEO justification (appears AFTER PEO selection) -->
   <div class="mt-3">
-    <div class="form-label">Why is this IEG mapped to the selected PEO?</div>
+    <div class="form-label">
+      Why is this IEG mapped to the selected PEO?
+    </div>
     <div id="ieg_peo_logic" class="logic-box">—</div>
   </div>
 
 </div>
-      
-
+    
     <!-- 2) PLO for selected PEO -->
 
       <!-- STEP 2 -->
@@ -404,19 +451,19 @@
                 </div> 
                 
                 <div class="col-md-6">
-                  <label class="form-label">Field (topic area)</label>
-                  <select id="field" class="form-select">
-                    <option value="" selected>— Select Field —</option>
-                    <option>Computer Science</option>
-                    <option>Medical & Health</option>
-                    <option>Engineering</option>
-                    <option>Social Sciences</option>
-                    <option>Education</option>
-                    <option>Business</option>
-                    <option>Arts & Humanities</option>
-                  </select>
-                  <div id="content_suggestions" class="mt-2"></div>
-                </div>
+  <label class="form-label">
+    Field / Course Context
+  </label>
+
+  <div class="muted mb-1" style="font-size:0.85rem">
+    State the course, subject area, or professional context  
+    (e.g. <em>Clinical Exercise Testing</em>, <em>Database Systems</em>,
+    <em>Primary School Mathematics</em>).
+  </div>
+
+  <input id="field" class="form-control"
+    placeholder="e.g. Clinical Exercise Testing, Software Engineering, Educational Psychology">
+</div>
 
                 <div class="col-12">
                   <label class="form-label">
