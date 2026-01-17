@@ -1,15 +1,29 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <title>SCLOG — Smart CLO Generator</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HMBYNXRLBE"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-HMBYNXRLBE');
+</script>
 
 <style>
-body{background:#f5f3ff;font-family:system-ui}
-.card-box{background:#fff;border-radius:14px;padding:16px;border:1px solid #e5e7eb}
+:root{
+  --usm-purple:#6d28d9;
+  --bg:#f5f3ff;
+}
+body{background:var(--bg);font-family:system-ui;color:#2a2344}
+.card-box{background:#fff;border-radius:14px;padding:16px;border:1px solid rgba(109,40,217,.1)}
 .step-header{font-weight:800;color:#4c1d95}
 .step-desc{font-size:.9rem;color:#6b7280}
 .logic-box{background:#f7f2ff;border-radius:10px;padding:12px}
@@ -23,41 +37,41 @@ body{background:#f5f3ff;font-family:system-ui}
 <div class="container my-4">
 
 <!-- HEADER -->
-<div class="card-box mb-3">
-  <h3 style="color:#6d28d9;font-weight:900">SCLOG</h3>
-  <div class="text-muted">Smart Course Learning Outcome Generator (MQF 2.0 + VBE)</div>
+<div class="card-box mb-3 d-flex justify-content-between align-items-center">
+  <div>
+    <h3 style="color:#6d28d9;font-weight:900">
+      <i class="bi bi-stars"></i> SCLOG
+    </h3>
+    <div class="text-muted">
+      Smart Course Learning Outcome Generator — MQF 2.0 & VBE
+    </div>
+  </div>
 </div>
 
-<!-- TABS -->
-<ul class="nav nav-tabs mb-3">
-  <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#programme">Programme Design</button></li>
-  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#plo">PLO Only</button></li>
-  <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#clo">CLO Only</button></li>
-</ul>
-
-<div class="tab-content">
-
-<!-- ================================================= PROGRAMME DESIGN -->
-<div class="tab-pane fade show active" id="programme">
+<!-- ================= STEP 1 : PROGRAMME DESIGN ================= -->
 <div class="card-box mb-3">
-
-<div class="step-header">Programme Design</div>
+<div class="step-header">STEP 1 · Programme Design</div>
 <div class="step-desc">
-Auto-generate PEOs based on programme name, MQF level and Values-Based Education.
+Auto-generate Programme Educational Objectives (PEO) aligned with programme name,
+MQF level and Values-Based Education (VBE).
 </div>
 
 <label class="form-label">Programme Name</label>
 <input id="programmeName" class="form-control"
  placeholder="e.g. Bachelor of Computer Science (Data Science & Analytics)">
 
-<label class="form-label mt-2">Programme Level</label>
-<select id="level" class="form-select">
-  <option value="">Select</option>
-  <option>Diploma</option>
-  <option>Degree</option>
-  <option>Master</option>
-  <option>PhD</option>
-</select>
+<div class="row g-2 mt-2">
+  <div class="col-md-4">
+    <label class="form-label">Programme Level</label>
+    <select id="level" class="form-select">
+      <option value="">Select</option>
+      <option>Diploma</option>
+      <option>Degree</option>
+      <option>Master</option>
+      <option>PhD</option>
+    </select>
+  </div>
+</div>
 
 <button id="generatePEO" class="btn btn-outline-primary mt-3">
 Suggest Programme Educational Objectives (PEOs)
@@ -68,40 +82,19 @@ Suggest Programme Educational Objectives (PEOs)
 <label class="form-label mt-3">Select PEO</label>
 <select id="peoSelect" class="form-select"></select>
 
-<label class="form-label mt-3">Mapped PLO</label>
+<label class="form-label mt-3">Mapped Programme Learning Outcomes (USM)</label>
 <select id="plo_programme" class="form-select"></select>
-
-</div>
 </div>
 
-<!-- ================================================= PLO ONLY -->
-<div class="tab-pane fade" id="plo">
-<div class="card-box mb-3">
-<div class="step-header">PLO Only</div>
-<div class="step-desc">Generate CLO directly from USM Programme Learning Outcome.</div>
-<select id="plo_only" class="form-select"></select>
-</div>
-</div>
-
-<!-- ================================================= CLO ONLY -->
-<div class="tab-pane fade" id="clo">
-<div class="card-box mb-3">
-<div class="step-header">CLO Only</div>
-<div class="step-desc">Generate CLO without programme-level mapping.</div>
-</div>
-</div>
-
-</div>
-
-<!-- ================================================= CLO BUILDER -->
+<!-- ================= STEP 2 & 3 : CLO BUILDER ================= -->
 <div class="card-box mt-4">
+
 <div class="d-flex align-items-center gap-2 mb-2">
   <h5 class="mb-0">Smart CLO Builder</h5>
   <span id="bloomTag" class="bloom-tag">—</span>
 </div>
 
 <div class="row g-3">
-
 <div class="col-md-4">
   <label class="form-label">Bloom Level</label>
   <select id="bloom" class="form-select"></select>
@@ -114,13 +107,15 @@ Suggest Programme Educational Objectives (PEOs)
 </div>
 
 <div class="col-md-4">
-  <label class="form-label">Content</label>
+  <label class="form-label">Content / Focus</label>
   <input id="content" class="form-control"
    placeholder="e.g. data analytics techniques">
 </div>
 
 <div class="col-12">
-  <button id="generateBtn" class="btn btn-primary">Generate CLO</button>
+  <button id="generateBtn" class="btn btn-primary">
+    <i class="bi bi-magic"></i> Generate CLO
+  </button>
 </div>
 
 <div id="cloCard" class="col-12 mt-3" style="display:none">
@@ -146,8 +141,12 @@ Suggest Programme Educational Objectives (PEOs)
 </div>
 
 <div class="mt-3 d-flex gap-2">
-<button class="btn btn-success" onclick="location.href='/download'">Download CLO</button>
-<button class="btn btn-outline-secondary" onclick="location.href='/download_rubric'">Download Rubric</button>
+<button class="btn btn-success" onclick="location.href='/download'">
+<i class="bi bi-download"></i> Download CLO
+</button>
+<button class="btn btn-outline-secondary" onclick="location.href='/download_rubric'">
+<i class="bi bi-file-earmark-text"></i> Download Rubric
+</button>
 </div>
 
 </div>
@@ -170,64 +169,41 @@ const USM_PLO={
  PLO10:"Entrepreneurial",PLO11:"Ethics"
 };
 
-/* ================= VBE + BLOOM ================= */
-const VBE_BY_LEVEL = {
-  Diploma: {
-    bloom: {
-      C: ["remember", "understand", "apply"],
-      A: ["receiving", "responding"],
-      P: ["perception", "set", "guided response"]
-    },
-    verbs: ["demonstrate", "apply", "perform"],
-    values: ["Discipline", "Responsibility"],
-    focus: "work readiness, basic professional skills, and ethical conduct"
-  },
-
-  Degree: {
-    bloom: {
-      C: ["understand", "apply", "analyze"],
-      A: ["responding", "valuing"],
-      P: ["guided response", "mechanism"]
-    },
-    verbs: ["apply", "analyze", "evaluate"],
-    values: ["Integrity", "Justice"],
-    focus: "professional practice, problem-solving, and societal responsibility"
-  },
-
-  Master: {
-    bloom: {
-      C: ["analyze", "evaluate", "integrate"],
-      A: ["valuing", "organization"],
-      P: ["mechanism", "adaptation"]
-    },
-    verbs: ["analyze", "evaluate", "integrate"],
-    values: ["Wisdom", "Accountability"],
-    focus: "advanced analysis, professional judgment, and leadership in practice"
-  },
-
-  PhD: {
-    bloom: {
-      C: ["create"],
-      A: ["characterization"],
-      P: ["adaptation", "origination"]
-    },
-    verbs: ["create", "advance", "innovate"],
-    values: ["Truth", "Global Responsibility"],
-    focus: "knowledge creation, ethical leadership, and global impact"
-  }
+/* ================= VBE + BLOOM BY LEVEL ================= */
+const VBE_BY_LEVEL={
+ Diploma:{
+  bloom:{C:["remember","understand","apply"],A:["receiving","responding"],P:["perception","set","guided response"]},
+  values:["discipline","responsibility"],
+  focus:"work readiness and ethical conduct"
+ },
+ Degree:{
+  bloom:{C:["understand","apply","analyze"],A:["responding","valuing"],P:["guided response","mechanism"]},
+  values:["integrity","justice"],
+  focus:"professional practice and societal responsibility"
+ },
+ Master:{
+  bloom:{C:["analyze","evaluate","integrate"],A:["valuing","organization"],P:["mechanism","adaptation"]},
+  values:["wisdom","accountability"],
+  focus:"advanced professional judgement and leadership"
+ },
+ PhD:{
+  bloom:{C:["create"],A:["characterization"],P:["adaptation","origination"]},
+  values:["truth","global responsibility"],
+  focus:"knowledge creation and ethical leadership"
+ }
 };
 
-function bloomTag(b,level){
- const map=VBE_BY_LEVEL[level]?.bloom||{};
- b=b.toLowerCase();
- if(map.C?.includes(b))return"C";
- if(map.A?.includes(b))return"A";
- if(map.P?.includes(b))return"P";
+function bloomDomainTag(bloom,level){
+ const m=VBE_BY_LEVEL[level]?.bloom||{};
+ bloom=bloom.toLowerCase();
+ if(m.C?.includes(bloom))return"C";
+ if(m.A?.includes(bloom))return"A";
+ if(m.P?.includes(bloom))return"P";
  return"—";
 }
 
 /* ================= INIT ================= */
-fill($("plo_only"),Object.keys(USM_PLO));
+fill($("plo_programme"),[]);
 function fill(sel,list){sel.innerHTML='<option value="">Select</option>';list.forEach(v=>sel.add(new Option(v,v)));}
 
 /* ================= PEO GENERATION ================= */
@@ -238,7 +214,7 @@ $("generatePEO").onclick=()=>{
 
  const values=VBE_BY_LEVEL[level].values;
  const peos=[
-  {code:"PEO1",plos:["PLO1","PLO2","PLO3","PLO6"],text:`Graduates of the ${name} demonstrate strong disciplinary knowledge and professional competence guided by ${values[0]}.`},
+  {code:"PEO1",plos:["PLO1","PLO2","PLO3","PLO6","PLO7"],text:`Graduates of the ${name} demonstrate strong disciplinary knowledge and professional competence guided by ${values[0]}.`},
   {code:"PEO2",plos:["PLO4","PLO5"],text:`Graduates of the ${name} communicate and collaborate effectively guided by ${values[1]}.`},
   {code:"PEO3",plos:["PLO8","PLO9"],text:`Graduates of the ${name} demonstrate leadership and lifelong learning guided by ${values[0]}.`},
   {code:"PEO4",plos:["PLO10"],text:`Graduates of the ${name} apply innovation and entrepreneurship guided by ${values[1]}.`},
@@ -266,25 +242,21 @@ $("peoSelect").onchange=()=>{
 };
 
 /* ================= PLO → BLOOM ================= */
-function hookPLO(sel){
- sel.onchange=async()=>{
-  if(!sel.value)return;
-  fill($("bloom"),await fetch(`/api/get_blooms/${sel.value}`).then(r=>r.json()));
- };
-}
-hookPLO($("plo_programme"));
-hookPLO($("plo_only"));
+$("plo_programme").onchange=async()=>{
+ if(!$("plo_programme").value)return;
+ fill($("bloom"),await fetch(`/api/get_blooms/${$("plo_programme").value}`).then(r=>r.json()));
+};
 
 $("bloom").onchange=()=>{
  const level=$("level").value||"Degree";
  const b=$("bloom").value;
- $("bloomTag").textContent=`${bloomTag(b,level)} · ${b}`;
+ $("bloomTag").textContent=`${bloomDomainTag(b,level)} · ${b}`;
  $("bloomDesc").innerHTML=`Why ${b}? Required at ${level} level for ${VBE_BY_LEVEL[level].focus}.`;
 };
 
 /* ================= BLOOM → VERB ================= */
 $("bloom").addEventListener("change",async()=>{
- const plo=$("plo_programme").value||$("plo_only").value;
+ const plo=$("plo_programme").value;
  if(!plo)return;
  fill($("verb"),await fetch(`/api/get_verbs/${plo}/${$("bloom").value}`).then(r=>r.json()));
 });
@@ -292,7 +264,7 @@ $("bloom").addEventListener("change",async()=>{
 /* ================= GENERATE ================= */
 $("generateBtn").onclick=async()=>{
  const fd=new FormData();
- fd.append("plo",$("plo_programme").value||$("plo_only").value||"");
+ fd.append("plo",$("plo_programme").value);
  fd.append("bloom",$("bloom").value);
  fd.append("verb",$("verb").value);
  fd.append("content",$("content").value);
