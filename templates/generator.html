@@ -401,12 +401,21 @@
           
 <div class="smart-divider mb-2"></div>
 
-          <div class="step-header">Step 3 · Course Learning Outcome (CLO) Construction</div>
-<div class="step-desc">
-  Construct a measurable Course Learning Outcome using Bloom’s Taxonomy,
-  suitable action verbs, and clear content focus.
+          <div class="step-header">
+  Step 3 · Course Learning Outcome (CLO) Construction
 </div>
+
+<div class="step-desc">
+  Formulate a clear and measurable Course Learning Outcome (CLO) that aligns
+  with the selected Programme Learning Outcome (PLO). The CLO should specify
+  an appropriate level of learning using Bloom’s Taxonomy, an observable
+  action verb, and a well-defined learning focus within the context of the
+  course or subject area. The statement must be assessable and consistent
+  with Outcome-Based Education (OBE) and MQA requirements.
+</div>
+
 <div class="step-divider"></div>
+    
 
           <div class="muted mb-2">Create measurable course learning outcomes quickly</div>
 
@@ -469,6 +478,10 @@
                   <label class="form-label">
   Content (learning focus / object)
 </label>
+                  <div id="content_suggestions" class="mt-2"></div>
+
+
+                  
 <div class="muted mb-1" style="font-size:0.85rem">
   Specify <strong>what</strong> the student will work on (procedure, concept,
   skill, case, or professional task).
@@ -575,6 +588,9 @@
    SHORT HELPER
 ========================= */
 const $ = id => document.getElementById(id);
+    const modeSel = document.getElementById("mode");
+const iegText = document.getElementById("ieg_text");
+const peoText = document.getElementById("peo_text");
 
 /* =========================
    DOM REFERENCES
@@ -625,6 +641,28 @@ const contentSuggestionsRight = $('content_suggestions_right');
 
 const bloomDescEl = $('bloom_desc');
 
+const iegPeoBlock = document.getElementById("ieg_peo_logic").parentElement;
+
+
+modeSel.addEventListener("change", () => {
+  const isWithPEO = modeSel.value === "with_peo";
+
+  // Disable IEG dropdown when starting from PEO
+  iegSel.disabled = isWithPEO;
+
+  // Hide IEG → PEO rationale when not applicable
+  iegPeoBlock.style.display = isWithPEO ? "none" : "block";
+
+  // Reset IEG logic safely
+  if (isWithPEO) {
+    iegSel.value = "";
+    iegLogicBox.textContent = "—";
+  }
+
+  // Always allow PEO → PLO
+  peoSel.disabled = false;
+});
+    
 /* =========================
    STATE
 ========================= */
@@ -799,6 +837,74 @@ value: {
     evidence: ["Project artefact","Evaluation rubric"]
   }
 };
+
+    const FIELD_CONTENT_EXAMPLES = {
+  "clinical exercise": [
+    "exercise tolerance assessment",
+    "ECG waveform interpretation",
+    "cardiorespiratory fitness testing protocols"
+  ],
+  "medical": [
+    "patient assessment procedure",
+    "clinical decision-making process",
+    "interpretation of diagnostic results"
+  ],
+  "engineering": [
+    "system design specification",
+    "failure mode analysis",
+    "engineering problem-solving process"
+  ],
+  "computer": [
+    "algorithm implementation",
+    "database normalization process",
+    "software testing strategy"
+  ],
+  "education": [
+    "lesson planning task",
+    "student assessment strategy",
+    "classroom management scenario"
+  ],
+  "business": [
+    "financial performance analysis",
+    "marketing strategy development",
+    "organizational decision-making case"
+  ]
+};
+
+fieldSel.addEventListener("input", () => {
+  const box = contentSuggestionsEl;
+  if (!box) return;
+
+  const value = fieldSel.value.toLowerCase().trim();
+  if (!value) {
+    box.innerHTML = "";
+    return;
+  }
+
+  let suggestions = [];
+
+  Object.keys(FIELD_CONTENT_EXAMPLES).forEach(key => {
+    if (value.includes(key)) {
+      suggestions = FIELD_CONTENT_EXAMPLES[key];
+    }
+  });
+
+  box.innerHTML = suggestions.length
+    ? `
+      <div class="muted" style="font-size:0.85rem">
+        <strong>Suggested learning focus examples:</strong>
+        <ul class="mt-1">
+          ${suggestions.map(s => `<li>${s}</li>`).join("")}
+        </ul>
+      </div>
+    `
+    : `
+      <div class="muted" style="font-size:0.85rem">
+        No predefined suggestions. Please specify the learning focus manually.
+      </div>
+    `;
+});
+    
 
     function renderAssessmentFromBloom(key) {
   const ae = ASSESSMENT_MAP[key];
@@ -1037,26 +1143,18 @@ if (AUTO_SHOW_ASSESSMENT) {
    IEG → PEO
 ========================= */
 iegSel.addEventListener("change", async () => {
+  if (modeSel.value === "with_peo") return; // 🔑 IMPORTANT
+
   const ieg = iegSel.value;
+  if (!ieg) return;
 
   peoSel.innerHTML = '<option value="">Select PEO</option>';
   ploSel.innerHTML = '<option value="">Select PLO</option>';
 
-  iegLogicBox.textContent = "—";
-  peoPloLogicBox.textContent = "—";
-  peoStatementEl.textContent = "—";
-  ploStatementEl.textContent = "—";
-  ploIndicatorEl.textContent = "—";
-
-  if (!ieg) return;
-
   try {
     const res = await fetch(`/api/get_peos/${encodeURIComponent(ieg)}`);
     const peos = await res.json();
-
-    (peos || []).forEach(p =>
-      peoSel.add(new Option(p, p))
-    );
+    (peos || []).forEach(p => peoSel.add(new Option(p, p)));
   } catch (e) {
     console.error("IEG → PEO error", e);
   }
@@ -1065,50 +1163,41 @@ iegSel.addEventListener("change", async () => {
     const logicRes = await fetch(`/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
     const txt = await logicRes.text();
     iegLogicBox.textContent = txt?.trim() || "—";
-  } catch (e) {
-    console.error("IEG logic error", e);
+  } catch {
+    iegLogicBox.textContent = "—";
   }
 });
-
+    
 peoSel.addEventListener("change", async () => {
   const peo = peoSel.value;
+  if (!peo) return;
 
   ploSel.innerHTML = '<option value="">Select PLO</option>';
   peoPloLogicBox.textContent = "—";
   peoStatementEl.textContent = "—";
-  ploStatementEl.textContent = "—";
-  ploIndicatorEl.textContent = "—";
 
-  if (!peo) return;
-
-  /* 1️⃣ Load PLO list */
+  /* 1️⃣ LOAD PLO — ALWAYS */
   try {
     const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
     const plos = await r.json();
     (plos || []).forEach(p => ploSel.add(new Option(p, p)));
   } catch (e) {
-    console.error("PEO → PLO list error", e);
+    console.error("PEO → PLO error", e);
   }
 
-  /* 2️⃣ Why PEO → PLO (ROBUST DEFAULT) */
+  /* 2️⃣ WHY PEO → PLO */
   try {
     const logicRes = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}`);
-    if (!logicRes.ok) {
-      peoPloLogicBox.textContent =
-        "The selected Programme Learning Outcomes (PLOs) are directly aligned with the Programme Educational Objective (PEO).";
-    } else {
-      const txt = await logicRes.text();
-      peoPloLogicBox.textContent =
-        txt?.trim() ||
-        "The selected Programme Learning Outcomes (PLOs) are directly aligned with the Programme Educational Objective (PEO).";
-    }
-  } catch (e) {
-    console.error("PEO → PLO logic error", e);
+    const txt = await logicRes.text();
     peoPloLogicBox.textContent =
-      "The selected Programme Learning Outcomes (PLOs) are directly aligned with the Programme Educational Objective (PEO).";
+      txt?.trim() ||
+      "The selected Programme Learning Outcomes (PLOs) are aligned with the Programme Educational Objective (PEO).";
+  } catch {
+    peoPloLogicBox.textContent =
+      "The selected Programme Learning Outcomes (PLOs) are aligned with the Programme Educational Objective (PEO).";
   }
 
-  /* 3️⃣ PEO statement */
+  /* 3️⃣ PEO STATEMENT */
   try {
     const level = levelSel.value || "Degree";
     const stmtRes = await fetch(
@@ -1116,10 +1205,23 @@ peoSel.addEventListener("change", async () => {
     );
     const stmt = await stmtRes.json();
     peoStatementEl.textContent = stmt || "—";
-  } catch (e) {
-    console.error("PEO statement error", e);
+  } catch {
     peoStatementEl.textContent = "—";
   }
+});
+
+peoText.addEventListener("blur", () => {
+  if (modeSel.value !== "with_peo") return;
+
+  const peoValue = peoText.value.trim();
+  if (!peoValue) return;
+
+  // Inject pasted PEO as selectable + selected
+  peoSel.innerHTML = '<option value="">Select PEO</option>';
+  peoSel.add(new Option("Pasted PEO", peoValue, true, true));
+
+  // Trigger PEO → PLO flow explicitly
+  peoSel.dispatchEvent(new Event("change", { bubbles: true }));
 });
 
 /* =========================
