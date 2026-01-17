@@ -273,17 +273,18 @@
           <select id="ieg" class="form-select"><option value="">Select IEG</option></select>
         </div>
 
-        <div style="margin-top:12px;">
-        <div class="form-label">Why this IEG → PEO?</div>
-        <div id="ieg_peo_logic" class="logic-box">—</div>
-      </div>
-    </div>
 
         <div class="col-12 col-md-3">
           <label class="form-label">PEO (mapped)</label>
           <select id="peo" class="form-select"><option value="">Select PEO</option></select>
         </div>
       </div>
+
+        <div style="margin-top:12px;">
+        <div class="form-label">Why this IEG → PEO?</div>
+        <div id="ieg_peo_logic" class="logic-box">—</div>
+      </div>
+    </div>
 
       
 
@@ -306,25 +307,28 @@
 
   <div class="step-divider"></div>
 
-  <div class="mb-3">
-    <div class="form-label">Why PEO → PLO?</div>
-    <div id="peo_plo_logic" class="logic-box">—</div>
-  </div>
 
   <label class="form-label">PLO for selected PEO</label>
   <select id="plo" class="form-select mb-3">
     <option value="">Select PLO</option>
   </select>
 
-  
+  <!-- Alignment rationale -->
+  <div class="mb-3">
+    <div class="form-label">Why is this PLO aligned with the selected PEO?</div>
+    <div id="peo_plo_logic" class="logic-box">—</div>
+  </div>
 
-  <div>
+  <!-- Statements & indicator -->
+  <div class="mb-3">
+    <div class="form-label">PEO, PLO and Indicator of Achievement</div>
     <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
     <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
     <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
   </div>
 
 </div>
+
 
     <!-- 3) Smart CLO Builder (main) -->
     <div class="card-box mb-3">
