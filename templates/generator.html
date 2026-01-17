@@ -1,858 +1,307 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>SCLOG — Smart CLO Generator</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta charset="utf-8" />
+<title>SCLOG — Smart CLO Generator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Bootstrap + icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HMBYNXRLBE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-HMBYNXRLBE', { 'send_page_view': true });
-
-    function logEvent(name, data = {}) {
-      if (typeof gtag === 'function') {
-        try { gtag('event', name, data); } catch(e){ console.debug('gtag error', e); }
-      } else {
-        console.debug('GA not ready - event', name, data);
-      }
-    }
-  </script>
-
-  <!-- Theme CSS -->
-  <style>
-    :root{
-      --usm-purple: #6d28d9;
-      --usm-purple-2: #8b5cf6;
-      --bg-light: #f5f3ff;
-      --card: #ffffff;
-      --muted: #6c6480;
-      --radius: 14px;
-      --shadow: 0 10px 30px rgba(15,23,42,0.06);
-    }
-
-    .app-title {
-  font-weight: 900;
-  font-size: 1.6rem;        /* strongest */
-  letter-spacing: 0.3px;
-  background: linear-gradient(90deg,#6d28d9,#8b5cf6);
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
-.app-brand {
-  display: inline-flex;
-  align-items: center;
-}
-
-.app-subtitle {
-  font-size: 1rem;
-  color: #6b7280;
-  margin-top: 2px;
-}
-
-    .smart-title {
-  font-weight: 700;      /* less than app-title */
-  font-size: 1.05rem;
-  color: #6d28d9;
-}
-    .smart-divider {
-  height: 3px;
-  width: 60px;
-  background: linear-gradient(90deg, var(--usm-purple), var(--usm-purple-2));
-  border-radius: 2px;
-}
-
-    html,body{height:100%;}
-    body {
-      margin:0;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      background: var(--bg-light);
-      color: #2a2344;
-      line-height:1.45;
-    }
-    body[data-theme="dark"] {
-      background: linear-gradient(180deg,#11101a,#16081f);
-      color: #efe6ff;
-    }
-
-    .container-app {
-      max-width:1200px;
-      margin:18px auto 40px;
-      padding:12px;
-    }
-
-   .step-header {
-  font-weight: 800;
-  font-size: 1.05rem;
-  color: #4c1d95;
-  margin-bottom: 4px;
-}
-
-.step-desc {
-  font-size: 0.9rem;
-  color: #6b7280;
-  margin-bottom: 14px;
-}
-
-.step-divider {
-  border-top: 1px dashed rgba(109,40,217,0.25);
-  margin: 14px 0 18px;
-}
-
-    .step-strong{
-  font-size:1.15rem;
-  font-weight:900;
-}
-
-    .step-pill{
-  font-size:0.7rem;
-  font-weight:800;
-  letter-spacing:0.08em;
-  color:#6d28d9;
-  background:#ede9fe;
-  padding:4px 10px;
-  border-radius:999px;
-}
-
-    .bloom-tag{
-  font-size:0.7rem;
-  font-weight:900;
-  letter-spacing:0.05em;
-  background:#ede9fe;
-  color:#6d28d9;
-  padding:4px 8px;
-  border-radius:999px;
-}
-    
-
-    .card-box {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding:16px;
-      border: 1px solid rgba(109,40,217,0.10);
-      box-shadow: var(--shadow);
-      transition: transform .12s ease, box-shadow .12s ease;
-    }
-    body[data-theme="dark"] .card-box {
-      background: rgba(24,14,33,0.64);
-      border-color: rgba(255,255,255,0.04);
-      box-shadow: 0 14px 36px rgba(0,0,0,0.5);
-    }
-    .card-box:hover { transform: translateY(-2px); box-shadow: 0 20px 44px rgba(109,40,217,0.08); }
-
-    .brand { font-weight:900; font-size:1.22rem; background: linear-gradient(90deg,var(--usm-purple),var(--usm-purple-2)); -webkit-background-clip:text; color:transparent; display:flex; gap:10px; align-items:center; }
-    .subtitle { color:var(--muted); font-size:.95rem; }
-
-    label.form-label { font-weight:600; font-size:.92rem; color:var(--muted); margin-bottom:6px; display:block; }
-    .form-control, .form-select {
-      border-radius:12px;
-      padding:10px 12px;
-      font-size:.95rem;
-      background:#fbf8ff;
-      border:1px solid rgba(109,40,217,0.06);
-    }
-    body[data-theme="dark"] .form-control, body[data-theme="dark"] .form-select {
-      background: rgba(22,12,34,0.54);
-      color: #efe6ff;
-      border: 1px solid rgba(255,255,255,0.05);
-    }
-    .form-control:focus, .form-select:focus { box-shadow: 0 0 0 6px rgba(167,139,250,0.14); outline:none; border-color:var(--usm-purple); }
-
-    .logic-box {
-      background:#f7f2ff;
-      padding:10px;
-      border-radius:10px;
-      color:#3b2a63;
-      min-height:56px;
-    }
-    body[data-theme="dark"] .logic-box { background: rgba(34,16,48,0.4); color:#efe6ff; }
-
-    .btn { border-radius:12px; font-weight:700; }
-    .btn-primary { background: linear-gradient(90deg,var(--usm-purple),var(--usm-purple-2)); border:none; color:#fff; }
-    .btn-outline-secondary { color:var(--usm-purple); border-color:var(--usm-purple); border-radius:12px; }
-    .btn-outline-secondary:hover { background:var(--usm-purple); color:#fff; }
-
-    .nav-tabs { border-bottom:none; overflow:auto; white-space:nowrap; padding-bottom:6px; }
-    .nav-tabs .nav-link { border:0; margin-right:6px; background:#f3eefe; color:var(--usm-purple); border-radius:10px; padding:7px 12px; }
-    .nav-tabs .nav-link.active { background:var(--usm-purple); color:#fff; font-weight:700; }
-
-    .muted { color:var(--muted); }
-    .meta-item { margin-bottom:10px; }
-
-    footer { margin-top:18px; text-align:center; color:var(--muted); font-size:.88rem; }
-
-    @media (max-width: 991px) { .profile-row { flex-direction:column; gap:10px; } }
-    @media (max-width: 575px) {
-      .card-box { padding:12px; border-radius:12px; }
-      .brand { font-size:1.05rem; }
-      .form-control, .form-select { padding:8px 10px; }
-      .btn { padding:7px 10px; font-size:.92rem; }
-    }
-  </style>
+<style>
+body{background:#f5f3ff;font-family:system-ui}
+.card-box{background:#fff;border-radius:14px;padding:16px;border:1px solid #e5e7eb}
+.logic-box{background:#f7f2ff;border-radius:10px;padding:12px}
+.bloom-tag{font-size:.75rem;font-weight:800;background:#ede9fe;color:#6d28d9;padding:4px 8px;border-radius:999px}
+.small-muted{font-size:.85rem;color:#6b7280}
+</style>
 </head>
 
-<body data-theme="light">
-  <div class="container-app">
+<body>
+<div class="container my-4">
 
-    <!-- HEADER -->
- <div class="card-box mb-3 d-flex justify-content-between align-items-center">
-  <div>
-    <div class="app-title">
-      <span class="app-brand">
-        <i class="bi bi-stars me-1"></i> SCLOG
-      </span>
-    </div>
-    <div class="app-subtitle">
-      Smart Course Learning Outcome Generator — logic & mapping
-    </div>
-  </div>
-
-  <div>
-    <button id="darkToggle" class="btn btn-outline-secondary">
-      <i class="bi bi-moon"></i> Dark
-    </button>
-  </div>
-</div>
-
-<!-- STEP 1 · Programme Context -->
-<div class="card-box mb-3" id="step1">
-
-  <!-- Header -->
-  <div class="d-flex align-items-center gap-2 mb-1">
-    <span class="step-pill">STEP 1</span>
-    <div class="step-header mb-0">
-      Programme Context
-    </div>
-  </div>
-
-  <!-- Mode selection -->
-  <label class="form-label mt-2">How do you want to start?</label>
-  <select id="mode" class="form-select mb-3">
-    <option value="with_ieg">
-      I do not have a PEO yet (start from Institutional Educational Goals)
-    </option>
-    <option value="with_peo">
-      I already have a PEO (refine PLO & CLO only)
-    </option>
-  </select>
-
-  <!-- Description -->
-  <div class="step-desc">
-    Establish the programme context by defining the academic discipline and
-    programme level, and by providing either an Institutional Educational Goal (IEG)
-    or an existing Programme Educational Objective (PEO) as the foundation
-    for outcome mapping.
-  </div>
-
-  <div class="step-divider"></div>
-
-  <!-- IEG (paste) -->
-  <label class="form-label">
-    Institutional Educational Goal (IEG)
-  </label>
-  <div class="muted mb-1" style="font-size:0.85rem">
-    Paste the official IEG statement defined by your institution.
-  </div>
-  <textarea
-    id="ieg_text"
-    class="form-control mb-3"
-    rows="3"
-    placeholder="e.g. To produce graduates with strong ethical values, leadership qualities, and the ability to contribute effectively to society.">
-  </textarea>
-
-  <!-- PEO (paste, optional) -->
-  <label class="form-label">
-    Programme Educational Objective (PEO)
-    <span class="muted">(optional)</span>
-  </label>
-  <div class="muted mb-1" style="font-size:0.85rem">
-    If available, paste your programme’s PEO.  
-    If left blank, the system will suggest appropriate PEOs based on the IEG provided.
-  </div>
-  <textarea
-    id="peo_text"
-    class="form-control mb-3"
-    rows="3"
-    placeholder="e.g. Graduates will apply professional knowledge and ethical principles in their respective fields within five years of graduation.">
-  </textarea>
-
-  <!-- Structured selections -->
-  <div class="row g-3 mt-2">
-
-    <!-- Discipline -->
-    <div class="col-12 col-md-4">
-      <label class="form-label">Discipline (programme context)</label>
-      <select id="profile" class="form-select" required>
-        <option value="">Select discipline</option>
-        <option value="health">Medical & Health</option>
-        <option value="sc">Computer Science & IT</option>
-        <option value="eng">Engineering & Technology</option>
-        <option value="socs">Social Sciences</option>
-        <option value="edu">Education</option>
-        <option value="bus">Business & Management</option>
-        <option value="arts">Arts & Humanities</option>
-      </select>
-    </div>
-
-    <!-- Programme level -->
-    <div class="col-12 col-md-2">
-      <label class="form-label">Programme Level</label>
-      <select id="level" class="form-select">
-        <option value="">Select level</option>
-        <option>Diploma</option>
-        <option>Degree</option>
-        <option>Master</option>
-        <option>PhD</option>
-      </select>
-    </div>
-
-    <!-- IEG (structured select, optional if pasted) -->
-    <div class="col-12 col-md-3">
-      <label class="form-label">Institutional Educational Goal (IEG)</label>
-      <select id="ieg" class="form-select">
-        <option value="">Select IEG (optional)</option>
-      </select>
-    </div>
-
-    <!-- PEO (structured select or suggested) -->
-    <div class="col-12 col-md-3">
-      <label class="form-label">Programme Educational Objective (PEO)</label>
-      <select id="peo" class="form-select">
-        <option value="">Select PEO</option>
-      </select>
-    </div>
-
-  </div>
-
-  <!-- IEG → PEO justification (appears AFTER PEO selection) -->
-  <div class="mt-3">
-    <div class="form-label">
-      Why is this IEG mapped to the selected PEO?
-    </div>
-    <div id="ieg_peo_logic" class="logic-box">—</div>
-  </div>
-
-</div>
-    
-    <!-- 2) PLO for selected PEO -->
-
-      <!-- STEP 2 -->
+<!-- ================= HEADER ================= -->
 <div class="card-box mb-3">
-
-  <div class="d-flex align-items-center gap-2 mb-1">
-    <span class="step-pill">STEP 2</span>
-    <div class="step-header mb-0">
-      Programme Learning Outcomes (PLO)
-    </div>
-  </div>
-
-  <div class="step-desc">
-    Select the Programme Learning Outcome (PLO) aligned with the selected
-    Programme Educational Objective (PEO).
-  </div>
-
-  <div class="step-divider"></div>
-
-
-  <label class="form-label">PLO for selected PEO</label>
-  <select id="plo" class="form-select mb-3">
-    <option value="">Select PLO</option>
-  </select>
-
-  <!-- Statements & indicator -->
-  <div class="mb-3">
-    <div class="form-label">PEO, PLO and Indicator of Achievement</div>
-    <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
-    <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
-    <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
-  </div>
-
+  <h3 class="fw-bold text-purple">
+    <i class="bi bi-stars"></i> SCLOG
+  </h3>
+  <div class="text-muted">Smart Course Learning Outcome Generator</div>
 </div>
 
+<!-- ================= STEP 1 ================= -->
+<div class="card-box mb-3">
+<h5>STEP 1 · Programme Context</h5>
 
-    <!-- 3) Smart CLO Builder (main) -->
-    <div class="card-box mb-3">
-       
-          <div class="d-flex align-items-center gap-2 mb-1">
-  <h4 class="smart-title mb-0">
-    <i class="bi bi-lightning-charge-fill me-1"></i>
-    Smart CLO Builder
-  </h4>
+<label class="form-label">Programme Name</label>
+<input id="programmeName" class="form-control mb-2"
+ placeholder="e.g. Bachelor of Exercise Science">
 
-  <!-- Auto Bloom tag -->
-  <span id="bloomTag" class="bloom-tag">—</span>
+<label class="form-label">Programme Level</label>
+<select id="level" class="form-select mb-2">
+  <option value="">Select</option>
+  <option>Diploma</option>
+  <option>Degree</option>
+  <option>Master</option>
+  <option>PhD</option>
+</select>
+
+<label class="form-label">Institutional Educational Goal (IEG)</label>
+<textarea id="ieg_text" class="form-control mb-2"
+ placeholder="Paste official IEG here"></textarea>
+
+<button id="generatePEO" class="btn btn-primary mt-2">
+Generate PEO
+</button>
+
+<div id="peoSuggestions" class="mt-3"></div>
+
+<label class="form-label mt-3">Select PEO</label>
+<select id="peo" class="form-select"></select>
+
+<div class="mt-2">
+<strong>PEO Indicator:</strong>
+<div id="peo_indicator" class="small-muted">—</div>
 </div>
-          
-<div class="smart-divider mb-2"></div>
-
-          <div class="step-header">
-  Step 3 · Course Learning Outcome (CLO) Construction
-</div>
-
-<div class="step-desc">
-  Formulate a clear and measurable Course Learning Outcome (CLO) that aligns
-  with the selected Programme Learning Outcome (PLO). The CLO should specify
-  an appropriate level of learning using Bloom’s Taxonomy, an observable
-  action verb, and a well-defined learning focus within the context of the
-  course or subject area. The statement must be assessable and consistent
-  with Outcome-Based Education (OBE) and MQA requirements.
-</div>
-
-<div class="step-divider"></div>
-    
-
-          <div class="muted mb-2">Create measurable course learning outcomes quickly</div>
-
-          <ul class="nav nav-tabs mb-3" id="tabNav" role="tablist">
-            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#builderTab">Builder</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#variantsTab">Variants</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#assessmentTab">Assessment</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#historyTab">History</button></li>
-          </ul>
-
-          <div class="tab-content">
-            <!-- BUILDER -->
-            <div class="tab-pane fade show active" id="builderTab">
-              <div class="row g-3">
-                <div class="col-md-6">
-  <label class="form-label">Bloom</label>
-  <select id="bloom" class="form-select">
-    <option value="">Select Bloom</option>
-  </select>
-
-  <!-- Bloom description (UI only) -->
-  <div id="bloom_desc" class="muted mt-1" style="font-size:0.85rem;">
-    Select a Bloom level to see its description.
-  </div>
 </div>
 
- <div id="bloom_hint" class="mt-1" style="font-size:0.85rem; line-height:1.4;">
-  <span class="muted">Select a Bloom level to see recommendations.</span>
+<!-- ================= STEP 2 ================= -->
+<div class="card-box mb-3">
+<h5>STEP 2 · Programme Learning Outcomes (PLO)</h5>
+
+<label class="form-label">Mapped PLO</label>
+<select id="plo" class="form-select"></select>
+
+<div class="mt-2">
+<strong>PLO Statement:</strong>
+<div id="plo_statement" class="small-muted">—</div>
+
+<strong>Indicator:</strong>
+<div id="plo_indicator" class="small-muted">—</div>
 </div>
-                
-  
-
-
-                <div class="col-md-6">
-                  <label class="form-label">Verb</label>
-                  <select id="verb" class="form-select"><option value="">Select Verb</option></select>
-                </div> 
-                
-                <div class="col-md-6">
-  <label class="form-label">
-    Field / Course Context
-  </label>
-
-  <div class="muted mb-1" style="font-size:0.85rem">
-    State the course, subject area, or professional context  
-    (e.g. <em>Clinical Exercise Testing</em>, <em>Database Systems</em>,
-    <em>Primary School Mathematics</em>).
-  </div>
-
-  <input id="field" class="form-control"
-    placeholder="e.g. Clinical Exercise Testing, Software Engineering, Educational Psychology">
 </div>
 
-                <div class="col-12">
-                  <label class="form-label">
-  Content (learning focus / object)
-</label>
-                  <div id="content_suggestions" class="mt-2"></div>
-
-
-                  
-<div class="muted mb-1" style="font-size:0.85rem">
-  Specify <strong>what</strong> the student will work on (procedure, concept,
-  skill, case, or professional task).
+<!-- ================= STEP 3 ================= -->
+<div class="card-box mb-3">
+<div class="d-flex align-items-center gap-2">
+<h5 class="mb-0">STEP 3 · Smart CLO Builder</h5>
+<span id="bloomTag" class="bloom-tag">—</span>
 </div>
+
+<label class="form-label mt-2">Bloom Level</label>
+<select id="bloom" class="form-select"></select>
+
+<div id="bloom_desc" class="small-muted mt-1">
+Select a Bloom level to see its description.
+</div>
+
+<label class="form-label mt-2">Action Verb</label>
+<select id="verb" class="form-select"></select>
+
+<label class="form-label mt-2">Content / Focus</label>
 <input id="content" class="form-control"
-       placeholder="e.g., ECG waveform interpretation, laboratory testing procedure, ethical case scenario">
+ placeholder="e.g. ECG interpretation">
+
+<button id="generateBtn" class="btn btn-success mt-3">
+Generate CLO
+</button>
+
+<div id="cloCard" class="mt-3" style="display:none">
+<div class="logic-box">
+<strong>CLO</strong>
+<div id="clo_text"></div>
 </div>
-                <div class="col-12 d-flex gap-2 align-items-center">
-                  <button id="generateBtn" class="btn btn-primary"><i class="bi bi-magic me-1"></i> Generate CLO</button>
-                  <button id="copyBtn" class="btn btn-outline-secondary"><i class="bi bi-clipboard me-1"></i> Copy</button>
-                  <div id="busy" class="muted" style="display:none">Generating…</div>
-                </div>
-
-                <div id="cloCard" class="col-12 card-box" style="display:none; margin-top:12px;">
-                  <h6 class="mb-2">Generated CLO</h6>
-                  <div id="clo_text" style="line-height:1.4; font-weight:600;"></div>
-
-                  <div class="mt-3">
-                    <button id="toggleVariants" class="btn btn-outline-secondary btn-sm">Show variants</button>
-                    <div id="variantsPanel" style="display:none; margin-top:10px;"></div>
-                  </div>
-
-                  <div class="mt-3 d-flex gap-2">
-                    <button id="downloadBtn" class="btn btn-success"><i class="bi bi-download me-1"></i> Download CLO</button>
-                    <button id="downloadRubricBtn" class="btn btn-outline-secondary"><i class="bi bi-file-earmark-text me-1"></i> Download Rubric</button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- VARIANTS -->
-            <div class="tab-pane fade" id="variantsTab">
-              <div id="variants_list" class="muted">Variants will appear after generating a CLO.</div>
-            </div>
-
-            <!-- ASSESSMENT -->
-<div class="tab-pane fade" id="assessmentTab">
-
-  <div class="step-header">Step 4 · Assessment & Evidence</div>
-  <div class="step-desc">
-    Recommended assessment methods and supporting evidence aligned with
-    the selected Bloom’s domain and CLO.
-  </div>
-  <div class="step-divider"></div>
-
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card-box">
-        <h6>Suggested Assessment methods</h6>
-        <div id="assess_list" class="muted">—</div>
-      </div>
-    </div>
-
-    <div class="col-md-6">
-      <div class="card-box">
-        <h6>Suggested evidence</h6>
-        <div id="evidence_list" class="muted">—</div>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
 
 </div>
-            <!-- HISTORY -->
-            <div class="tab-pane fade" id="historyTab">
-              <div class="card-box">
-                <h6>Recent generation</h6>
-                <div id="history_list" class="muted">Server-side history not enabled.</div>
-              </div>
-            </div>
 
-          </div>
-        </div>
-
-        <!-- RIGHT SIDEBAR: Mapping metadata -->
-          <div class="card-box mb-3">
-            <div class="form-label">Mapping metadata</div>
-            <div class="meta-item"><strong>SC Code:</strong><div id="sc_code" class="muted">—</div></div>
-            <div class="meta-item"><strong>SC Description:</strong><div id="sc_desc" class="muted">—</div></div>
-            <div class="meta-item"><strong>VBE:</strong><div id="vbe" class="muted">—</div></div>
-            <div class="meta-item"><strong>Domain:</strong><div id="domain" class="muted">—</div></div>
-            <div class="meta-item"><strong>Condition:</strong><div id="condition" class="muted">—</div></div>
-            <div class="meta-item"><strong>Criterion:</strong><div id="criterion" class="muted">—</div></div>
-          </div>
-
-          <div class="card-box">
-            <div class="form-label">Quick content suggestions</div>
-            <div id="content_suggestions_right"></div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
-    <footer>© 2025 • Assoc Prof Dr Hazwani Ahmad Yusof @ Hanafi — Universiti Sains Malaysia (USM)</footer>
-  </div>
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-  <script>
-/* =====================================================
-   0. HELPER
-===================================================== */
+<script>
+/* =================================================
+   HELPERS
+================================================= */
 const $ = id => document.getElementById(id);
 
-/* =====================================================
-   1. CONSTANTS (SINGLE SOURCE OF TRUTH)
-===================================================== */
+/* =================================================
+   CONSTANTS
+================================================= */
+const BLOOM_DESC = {
+ remember:"Recall facts or concepts.",
+ understand:"Explain ideas in own words.",
+ apply:"Use knowledge in practice.",
+ analyze:"Break information into parts.",
+ evaluate:"Make judgments using criteria.",
+ create:"Produce new or original work.",
 
-/* ---------- USM PLO ---------- */
-const USM_PLO = {
-  PLO1:"Knowledge",
-  PLO2:"Cognitive Skills",
-  PLO3:"Practical Skills",
-  PLO4:"Interpersonal Skills",
-  PLO5:"Communication Skills",
-  PLO6:"Digital Skills",
-  PLO7:"Numeracy Skills",
-  PLO8:"Leadership & Autonomy",
-  PLO9:"Personal Skills",
-  PLO10:"Entrepreneurial Skills",
-  PLO11:"Ethics & Professionalism"
+ receiving:"Awareness and willingness.",
+ responding:"Active participation.",
+ valuing:"Commitment to values.",
+ organization:"Integrating values.",
+ characterization:"Consistent value-based behaviour.",
+
+ perception:"Use sensory cues.",
+ set:"Readiness to act.",
+ "guided response":"Perform under guidance.",
+ mechanism:"Perform skill confidently.",
+ adaptation:"Modify skills.",
+ origination:"Create new patterns."
 };
 
-/* ---------- VBE + Bloom by Level ---------- */
 const VBE_BY_LEVEL = {
   Diploma:{
-    bloom:{C:["remember","understand","apply"],A:["receiving","responding"],P:["perception","set","guided response"]},
+    bloom:{
+      C:["remember","understand","apply"],
+      A:["receiving","responding"],
+      P:["perception","set","guided response"]
+    },
     values:["discipline","responsibility"],
     focus:"work readiness and ethical conduct"
   },
+
   Degree:{
-    bloom:{C:["understand","apply","analyze"],A:["responding","valuing"],P:["guided response","mechanism"]},
+    bloom:{
+      C:["remember","understand","apply","analyze","evaluate"],
+      A:["responding","valuing"],
+      P:["guided response","mechanism"]
+    },
     values:["integrity","justice"],
     focus:"professional practice and societal responsibility"
   },
+
   Master:{
-    bloom:{C:["analyze","evaluate","integrate"],A:["valuing","organization"],P:["mechanism","adaptation"]},
+    bloom:{
+      C:["analyze","evaluate","create"],
+      A:["valuing","organization"],
+      P:["mechanism","adaptation"]
+    },
     values:["wisdom","accountability"],
     focus:"advanced professional judgement and leadership"
   },
+
   PhD:{
-    bloom:{C:["create"],A:["characterization"],P:["adaptation","origination"]},
+    bloom:{
+      C:["create"],
+      A:["characterization"],
+      P:["adaptation","origination"]
+    },
     values:["truth","global responsibility"],
     focus:"knowledge creation and ethical leadership"
   }
 };
 
-/* ---------- Bloom Descriptions (❗ YANG SEBELUM INI HILANG) ---------- */
-const BLOOM_DESC = {
-  remember:"Recall facts, terms, or basic concepts.",
-  understand:"Explain ideas or concepts in your own words.",
-  apply:"Use knowledge in new but familiar situations.",
-  analyze:"Break information into parts and examine relationships.",
-  evaluate:"Make judgments based on criteria or standards.",
-  create:"Produce new or original work.",
+  function bloomDomainTag(bloom, level){
+  const map = VBE_BY_LEVEL[level]?.bloom || {};
+  const b = bloom.toLowerCase();
 
-  receiving:"Willingness to attend or be aware.",
-  responding:"Active participation and response.",
-  valuing:"Demonstrating commitment to values.",
-  organization:"Integrating values into a system.",
-  characterization:"Consistent value-based behaviour.",
-
-  perception:"Use sensory cues to guide motor activity.",
-  set:"Readiness to perform a skill.",
-  "guided response":"Perform skill under guidance.",
-  mechanism:"Perform skill with confidence.",
-  adaptation:"Modify skills for new situations.",
-  origination:"Create new movement patterns."
-};
-
-/* ---------- PEO Indicators (Programme KPI) ---------- */
+  if(map.C?.includes(b)) return "C";
+  if(map.A?.includes(b)) return "A";
+  if(map.P?.includes(b)) return "P";
+  return "—";
+}
+  
 const PEO_INDICATORS = {
-  PEO1:[
-    "≥70% graduates employed in discipline-related fields",
-    "Graduates demonstrate competent disciplinary application"
-  ],
-  PEO2:[
-    "Graduates communicate effectively with stakeholders",
-    "Graduates work effectively in teams"
-  ],
-  PEO3:[
-    "Graduates engage in lifelong learning",
-    "Graduates demonstrate leadership growth"
-  ],
-  PEO4:[
-    "Graduates involved in innovation or entrepreneurship"
-  ],
-  PEO5:[
-    "Graduates uphold ethical and professional standards"
-  ]
+ PEO1:["Strong disciplinary competence"],
+ PEO2:["Effective communication"],
+ PEO3:["Leadership & lifelong learning"],
+ PEO4:["Innovation & entrepreneurship"],
+ PEO5:["Ethical professionalism"]
 };
 
-/* =====================================================
-   2. STEP 1 – IEG → PEO → PLO
-===================================================== */
-
-function generatePEOFromProgramme({ programmeName, level }) {
-  const v = VBE_BY_LEVEL[level].values;
-
-  return [
-    {
-      code:"PEO1",
-      text:`Graduates of the ${programmeName} demonstrate strong disciplinary knowledge and professional competence guided by ${v[0]}.`,
-      plos:["PLO1","PLO2","PLO3","PLO6","PLO7"],
-      rationale:"Strengthens disciplinary mastery and professional competence.",
-      indicators: PEO_INDICATORS.PEO1
-    },
-    {
-      code:"PEO2",
-      text:`Graduates of the ${programmeName} communicate and collaborate effectively guided by ${v[1]}.`,
-      plos:["PLO4","PLO5"],
-      rationale:"Develops communication and interpersonal effectiveness.",
-      indicators: PEO_INDICATORS.PEO2
-    },
-    {
-      code:"PEO3",
-      text:`Graduates of the ${programmeName} demonstrate leadership and lifelong learning guided by ${v[0]}.`,
-      plos:["PLO8","PLO9"],
-      rationale:"Supports leadership and continuous professional development.",
-      indicators: PEO_INDICATORS.PEO3
-    },
-    {
-      code:"PEO4",
-      text:`Graduates of the ${programmeName} apply innovation and entrepreneurship guided by ${v[1]}.`,
-      plos:["PLO10"],
-      rationale:"Encourages innovation and value creation.",
-      indicators: PEO_INDICATORS.PEO4
-    },
-    {
-      code:"PEO5",
-      text:`Graduates of the ${programmeName} uphold ethics and professionalism guided by ${v[0]}.`,
-      plos:["PLO11"],
-      rationale:"Ensures ethical integrity and professionalism.",
-      indicators: PEO_INDICATORS.PEO5
-    }
-  ];
+/* =================================================
+   STEP 1 – PEO
+================================================= */
+function generatePEO(name){
+ return [
+  {code:"PEO1",text:`Graduates of the ${name} demonstrate strong disciplinary knowledge.`,
+   plos:["PLO1","PLO2"],indicator:PEO_INDICATORS.PEO1},
+  {code:"PEO2",text:`Graduates of the ${name} communicate effectively.`,
+   plos:["PLO3","PLO4"],indicator:PEO_INDICATORS.PEO2}
+ ];
 }
 
-/* ---------- Helpers ---------- */
-function fillSelect(el, list=[]){
-  el.innerHTML='<option value="">Select</option>';
-  list.forEach(v=>el.add(new Option(v,v)));
-}
+$("generatePEO").onclick=()=>{
+ const name=$("programmeName").value;
+ if(!name){alert("Enter programme name");return;}
 
-/* ---------- Generate PEO ---------- */
-$("generatePEO").onclick = () => {
-  const name = $("programmeName").value.trim();
-  const level = $("level").value;
-
-  if(!name || !level){
-    alert("Please enter Programme Name and Level");
-    return;
-  }
-
-  const peos = generatePEOFromProgramme({programmeName:name, level});
-
-  $("peoSuggestions").innerHTML="";
-  peos.forEach(p=>{
-    $("peoSuggestions").innerHTML+=`
-      <div class="logic-box mb-2">
-        <strong>${p.code}</strong><br>${p.text}
-        <div class="mt-1">
-          ${p.plos.map(x=>`<span class="badge badge-plo me-1">${x}</span>`).join("")}
-        </div>
-        <div class="small-muted mt-1"><em>${p.rationale}</em></div>
-        <div class="small-muted mt-2">
-          <strong>Programme Indicator:</strong>
-          <ul>${p.indicators.map(i=>`<li>${i}</li>`).join("")}</ul>
-        </div>
-      </div>`;
-  });
-
-  fillSelect($("peo"), peos.map(p=>p.code));
-  $("peo").dataset.map = JSON.stringify(peos);
+ const peos=generatePEO(name);
+ $("peoSuggestions").innerHTML="";
+ peos.forEach(p=>{
+  $("peoSuggestions").innerHTML+=`
+   <div class="logic-box mb-2">
+    <strong>${p.code}</strong><br>${p.text}
+   </div>`;
+ });
+ $("peo").innerHTML='<option value="">Select</option>';
+ peos.forEach(p=>$("peo").add(new Option(p.code,p.code)));
+ $("peo").dataset.map=JSON.stringify(peos);
 };
 
-/* ---------- PEO → PLO ---------- */
-$("peo").onchange = () => {
-  const peos = JSON.parse($("peo").dataset.map||"[]");
-  const p = peos.find(x=>x.code===$("peo").value);
-  if(!p) return;
-
-  fillSelect($("plo"), p.plos);
-  $("ieg_peo_logic").textContent = p.rationale;
+$("peo").onchange=()=>{
+ const peos=JSON.parse($("peo").dataset.map||"[]");
+ const p=peos.find(x=>x.code===$("peo").value);
+ if(!p)return;
+ $("peo_indicator").innerHTML="<ul>"+p.indicator.map(i=>`<li>${i}</li>`).join("")+"</ul>";
+ $("plo").innerHTML='<option value="">Select</option>';
+ p.plos.forEach(x=>$("plo").add(new Option(x,x)));
 };
 
-/* =====================================================
-   3. STEP 2 – PLO → BLOOM
-===================================================== */
+/* =================================================
+   STEP 2 – PLO
+================================================= */
+$("plo").onchange=async()=>{
+ const plo=$("plo").value;
+ if(!plo)return;
 
-$("plo").onchange = async () => {
-  const plo = $("plo").value;
-  if(!plo) return;
+ $("plo_statement").textContent=
+  await fetch(`/api/get_statement/Degree/PLO/${plo}`).then(r=>r.json());
+ $("plo_indicator").textContent="Achievement demonstrated in assessment.";
 
-  $("bloom").innerHTML='<option value="">Select Bloom</option>';
-
-  const blooms = await fetch(`/api/get_blooms/${plo}`).then(r=>r.json());
-  blooms.forEach(b=>$("bloom").add(new Option(b,b)));
-
-  if(blooms.length){
-    $("bloom").value=blooms[0];
-    $("bloom").dispatchEvent(new Event("change"));
-  }
+ const blooms=await fetch(`/api/get_blooms/${plo}`).then(r=>r.json());
+ $("bloom").innerHTML='<option value="">Select</option>';
+ blooms.forEach(b=>$("bloom").add(new Option(b,b)));
 };
 
-/* =====================================================
-   4. STEP 3 – BLOOM → VERB + FULL DESCRIPTION
-===================================================== */
-
+/* =================================================
+   STEP 3 – BLOOM
+================================================= */
 $("bloom").onchange = async () => {
-  const plo = $("plo").value;
   const bloom = $("bloom").value;
   const level = $("level").value || "Degree";
-  if(!plo || !bloom) return;
+  const plo = $("plo").value;
 
-  const key = bloom.toLowerCase();
+  if(!bloom) return;
 
-  /* Tag C/A/P */
-  let domain = "—";
-  const m = VBE_BY_LEVEL[level].bloom;
-  if(m.C.includes(key)) domain="Cognitive";
-  else if(m.A.includes(key)) domain="Affective";
-  else if(m.P.includes(key)) domain="Psychomotor";
+  const tag = bloomDomainTag(bloom, level);
+  $("bloomTag").textContent = `${tag} · ${bloom}`;
 
-  $("bloomTag").textContent = `${domain[0]} · ${bloom}`;
-
-  /* ❗ FULL Bloom description restored */
   $("bloom_desc").innerHTML = `
     <strong>${bloom.toUpperCase()}</strong><br>
-    <em>${BLOOM_DESC[key]||"—"}</em><br><br>
-    <strong>Domain:</strong> ${domain}<br>
+    ${BLOOM_DESC[bloom.toLowerCase()] || "—"}<br><br>
+    <strong>Domain:</strong> ${tag}<br>
     <strong>Justification:</strong>
-    Appropriate for <strong>${level}</strong> level aligned with
+    Appropriate for ${level} level aligned with
     ${VBE_BY_LEVEL[level].focus}.
   `;
+
+  if(!plo) return;
 
   const verbs = await fetch(`/api/get_verbs/${plo}/${bloom}`).then(r=>r.json());
   fillSelect($("verb"), verbs);
 };
 
-/* =====================================================
-   5. STEP 4 – GENERATE CLO
-===================================================== */
+/* =================================================
+   GENERATE CLO
+================================================= */
+$("generateBtn").onclick=async()=>{
+ const fd=new FormData();
+ fd.append("plo",$("plo").value);
+ fd.append("bloom",$("bloom").value);
+ fd.append("verb",$("verb").value);
+ fd.append("content",$("content").value);
 
-$("generateBtn").onclick = async () => {
-  if(!$("plo").value || !$("bloom").value || !$("verb").value || !$("content").value.trim()){
-    alert("Complete PLO, Bloom, Verb and Content");
-    return;
-  }
-
-  const fd = new FormData();
-  fd.append("plo",$("plo").value);
-  fd.append("bloom",$("bloom").value);
-  fd.append("verb",$("verb").value);
-  fd.append("content",$("content").value);
-
-  const data = await fetch("/generate",{method:"POST",body:fd}).then(r=>r.json());
-
-  $("clo_text").textContent = data.clo;
-  $("cloCard").style.display="block";
-
-  $("variantsPanel").innerHTML =
-    Object.values(data.variants||{}).map(v=>`<div>${v}</div>`).join("");
-
-  $("assess_list").innerHTML =
-    data.assessments.map(a=>`<li>${a}</li>`).join("");
-
-  $("evidence_list").innerHTML =
-    Object.values(data.evidence||{}).flat().map(e=>`<li>${e}</li>`).join("");
+ const d=await fetch("/generate",{method:"POST",body:fd}).then(r=>r.json());
+ $("clo_text").textContent=d.clo;
+ $("cloCard").style.display="block";
 };
-
-/* =====================================================
-   6. INIT
-===================================================== */
-(function init(){
-  fillSelect($("plo"),[]);
-})();
 </script>
-
-
 </body>
 </html>
-
