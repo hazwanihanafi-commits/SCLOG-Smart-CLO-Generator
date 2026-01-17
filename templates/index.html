@@ -57,11 +57,11 @@ body{background:#f5f3ff;font-family:system-ui}
 
 <div class="tab-content">
 
-<!-- PROGRAMME -->
+<!-- PROGRAMME DESIGN -->
 <div class="tab-pane fade show active" id="mode-programme">
   <div class="card-box mb-3">
     <div class="step-header">Programme Design</div>
-    <div class="step-desc">Start from IEG → PEO → PLO.</div>
+    <div class="step-desc">IEG → PEO → PLO mapping.</div>
 
     <label class="form-label">IEG</label>
     <select id="ieg_programme" class="form-select"></select>
@@ -79,11 +79,11 @@ body{background:#f5f3ff;font-family:system-ui}
   </div>
 </div>
 
-<!-- REFINE -->
+<!-- REFINE PROGRAMME -->
 <div class="tab-pane fade" id="mode-refine">
   <div class="card-box mb-3">
     <div class="step-header">Refine Programme</div>
-    <div class="step-desc">Improve existing PEO → PLO → CLO.</div>
+    <div class="step-desc">Start from PEO → refine PLO → CLO.</div>
 
     <label class="form-label">PEO</label>
     <select id="peo_refine" class="form-select"></select>
@@ -102,7 +102,7 @@ body{background:#f5f3ff;font-family:system-ui}
 <div class="tab-pane fade" id="mode-plo">
   <div class="card-box mb-3">
     <div class="step-header">PLO Only</div>
-    <div class="step-desc">Select PLO to generate CLO.</div>
+    <div class="step-desc">Select a PLO to generate CLO.</div>
 
     <label class="form-label">PLO</label>
     <select id="plo_only" class="form-select"></select>
@@ -114,7 +114,7 @@ body{background:#f5f3ff;font-family:system-ui}
   <div class="card-box mb-3">
     <div class="step-header">CLO Only</div>
     <div class="step-desc">
-      Generate CLO using Bloom + Verb + Content only.
+      Bloom + Verb + Content (no programme mapping).
     </div>
   </div>
 </div>
@@ -165,59 +165,128 @@ body{background:#f5f3ff;font-family:system-ui}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* =====================================================
-   GLOBALS
-===================================================== */
-let CURRENT_MODE = "programme";
+/* =========================
+   HELPERS & STATE
+========================= */
 const $ = id => document.getElementById(id);
+let CURRENT_MODE = "programme";
 
-/* =====================================================
-   APPLY MODE (GENERATOR STYLE)
-===================================================== */
-function applyMode(mode) {
-  CURRENT_MODE = mode;
-
-  // Programme blocks
-  const programmeTab = document.getElementById("mode-programme");
-  const refineTab = document.getElementById("mode-refine");
-  const ploTab = document.getElementById("mode-plo");
-  const cloTab = document.getElementById("mode-clo");
-
-  // Reset all
-  [programmeTab, refineTab, ploTab, cloTab].forEach(el => {
-    if (el) el.classList.remove("show","active");
+/* =========================
+   MODE TRACKING
+========================= */
+document.querySelectorAll('#modeTabs button').forEach(btn=>{
+  btn.addEventListener('shown.bs.tab', e=>{
+    CURRENT_MODE = e.target.dataset.mode;
   });
+});
 
-  // Activate selected tab
-  if (mode === "programme") programmeTab.classList.add("show","active");
-  if (mode === "refine") refineTab.classList.add("show","active");
-  if (mode === "plo_only") ploTab.classList.add("show","active");
-  if (mode === "clo_only") cloTab.classList.add("show","active");
-
-  // Reset shared generator state
-  document.getElementById("cloCard").style.display = "none";
-  document.getElementById("content").value = "";
-  document.getElementById("verb").innerHTML = `<option value="">Select Verb</option>`;
-  document.getElementById("bloomTag").textContent = "—";
-
-  // Mode-specific behaviour
-  if (mode === "clo_only") {
-    document.getElementById("bloom").innerHTML = `
-      <option value="">Select Bloom</option>
-      <option>Remember</option>
-      <option>Understand</option>
-      <option>Apply</option>
-      <option>Analyze</option>
-      <option>Evaluate</option>
-      <option>Create</option>
-    `;
-  }
+/* =========================
+   LOAD MAPPING
+========================= */
+async function loadMapping(){
+  const MAP = await fetch("/api/mapping").then(r=>r.json());
+  fill($("ieg_programme"), MAP.IEGs);
+  fill($("peo_refine"), Object.keys(MAP.PEOtoPLO || {}));
+  fill($("plo_only"), Object.keys(MAP.PLOIndicators || {}));
 }
-/* =====================================================
-   INIT
-===================================================== */
-document.addEventListener("DOMContentLoaded",()=>{
-  applyMode("programme");
+loadMapping();
+
+function fill(sel,list=[]){
+  if(!sel) return;
+  sel.innerHTML='<option value="">Select</option>';
+  list.forEach(v=>sel.add(new Option(v,v)));
+}
+
+/* =========================
+   IEG → PEO
+========================= */
+$("ieg_programme")?.addEventListener("change", async()=>{
+  const ieg=$("ieg_programme").value;
+  if(!ieg) return;
+
+  fill($("peo_programme"),
+    await fetch(`/api/get_peos/${ieg}`).then(r=>r.json())
+  );
+
+  $("ieg_peo_logic_programme").textContent =
+    await fetch(`/api/logic/ieg_peo/${ieg}`).then(r=>r.text());
+});
+
+/* =========================
+   PEO → PLO
+========================= */
+$("peo_programme")?.addEventListener("change", async()=>{
+  fill($("plo_programme"),
+    await fetch(`/api/get_plos/${$("peo_programme").value}`).then(r=>r.json())
+  );
+});
+
+$("peo_refine")?.addEventListener("change", async()=>{
+  const peo=$("peo_refine").value;
+  fill($("plo_refine"),
+    await fetch(`/api/get_plos/${peo}`).then(r=>r.json())
+  );
+  $("peo_plo_logic_refine").textContent =
+    await fetch(`/api/logic/peo_plo/${peo}`).then(r=>r.text());
+});
+
+/* =========================
+   PLO → BLOOM
+========================= */
+function hookPLO(sel){
+  sel?.addEventListener("change", async()=>{
+    if(!sel.value) return;
+    fill($("bloom"),
+      await fetch(`/api/get_blooms/${sel.value}`).then(r=>r.json())
+    );
+  });
+}
+hookPLO($("plo_programme"));
+hookPLO($("plo_refine"));
+hookPLO($("plo_only"));
+
+/* =========================
+   BLOOM → VERB
+========================= */
+$("bloom")?.addEventListener("change", async()=>{
+  if(CURRENT_MODE==="clo_only"){
+    fill($("verb"),["describe","explain","apply","analyze","evaluate","design"]);
+    return;
+  }
+
+  const plo =
+    $("plo_programme")?.value ||
+    $("plo_refine")?.value ||
+    $("plo_only")?.value;
+
+  if(!plo) return;
+
+  fill($("verb"),
+    await fetch(`/api/get_verbs/${plo}/${$("bloom").value}`).then(r=>r.json())
+  );
+});
+
+/* =========================
+   GENERATE CLO
+========================= */
+$("generateBtn")?.addEventListener("click", async()=>{
+  const fd=new FormData();
+  fd.append("plo",
+    $("plo_programme")?.value ||
+    $("plo_refine")?.value ||
+    $("plo_only")?.value || ""
+  );
+  fd.append("bloom",$("bloom").value);
+  fd.append("verb",$("verb").value);
+  fd.append("content",$("content").value);
+
+  const res = await fetch("/generate",{method:"POST",body:fd});
+  const data = await res.json();
+
+  if(data.error){ alert(data.error); return; }
+
+  $("clo_text").textContent=data.clo;
+  $("cloCard").style.display="block";
 });
 </script>
 </body>
