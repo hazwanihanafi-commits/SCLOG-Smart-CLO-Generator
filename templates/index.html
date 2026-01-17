@@ -56,6 +56,44 @@ Auto-generate Programme Educational Objectives (PEO) aligned with programme name
 MQF level and Values-Based Education (VBE).
 </div>
 
+  <!-- STEP 1 -->
+<div class="card-box mb-3">
+
+  <div class="d-flex align-items-center gap-2 mb-1">
+    <span class="step-pill">STEP 1</span>
+    <div class="step-header mb-0">
+      Institutional Educational Goal (IEG)
+    </div>
+  </div>
+
+  <div class="step-desc">
+    Define the Institutional Educational Goal (IEG) that articulates the
+    overarching educational philosophy and graduate attributes endorsed by
+    the institution. The IEG serves as the foundation for the formulation of
+    Programme Educational Objectives (PEO) and subsequent outcome mapping in
+    accordance with Outcome-Based Education (OBE) and MQA requirements.
+  </div>
+
+  <div class="step-divider"></div>
+
+  <label class="form-label">
+    Institutional Educational Goal (IEG)
+  </label>
+
+  <div class="muted mb-1" style="font-size:0.85rem">
+    Paste the official IEG statement defined by your institution.
+  </div>
+
+  <textarea
+    id="ieg_text"
+    class="form-control"
+    rows="4"
+    placeholder="e.g. To produce graduates who are intellectually competent, ethically grounded, socially responsible, and capable of contributing meaningfully to national and global development.">
+  </textarea>
+
+</div>
+
+
 <label class="form-label">Programme Name</label>
 <input id="programmeName" class="form-control"
  placeholder="e.g. Bachelor of Computer Science (Data Science & Analytics)">
@@ -241,41 +279,127 @@ $("peoSelect").onchange=()=>{
  fill($("plo_programme"),p.plos);
 };
 
-/* ================= PLO → BLOOM ================= */
-$("plo_programme").onchange=async()=>{
- if(!$("plo_programme").value)return;
- fill($("bloom"),await fetch(`/api/get_blooms/${$("plo_programme").value}`).then(r=>r.json()));
-};
+/* =====================================================
+   🔥 CORE LOGIC: PLO → STATEMENT + INDICATOR + BLOOM
+===================================================== */
+$("plo_programme").addEventListener("change", async () => {
+  const plo = $("plo_programme").value;
 
-$("bloom").onchange=()=>{
- const level=$("level").value||"Degree";
- const b=$("bloom").value;
- $("bloomTag").textContent=`${bloomDomainTag(b,level)} · ${b}`;
- $("bloomDesc").innerHTML=`Why ${b}? Required at ${level} level for ${VBE_BY_LEVEL[level].focus}.`;
-};
+  $("bloom").innerHTML = '<option value="">Select Bloom</option>';
+  $("verb").innerHTML = '<option value="">Select Verb</option>';
+  $("bloomDesc").textContent = "Select a Bloom level to see its description.";
+  $("bloomTag").textContent = "—";
 
-/* ================= BLOOM → VERB ================= */
-$("bloom").addEventListener("change",async()=>{
- const plo=$("plo_programme").value;
- if(!plo)return;
- fill($("verb"),await fetch(`/api/get_verbs/${plo}/${$("bloom").value}`).then(r=>r.json()));
+  $("assessList").innerHTML = "";
+  $("evidenceList").innerHTML = "";
+
+  if (!plo) return;
+
+  /* 1️⃣ PLO STATEMENT */
+  try {
+    const level = $("level").value || "Degree";
+    const res = await fetch(
+      `/api/get_statement/${encodeURIComponent(level)}/PLO/${encodeURIComponent(plo)}`
+    );
+    const stmt = await res.json();
+    console.log("PLO STATEMENT:", stmt);
+  } catch (e) {
+    console.error("PLO statement error", e);
+  }
+
+  /* 2️⃣ PLO INDICATOR */
+  console.log("PLO INDICATOR:", MAP.PLOIndicators?.[plo] || "—");
+
+  /* 3️⃣ LOAD BLOOM */
+  try {
+    const res = await fetch(`/api/get_blooms/${encodeURIComponent(plo)}`);
+    const blooms = await res.json();
+
+    blooms.forEach(b => $("bloom").add(new Option(b, b)));
+
+    if (blooms.length > 0) {
+      $("bloom").value = blooms[0];
+      $("bloom").dispatchEvent(new Event("change"));
+    }
+  } catch (e) {
+    console.error("PLO → Bloom error", e);
+  }
 });
 
-/* ================= GENERATE ================= */
-$("generateBtn").onclick=async()=>{
- const fd=new FormData();
- fd.append("plo",$("plo_programme").value);
- fd.append("bloom",$("bloom").value);
- fd.append("verb",$("verb").value);
- fd.append("content",$("content").value);
+/* =========================
+   BLOOM → TAG + DESC + VERB
+========================= */
+$("bloom").addEventListener("change", async () => {
+  const bloom = $("bloom").value;
+  const level = $("level").value || "Degree";
+  const plo = $("plo_programme").value;
 
- const d=await fetch("/generate",{method:"POST",body:fd}).then(r=>r.json());
- $("clo_text").textContent=d.clo;
- $("variantsPanel").innerHTML=Object.values(d.variants||{}).map(v=>`<div>${v}</div>`).join("");
- $("assessList").innerHTML=d.assessments.map(a=>`<li>${a}</li>`).join("");
- $("evidenceList").innerHTML=Object.values(d.evidence).flat().map(e=>`<li>${e}</li>`).join("");
- $("cloCard").style.display="block";
-};
+  if (!bloom || !plo) return;
+
+  const tag = bloomDomainTag(bloom, level);
+  $("bloomTag").textContent = `${tag} · ${bloom}`;
+
+  $("bloomDesc").innerHTML =
+    `<strong>Why ${bloom}?</strong><br>
+     At ${level} level, learners are expected to <em>${bloom}</em>,
+     aligned with ${VBE_BY_LEVEL[level].focus}.`;
+
+  try {
+    const res = await fetch(`/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}`);
+    const verbs = await res.json();
+    fill($("verb"), verbs);
+  } catch (e) {
+    console.error("Verb load error", e);
+  }
+});
+
+/* =====================================================
+   🔥 GENERATE CLO (FINAL)
+===================================================== */
+$("generateBtn").addEventListener("click", async () => {
+  if (
+    !$("plo_programme").value ||
+    !$("bloom").value ||
+    !$("verb").value ||
+    !$("content").value.trim()
+  ) {
+    alert("Please fill PLO, Bloom, Verb and Content.");
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("plo", $("plo_programme").value);
+  fd.append("bloom", $("bloom").value);
+  fd.append("verb", $("verb").value);
+  fd.append("content", $("content").value);
+  fd.append("level", $("level").value || "Degree");
+
+  try {
+    const res = await fetch("/generate", { method: "POST", body: fd });
+    const data = await res.json();
+
+    $("clo_text").innerText = data.clo;
+    $("cloCard").style.display = "block";
+
+    /* Variants */
+    $("variantsPanel").innerHTML = "";
+    Object.values(data.variants || {}).forEach(v => {
+      $("variantsPanel").innerHTML += `<div>${v}</div>`;
+    });
+
+    /* Assessment */
+    $("assessList").innerHTML =
+      data.assessments.map(a => `<li>${a}</li>`).join("");
+
+    /* Evidence */
+    $("evidenceList").innerHTML =
+      Object.values(data.evidence || {}).flat().map(e => `<li>${e}</li>`).join("");
+
+  } catch (e) {
+    console.error("Generate CLO error", e);
+    alert("Error generating CLO");
+  }
+});
 </script>
 </body>
 </html>
