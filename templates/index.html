@@ -396,13 +396,7 @@
   <span class="muted">Select a Bloom level to see recommendations.</span>
 </div>
                 
-                <div class="form-check form-switch mt-2">
-  <input class="form-check-input" type="checkbox" id="autoShowAssessment" checked>
-  <label class="form-check-label muted" for="autoShowAssessment">
-    Auto show assessment & evidence
-  </label>
-</div>
-
+              
 
                 <div class="col-md-6">
                   <label class="form-label">Verb</label>
@@ -1112,6 +1106,26 @@ peoSel.addEventListener("change", () => {
   // ❗ PEO → PLO handled by EXISTING code (API)
 });
 
+function refreshAutoPEO(){
+  const programmeName = document.getElementById("programmeName")?.value.trim();
+  const level = levelSel.value;
+
+  if (!programmeName || !level) {
+    peoSel.innerHTML = '<option value="">Select PEO</option>';
+    iegLogicBox.textContent = "—";
+    return;
+  }
+
+  const peos = generatePEOFromProgramme(programmeName, level);
+
+  peoSel.innerHTML = '<option value="">Select PEO</option>';
+  peos.forEach(p => peoSel.add(new Option(p.code, p.code)));
+  peoSel.dataset.map = JSON.stringify(peos);
+
+  iegLogicBox.textContent = "—";
+}
+
+    
 /* =========================
    PLO → STATEMENT + INDICATOR + BLOOM (SINGLE SOURCE)
 ========================= */
