@@ -282,38 +282,40 @@
 
     <!-- 2) PLO for selected PEO -->
 
-      <div class="row">
-  <div class="col-12">
-    
-    <div class="step-header">
-      Step 2 · Programme Learning Outcomes (PLO)
+      <!-- STEP 2 -->
+<div class="card-box mb-3">
+
+  <div class="d-flex align-items-center gap-2 mb-1">
+    <span class="step-pill">STEP 2</span>
+    <div class="step-header mb-0">
+      Programme Learning Outcomes (PLO)
     </div>
-
-    <div class="step-desc">
-      Select the Programme Learning Outcome (PLO) aligned with the selected
-      Programme Educational Objective (PEO).
-    </div>
-
-    <div class="step-divider"></div>
-
   </div>
+
+  <div class="step-desc">
+    Select the Programme Learning Outcome (PLO) aligned with the selected
+    Programme Educational Objective (PEO).
+  </div>
+
+  <div class="step-divider"></div>
+
+  <label class="form-label">PLO for selected PEO</label>
+  <select id="plo" class="form-select mb-3">
+    <option value="">Select PLO</option>
+  </select>
+
+  <div class="mb-3">
+    <div class="form-label">Why PEO → PLO?</div>
+    <div id="peo_plo_logic" class="logic-box">—</div>
+  </div>
+
+  <div>
+    <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
+    <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
+    <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
+  </div>
+
 </div>
-      
-      
-      <label class="form-label">PLO for selected PEO</label>
-      <select id="plo" class="form-select mb-3"><option value="">Select PLO</option></select>
-
-      <div class="mb-3">
-        <div class="form-label">Why PEO → PLO?</div>
-        <div id="peo_plo_logic" class="logic-box">—</div>
-      </div>
-
-      <div>
-        <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
-        <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
-        <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
-      </div>
-    </div>
 
     <!-- 3) Smart CLO Builder (main) -->
     <div class="card-box mb-3">
