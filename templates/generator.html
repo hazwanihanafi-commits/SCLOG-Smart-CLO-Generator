@@ -109,6 +109,32 @@
   margin: 14px 0 18px;
 }
 
+    .step-strong{
+  font-size:1.15rem;
+  font-weight:900;
+}
+
+    .step-pill{
+  font-size:0.7rem;
+  font-weight:800;
+  letter-spacing:0.08em;
+  color:#6d28d9;
+  background:#ede9fe;
+  padding:4px 10px;
+  border-radius:999px;
+}
+
+    .bloom-tag{
+  font-size:0.7rem;
+  font-weight:900;
+  letter-spacing:0.05em;
+  background:#ede9fe;
+  color:#6d28d9;
+  padding:4px 8px;
+  border-radius:999px;
+}
+    
+
     .card-box {
       background: var(--card);
       border-radius: var(--radius);
@@ -195,15 +221,20 @@
     </div>
 
     <!-- 1) Academic profile + Level + IEG + PEO -->
-    <div class="card-box mb-3">
-      
-      <div class="step-header">Step 1 · Programme Context</div>
+ <div class="d-flex align-items-center gap-2 mb-1">
+  <span class="step-pill">STEP 1</span>
+  <div class="step-header mb-0">
+    Programme Context
+  </div>
+</div>
+
 <div class="step-desc">
   Define the academic discipline, level, and intended graduate attributes
   to guide appropriate outcome mapping.
 </div>
-      
+
 <div class="step-divider"></div>
+      
       <div class="row g-3 profile-row">
         <div class="col-12 col-md-4">
           <label class="form-label">Academic profile</label>
@@ -248,15 +279,25 @@
     </div>
 
     <!-- 2) PLO for selected PEO -->
-    <div id="plo_block" class="card-box mb-3">
 
-      <div class="step-header">Step 2 · Programme Learning Outcomes (PLO)</div>
-<div class="step-desc">
-  Select the Programme Learning Outcome (PLO) aligned with the selected
-  Programme Educational Objective (PEO).
+      <div class="row">
+  <div class="col-12">
+    
+    <div class="step-header">
+      Step 2 · Programme Learning Outcomes (PLO)
+    </div>
+
+    <div class="step-desc">
+      Select the Programme Learning Outcome (PLO) aligned with the selected
+      Programme Educational Objective (PEO).
+    </div>
+
+    <div class="step-divider"></div>
+
+  </div>
 </div>
-<div class="step-divider"></div>
-
+      
+      
       <label class="form-label">PLO for selected PEO</label>
       <select id="plo" class="form-select mb-3"><option value="">Select PLO</option></select>
 
@@ -276,10 +317,16 @@
     <div class="card-box mb-3">
       <div class="row">
         <div class="col-12 col-xl-8">
-          <h4 class="smart-title mb-1">
-  <i class="bi bi-lightning-charge-fill me-1"></i>
-  Smart CLO Builder
-</h4>
+          <div class="d-flex align-items-center gap-2 mb-1">
+  <h4 class="smart-title mb-0">
+    <i class="bi bi-lightning-charge-fill me-1"></i>
+    Smart CLO Builder
+  </h4>
+
+  <!-- Auto Bloom tag -->
+  <span id="bloomTag" class="bloom-tag">—</span>
+</div>
+          
 <div class="smart-divider mb-2"></div>
 
           <div class="step-header">Step 3 · Course Learning Outcome (CLO) Construction</div>
@@ -356,7 +403,7 @@
 </div>
 <input id="content" class="form-control"
        placeholder="e.g., ECG waveform interpretation, laboratory testing procedure, ethical case scenario">
-
+</div>
                 <div class="col-12 d-flex gap-2 align-items-center">
                   <button id="generateBtn" class="btn btn-primary"><i class="bi bi-magic me-1"></i> Generate CLO</button>
                   <button id="copyBtn" class="btn btn-outline-secondary"><i class="bi bi-clipboard me-1"></i> Copy</button>
@@ -792,6 +839,39 @@ async function loadMapping() {
   `;
 }
 
+
+    function updateBloomTag(bloomKey){
+  const tag = document.getElementById("bloomTag");
+  if(!tag || !bloomKey) return;
+
+  // Cognitive
+  if (["remember","understand","apply","analyze","evaluate","create"].includes(bloomKey)){
+    const map = {remember:"C1",understand:"C2",apply:"C3",analyze:"C4",evaluate:"C5",create:"C6"};
+    tag.textContent = map[bloomKey];
+    return;
+  }
+
+  // Affective
+  if (["receiving","responding","valuing","organization","characterization"].includes(bloomKey)){
+    const map = {receiving:"A1",responding:"A2",valuing:"A3",organization:"A4",characterization:"A5"};
+    tag.textContent = map[bloomKey];
+    return;
+  }
+
+  // Psychomotor
+  if (["perception","set","guided response","mechanism","complex overt response","adaptation","origination"].includes(bloomKey)){
+    const map = {
+      perception:"P1",set:"P2","guided response":"P3",
+      mechanism:"P4","complex overt response":"P5",
+      adaptation:"P6",origination:"P7"
+    };
+    tag.textContent = map[bloomKey];
+    return;
+  }
+
+  tag.textContent = "—";
+}
+
   /* =========================
    BLOOM LEVEL AUTO-HINT
 ========================= */
@@ -839,6 +919,8 @@ bloomSel.addEventListener("change", async () => {
   const raw = bloomSel.value;
   const key = normaliseBloomKey(raw);
   const plo = ploSel.value;
+
+  updateBloomTag(key); 
 
   console.log("BLOOM:", raw, "→", key);
 
