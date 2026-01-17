@@ -270,6 +270,19 @@
       </select>
     </div>
 
+    <!-- Programme Name -->
+<div class="col-12 col-md-6">
+  <label class="form-label">
+    Programme Name
+  </label>
+  <input
+    id="programmeName"
+    type="text"
+    class="form-control"
+    placeholder="e.g. Bachelor of Exercise Science"
+  >
+</div>
+
     <!-- IEG -->
     <div class="col-12 col-md-3">
       <label class="form-label">Institutional Educational Goal (IEG)</label>
@@ -998,17 +1011,9 @@ bloomSel.addEventListener("change", async () => {
     BLOOM_DESC[key] || "Select a Bloom level to see its description.";
 
 
-/* Assessment + Evidence */
-renderAssessmentFromBloom(key);
 
-
-  // 🔥 Auto show Assessment tab (if enabled)
-if (AUTO_SHOW_ASSESSMENT) {
-  const assessTabBtn = document.querySelector('[data-bs-target="#assessmentTab"]');
-  if (assessTabBtn) {
-    new bootstrap.Tab(assessTabBtn).show();
-  }
-}
+// Assessment will be shown ONLY when user opens Assessment tab
+// No auto-render, no auto-tab switching
   
   /* Backend verbs + meta */
   if (!plo || !key) return;
