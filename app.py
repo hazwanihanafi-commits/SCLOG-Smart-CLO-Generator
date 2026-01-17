@@ -533,14 +533,18 @@ def download_rubric():
 # ------------------------------------------------------
 @app.route("/")
 def index():
-    return render_template("generator.html")
+    return render_template("index.html")
 
+@app.route("/generator")
+def generator():
+    return render_template("generator.html")
 
 # ------------------------------------------------------
 # RUN
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
