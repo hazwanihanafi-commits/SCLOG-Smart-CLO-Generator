@@ -22,11 +22,9 @@ body{background:#f5f3ff;font-family:system-ui}
 <div class="container my-4">
 
 <!-- HEADER -->
-<div class="card-box mb-3 d-flex justify-content-between">
-  <div>
-    <h3 style="color:#6d28d9;font-weight:900">SCLOG</h3>
-    <div class="text-muted">Smart Course Learning Outcome Generator</div>
-  </div>
+<div class="card-box mb-3">
+  <h3 style="color:#6d28d9;font-weight:900">SCLOG</h3>
+  <div class="text-muted">Smart Course Learning Outcome Generator</div>
 </div>
 
 <!-- MODE TABS -->
@@ -59,13 +57,13 @@ body{background:#f5f3ff;font-family:system-ui}
 
 <div class="tab-content">
 
-<!-- MODE 1 -->
+<!-- PROGRAMME -->
 <div class="tab-pane fade show active" id="mode-programme">
   <div class="card-box mb-3">
     <div class="step-header">Programme Design</div>
-    <div class="step-desc">Design a new programme starting from IEG.</div>
+    <div class="step-desc">Start from IEG → PEO → PLO.</div>
 
-    <label class="form-label mt-2">IEG</label>
+    <label class="form-label">IEG</label>
     <select id="ieg_programme" class="form-select"></select>
 
     <label class="form-label mt-2">PEO</label>
@@ -81,16 +79,16 @@ body{background:#f5f3ff;font-family:system-ui}
   </div>
 </div>
 
-<!-- MODE 2 -->
+<!-- REFINE -->
 <div class="tab-pane fade" id="mode-refine">
   <div class="card-box mb-3">
     <div class="step-header">Refine Programme</div>
-    <div class="step-desc">Refine existing PEO, PLO, and CLO.</div>
+    <div class="step-desc">Improve existing PEO → PLO → CLO.</div>
 
-    <label class="form-label mt-2">PEO</label>
+    <label class="form-label">PEO</label>
     <select id="peo_refine" class="form-select"></select>
 
-    <label class="form-label mt-3">PLO</label>
+    <label class="form-label mt-2">PLO</label>
     <select id="plo_refine" class="form-select"></select>
 
     <div class="mt-2">
@@ -100,23 +98,23 @@ body{background:#f5f3ff;font-family:system-ui}
   </div>
 </div>
 
-<!-- MODE 3 -->
+<!-- PLO ONLY -->
 <div class="tab-pane fade" id="mode-plo">
   <div class="card-box mb-3">
     <div class="step-header">PLO Only</div>
-    <div class="step-desc">Select a PLO to generate CLOs.</div>
+    <div class="step-desc">Select PLO to generate CLO.</div>
 
-    <label class="form-label mt-2">PLO</label>
+    <label class="form-label">PLO</label>
     <select id="plo_only" class="form-select"></select>
   </div>
 </div>
 
-<!-- MODE 4 -->
+<!-- CLO ONLY -->
 <div class="tab-pane fade" id="mode-clo">
   <div class="card-box mb-3">
     <div class="step-header">CLO Only</div>
     <div class="step-desc">
-      Generate CLO without programme context (Bloom + Verb + Content).
+      Generate CLO using Bloom + Verb + Content only.
     </div>
   </div>
 </div>
@@ -167,109 +165,152 @@ body{background:#f5f3ff;font-family:system-ui}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
+/* =====================================================
+   GLOBALS
+===================================================== */
 let CURRENT_MODE = "programme";
 const $ = id => document.getElementById(id);
 
-/* ===== MODE CHANGE (BOOTSTRAP SAFE) ===== */
-document.querySelectorAll('#modeTabs button').forEach(btn=>{
-  btn.addEventListener('shown.bs.tab', e=>{
-    CURRENT_MODE = e.target.dataset.mode;
+/* =====================================================
+   APPLY MODE (GENERATOR STYLE)
+===================================================== */
+function applyMode(mode) {
+  CURRENT_MODE = mode;
+
+  if (mode === "clo_only") {
+    $("bloom").innerHTML = `
+      <option value="">Select Bloom</option>
+      <option>Remember</option>
+      <option>Understand</option>
+      <option>Apply</option>
+      <option>Analyze</option>
+      <option>Evaluate</option>
+      <option>Create</option>
+    `;
+    $("verb").innerHTML = `<option value="">Select Verb</option>`;
+    $("bloomTag").textContent = "—";
+  }
+}
+
+/* =====================================================
+   CONNECT TABS
+===================================================== */
+document.querySelectorAll("#modeTabs button").forEach(btn => {
+  btn.addEventListener("shown.bs.tab", e => {
+    applyMode(e.target.dataset.mode);
   });
 });
 
-/* ===== LOAD INITIAL DATA ===== */
-async function loadMapping(){
-  const res = await fetch('/api/mapping');
-  const MAP = await res.json();
-  fill($('ieg_programme'), MAP.IEGs);
-  fill($('plo_only'), Object.keys(MAP.PLOIndicators || {}));
+/* =====================================================
+   LOAD DATA
+===================================================== */
+async function loadMapping() {
+  const MAP = await fetch("/api/mapping").then(r=>r.json());
+  fill($("ieg_programme"), MAP.IEGs);
+  fill($("plo_only"), Object.keys(MAP.PLOIndicators || {}));
 }
 loadMapping();
 
-function fill(sel, list=[]){
+function fill(sel, list=[]) {
   sel.innerHTML = '<option value="">Select</option>';
   list.forEach(v => sel.add(new Option(v,v)));
 }
 
-/* ===== PROGRAMME MODE ===== */
-$('ieg_programme')?.addEventListener('change', async()=>{
-  if(CURRENT_MODE!=='programme')return;
-  const ieg=$('ieg_programme').value;
-  fill($('peo_programme'),
+/* =====================================================
+   PROGRAMME FLOW
+===================================================== */
+$("ieg_programme").addEventListener("change", async()=>{
+  const ieg = $("ieg_programme").value;
+  fill($("peo_programme"),
     await fetch(`/api/get_peos/${ieg}`).then(r=>r.json())
   );
-  $('ieg_peo_logic_programme').textContent =
+  $("ieg_peo_logic_programme").textContent =
     await fetch(`/api/logic/ieg_peo/${ieg}`).then(r=>r.text());
 });
 
-$('peo_programme')?.addEventListener('change', async()=>{
-  fill($('plo_programme'),
-    await fetch(`/api/get_plos/${$('peo_programme').value}`).then(r=>r.json())
+$("peo_programme").addEventListener("change", async()=>{
+  fill($("plo_programme"),
+    await fetch(`/api/get_plos/${$("peo_programme").value}`).then(r=>r.json())
   );
 });
 
-/* ===== REFINE MODE ===== */
-$('peo_refine')?.addEventListener('change', async()=>{
-  const peo=$('peo_refine').value;
-  fill($('plo_refine'),
+/* =====================================================
+   REFINE FLOW
+===================================================== */
+$("peo_refine").addEventListener("change", async()=>{
+  const peo = $("peo_refine").value;
+  fill($("plo_refine"),
     await fetch(`/api/get_plos/${peo}`).then(r=>r.json())
   );
-  $('peo_plo_logic_refine').textContent =
+  $("peo_plo_logic_refine").textContent =
     await fetch(`/api/logic/peo_plo/${peo}`).then(r=>r.text());
 });
 
-/* ===== PLO → BLOOM ===== */
+/* =====================================================
+   PLO → BLOOM
+===================================================== */
 function hookPLO(sel){
-  sel?.addEventListener('change', async()=>{
+  sel.addEventListener("change", async()=>{
     if(!sel.value)return;
-    fill($('bloom'),
+    fill($("bloom"),
       await fetch(`/api/get_blooms/${sel.value}`).then(r=>r.json())
     );
   });
 }
-hookPLO($('plo_programme'));
-hookPLO($('plo_refine'));
-hookPLO($('plo_only'));
+hookPLO($("plo_programme"));
+hookPLO($("plo_refine"));
+hookPLO($("plo_only"));
 
-/* ===== BLOOM → VERB ===== */
-$('bloom').addEventListener('change', async()=>{
-  if(CURRENT_MODE === 'clo_only'){
-    fill($('verb'), [
+/* =====================================================
+   BLOOM → VERB
+===================================================== */
+$("bloom").addEventListener("change", async()=>{
+  if(CURRENT_MODE === "clo_only"){
+    fill($("verb"),[
       "describe","explain","apply",
       "analyze","evaluate","design","demonstrate"
     ]);
     return;
   }
+
   const plo =
-    $('plo_programme').value ||
-    $('plo_refine').value ||
-    $('plo_only').value;
+    $("plo_programme").value ||
+    $("plo_refine").value ||
+    $("plo_only").value;
 
   if(!plo)return;
 
-  fill($('verb'),
-    await fetch(`/api/get_verbs/${plo}/${$('bloom').value}`).then(r=>r.json())
+  fill($("verb"),
+    await fetch(`/api/get_verbs/${plo}/${$("bloom").value}`).then(r=>r.json())
   );
 });
 
-/* ===== GENERATE CLO ===== */
-$('generateBtn').addEventListener('click', async()=>{
+/* =====================================================
+   GENERATE CLO
+===================================================== */
+$("generateBtn").addEventListener("click", async()=>{
   const fd = new FormData();
-  fd.append("mode", CURRENT_MODE);
   fd.append("plo",
-    $('plo_programme').value ||
-    $('plo_refine').value ||
-    $('plo_only').value || ""
+    $("plo_programme").value ||
+    $("plo_refine").value ||
+    $("plo_only").value || ""
   );
-  fd.append("bloom", $('bloom').value);
-  fd.append("verb", $('verb').value);
-  fd.append("content", $('content').value);
+  fd.append("bloom",$("bloom").value);
+  fd.append("verb",$("verb").value);
+  fd.append("content",$("content").value);
 
-  const data = await fetch('/generate',{method:'POST',body:fd})
+  const data = await fetch("/generate",{method:"POST",body:fd})
     .then(r=>r.json());
 
-  $('clo_text').textContent = data.clo;
-  $('cloCard').style.display = 'block';
+  $("clo_text").textContent = data.clo;
+  $("cloCard").style.display = "block";
+});
+
+/* =====================================================
+   INIT
+===================================================== */
+document.addEventListener("DOMContentLoaded",()=>{
+  applyMode("programme");
 });
 </script>
 </body>
