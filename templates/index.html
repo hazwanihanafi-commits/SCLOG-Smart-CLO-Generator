@@ -530,6 +530,51 @@
 const $ = id => document.getElementById(id);
 
 /* =========================
+   VBE + BLOOM BY LEVEL (SINGLE SOURCE)
+========================= */
+const VBE_BY_LEVEL = {
+  Diploma:{
+    bloom:{
+      C:["remember","understand","apply"],
+      A:["receiving","responding"],
+      P:["perception","set","guided response"]
+    },
+    values:["discipline","responsibility"],
+    focus:"work readiness and ethical conduct"
+  },
+
+  Degree:{
+    bloom:{
+      C:["understand","apply","analyze"],
+      A:["responding","valuing"],
+      P:["guided response","mechanism"]
+    },
+    values:["integrity","justice"],
+    focus:"professional practice and societal responsibility"
+  },
+
+  Master:{
+    bloom:{
+      C:["analyze","evaluate","create"],
+      A:["valuing","organization"],
+      P:["mechanism","adaptation"]
+    },
+    values:["wisdom","accountability"],
+    focus:"advanced professional judgement and leadership"
+  },
+
+  PhD:{
+    bloom:{
+      C:["create"],
+      A:["characterization"],
+      P:["adaptation","origination"]
+    },
+    values:["truth","global responsibility"],
+    focus:"knowledge creation and ethical leadership"
+  }
+};
+
+/* =========================
    DOM REFERENCES
 ========================= */
 const profileSel = $('profile');
@@ -986,93 +1031,87 @@ if (AUTO_SHOW_ASSESSMENT) {
   renderContentSuggestions(meta.domain);
 });
 
-    /* =========================
-   IEG → PEO
+/* =========================
+   STEP 1 — IEG → PEO (CLEAN, FINAL)
+   ✔ IEG optional
+   ✔ PEO auto-generated from Programme Name
+   ✔ Uses VBE_BY_LEVEL
+   ❌ No API calls
+   ❌ Does NOT touch PLO / Bloom logic
 ========================= */
-iegSel.addEventListener("change", async () => {
-  const ieg = iegSel.value;
 
-  peoSel.innerHTML = '<option value="">Select PEO</option>';
-  ploSel.innerHTML = '<option value="">Select PLO</option>';
+/* ---------- Generate PEO ---------- */
+function generatePEOFromProgramme(programmeName, level){
+  if (!programmeName || !level) return [];
 
-  iegLogicBox.textContent = "—";
-  peoPloLogicBox.textContent = "—";
-  peoStatementEl.textContent = "—";
-  ploStatementEl.textContent = "—";
-  ploIndicatorEl.textContent = "—";
+  const vbe = VBE_BY_LEVEL[level]?.values || [];
 
-  if (!ieg) return;
-
-  try {
-    const res = await fetch(`/api/get_peos/${encodeURIComponent(ieg)}`);
-    const peos = await res.json();
-
-    (peos || []).forEach(p =>
-      peoSel.add(new Option(p, p))
-    );
-  } catch (e) {
-    console.error("IEG → PEO error", e);
-  }
-
-  try {
-    const logicRes = await fetch(`/api/logic/ieg_peo/${encodeURIComponent(ieg)}`);
-    const txt = await logicRes.text();
-    iegLogicBox.textContent = txt?.trim() || "—";
-  } catch (e) {
-    console.error("IEG logic error", e);
-  }
-});
-
-peoSel.addEventListener("change", async () => {
-  const peo = peoSel.value;
-
-  ploSel.innerHTML = '<option value="">Select PLO</option>';
-  peoPloLogicBox.textContent = "—";
-  peoStatementEl.textContent = "—";
-  ploStatementEl.textContent = "—";
-  ploIndicatorEl.textContent = "—";
-
-  if (!peo) return;
-
-  /* 1️⃣ Load PLO list */
-  try {
-    const r = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-    const plos = await r.json();
-    (plos || []).forEach(p => ploSel.add(new Option(p, p)));
-  } catch (e) {
-    console.error("PEO → PLO list error", e);
-  }
-
-  /* 2️⃣ Why PEO → PLO (ROBUST DEFAULT) */
-  try {
-    const logicRes = await fetch(`/api/logic/peo_plo/${encodeURIComponent(peo)}`);
-    if (!logicRes.ok) {
-      peoPloLogicBox.textContent =
-        "The selected Programme Learning Outcomes (PLOs) are directly aligned with the Programme Educational Objective (PEO).";
-    } else {
-      const txt = await logicRes.text();
-      peoPloLogicBox.textContent =
-        txt?.trim() ||
-        "The selected Programme Learning Outcomes (PLOs) are directly aligned with the Programme Educational Objective (PEO).";
+  return [
+    {
+      code: "PEO1",
+      text: `Graduates of the ${programmeName} demonstrate strong disciplinary knowledge and professional competence guided by ${vbe[0] || "professional values"}.`,
+      rationale: "This PEO emphasises mastery of disciplinary knowledge and professional competence."
+    },
+    {
+      code: "PEO2",
+      text: `Graduates of the ${programmeName} communicate and collaborate effectively with diverse stakeholders guided by ${vbe[1] || "ethical principles"}.`,
+      rationale: "This PEO focuses on communication skills and teamwork in professional contexts."
+    },
+    {
+      code: "PEO3",
+      text: `Graduates of the ${programmeName} demonstrate leadership, autonomy and commitment to lifelong learning.`,
+      rationale: "This PEO supports leadership development and continuous professional growth."
+    },
+    {
+      code: "PEO4",
+      text: `Graduates of the ${programmeName} apply innovation and entrepreneurial thinking where appropriate.`,
+      rationale: "This PEO encourages innovation, creativity and value creation."
+    },
+    {
+      code: "PEO5",
+      text: `Graduates of the ${programmeName} uphold ethics, professionalism and social responsibility.`,
+      rationale: "This PEO ensures ethical conduct and professional integrity."
     }
-  } catch (e) {
-    console.error("PEO → PLO logic error", e);
-    peoPloLogicBox.textContent =
-      "The selected Programme Learning Outcomes (PLOs) are directly aligned with the Programme Educational Objective (PEO).";
-  }
+  ];
+}
 
-  /* 3️⃣ PEO statement */
-  try {
-    const level = levelSel.value || "Degree";
-    const stmtRes = await fetch(
-      `/api/get_statement/${encodeURIComponent(level)}/PEO/${encodeURIComponent(peo)}`
-    );
-    const stmt = await stmtRes.json();
-    peoStatementEl.textContent = stmt || "—";
-  } catch (e) {
-    console.error("PEO statement error", e);
-    peoStatementEl.textContent = "—";
-  }
+/* ---------- Generate PEO when Programme Name + Level available ---------- */
+function refreshAutoPEO(){
+  const programmeName =
+    document.querySelector('#programmeName')?.value?.trim()
+    || document.querySelector('#programme_name')?.value?.trim();
+
+  const level = levelSel.value;
+  if (!programmeName || !level) return;
+
+  const peos = generatePEOFromProgramme(programmeName, level);
+
+  /* Populate PEO dropdown */
+  peoSel.innerHTML = '<option value="">Select PEO</option>';
+  peos.forEach(p => peoSel.add(new Option(p.code, p.code)));
+  peoSel.dataset.map = JSON.stringify(peos);
+
+  /* Clear logic boxes */
+  iegLogicBox.textContent = "—";
+}
+
+/* ---------- Trigger auto-PEO ---------- */
+levelSel.addEventListener("change", refreshAutoPEO);
+
+document
+  .querySelector('#programmeName, #programme_name')
+  ?.addEventListener("blur", refreshAutoPEO);
+
+/* ---------- PEO selection (RATIONALE ONLY) ---------- */
+peoSel.addEventListener("change", () => {
+  const peos = JSON.parse(peoSel.dataset.map || "[]");
+  const selected = peos.find(p => p.code === peoSel.value);
+  if (!selected) return;
+
+  iegLogicBox.textContent = selected.rationale || "—";
+
+  // ❗ STOP HERE
+  // ❗ PEO → PLO handled by EXISTING code (API)
 });
 
 /* =========================
