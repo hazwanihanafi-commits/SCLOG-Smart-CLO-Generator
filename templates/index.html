@@ -351,10 +351,9 @@
 
   <!-- Statements & indicator -->
   <div class="mb-3">
-    <div class="form-label">PEO, PLO and Indicator of Achievement</div>
-    <div><strong>PEO:</strong> <span id="peo_statement" class="muted">—</span></div>
+    <div class="form-label">PLO and Indicator of Achievement</div>
     <div><strong>PLO:</strong> <span id="plo_statement" class="muted">—</span></div>
-    <div><strong>Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
+    <div><strong>PLO Indicator:</strong> <span id="plo_indicator" class="muted">—</span></div>
   </div>
 
 </div>
@@ -591,8 +590,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Ethics and Professionalism",
     statement: programme =>
       `In the context of the ${programme} programme, graduates demonstrate comprehensive and systematic understanding of relevant knowledge, concepts and principles to address complex and contemporary issues in professional practice.`,
-    indicator:
-      "Achievement in assessments requiring integration and application of programme-level knowledge."
+    indicator: [
+      "≥ 70% of students achieve competent or above in assessments mapped to PLO1",
+      "Achievement in assessments requiring integration and application of programme-level knowledge"
+    ]
   },
 
   PLO2: {
@@ -600,8 +601,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Ethics and Professionalism",
     statement: programme =>
       `In the context of the ${programme} programme, graduates analyse, evaluate and generate solutions or new knowledge through critical and independent inquiry that meets recognised academic or professional standards.`,
-    indicator:
-      "Performance in analytical, evaluative or research-based assessments."
+    indicator: [
+      "≥ 70% of students achieve competent or above in analytical, evaluative or research-based assessments",
+      "Performance in higher-order cognitive tasks demonstrating critical and independent inquiry"
+    ]
   },
 
   PLO3: {
@@ -609,8 +612,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Compliance with Standards",
     statement: programme =>
       `In the context of the ${programme} programme, graduates demonstrate appropriate practical, technical or methodological skills in accordance with established standards and best practices.`,
-    indicator:
-      "Demonstration of competence in practical or skills-based assessments."
+    indicator: [
+      "≥ 70% of students achieve competent or above in practical or skills-based assessments",
+      "Demonstration of competence aligned with established standards and best practices"
+    ]
   },
 
   PLO4: {
@@ -618,8 +623,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Honesty and Integrity",
     statement: programme =>
       `In the context of the ${programme} programme, graduates work effectively and ethically with diverse individuals and teams in professional and scholarly environments.`,
-    indicator:
-      "Effective collaboration and participation in group-based activities."
+    indicator: [
+      "≥ 70% of students achieve competent or above in group-based or teamwork-related assessments",
+      "Effective and ethical collaboration in team-based activities"
+    ]
   },
 
   PLO5: {
@@ -627,8 +634,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Honesty and Integrity",
     statement: programme =>
       `In the context of the ${programme} programme, graduates communicate ideas, information and findings clearly, professionally and ethically to relevant stakeholders.`,
-    indicator:
-      "Clarity, accuracy and professionalism in written and oral communication."
+    indicator: [
+      "≥ 70% of students achieve competent or above in written and oral communication assessments",
+      "Clarity, accuracy and professionalism in communication outputs"
+    ]
   },
 
   PLO6: {
@@ -636,8 +645,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Proper Ethics and Etiquette",
     statement: programme =>
       `In the context of the ${programme} programme, graduates apply appropriate digital and technological tools responsibly to support learning, professional practice or research.`,
-    indicator:
-      "Effective and ethical use of digital tools in coursework or projects."
+    indicator: [
+      "≥ 70% of students demonstrate competent and ethical use of digital tools in assessments",
+      "Responsible application of technology in coursework or projects"
+    ]
   },
 
   PLO7: {
@@ -645,8 +656,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Ethics and Professionalism",
     statement: programme =>
       `In the context of the ${programme} programme, graduates apply appropriate quantitative or analytical methods to interpret data and support informed decision-making.`,
-    indicator:
-      "Accurate data analysis and interpretation in quantitative tasks."
+    indicator: [
+      "≥ 70% of students achieve competent or above in quantitative or data analysis assessments",
+      "Accurate interpretation and application of numerical data"
+    ]
   },
 
   PLO8: {
@@ -654,8 +667,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Honesty and Integrity",
     statement: programme =>
       `In the context of the ${programme} programme, graduates demonstrate leadership, autonomy and accountability in professional, academic or organisational contexts.`,
-    indicator:
-      "Demonstration of responsibility, leadership or independent decision-making."
+    indicator: [
+      "≥ 70% of students demonstrate competent leadership, autonomy or responsibility in assessments",
+      "Evidence of independent decision-making or accountability"
+    ]
   },
 
   PLO9: {
@@ -663,8 +678,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Flexibility and Adaptability",
     statement: programme =>
       `In the context of the ${programme} programme, graduates engage in lifelong learning and self-development through reflective and adaptive practices.`,
-    indicator:
-      "Evidence of reflection and continuous professional development."
+    indicator: [
+      "≥ 70% of students demonstrate satisfactory reflective or self-development practices",
+      "Evidence of lifelong learning and adaptability"
+    ]
   },
 
   PLO10: {
@@ -672,8 +689,10 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Honesty and Integrity",
     statement: programme =>
       `In the context of the ${programme} programme, graduates apply entrepreneurial or innovative approaches to identify opportunities and create value within their field.`,
-    indicator:
-      "Identification of opportunities or innovative solutions in projects."
+    indicator: [
+      "≥ 70% of students demonstrate innovative or entrepreneurial thinking in projects or assignments",
+      "Identification of opportunities or value-creating solutions"
+    ]
   },
 
   PLO11: {
@@ -681,101 +700,87 @@ const UNIVERSAL_PLO_MAP = {
     vbe: "Ethics and Professionalism",
     statement: programme =>
       `In the context of the ${programme} programme, graduates uphold ethical principles, professional standards and responsible conduct in all areas of practice.`,
-    indicator:
-      "Consistent demonstration of ethical and professional behaviour."
+    indicator: [
+      "≥ 70% of students demonstrate ethical and professional behaviour in assessments and coursework",
+      "No major disciplinary or ethical violations affecting learning outcomes"
+    ]
   }
 };
 
-    /* =========================
-   LEVEL-SENSITIVE PLO WORDING (COPPA)
+    
+
+/* =========================
+   PROGRAMME EDUCATIONAL OBJECTIVES (PEO)
+   Evaluated 3–5 years after graduation
 ========================= */
 
-const LEVEL_VERB = {
-  Diploma: "demonstrate",
-  Degree: "apply",
-  Master: "integrate and evaluate",
-  PhD: "critically synthesise and advance"
-};
-
-const UNIVERSAL_PLOS = {
-  PLO1: {
-    vbe: "Ethics and Professionalism",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "demonstrate"} comprehensive and systematic knowledge relevant to ${programme}, grounded in ethical and professional practice.`,
-    indicator: "≥ 60% achievement in knowledge-based and professional judgement assessments"
+const PROGRAMME_PEO_MAP = {
+  PEO1: {
+    focus: "Employability and Professional Practice",
+    indicators: [
+      "≥ 70% of graduates employed in relevant professional fields within 6–12 months of graduation",
+      "Positive employer feedback on graduates’ professional competence",
+      "Graduates meet minimum professional or practice standards"
+    ],
+    dataSource: [
+      "Graduate Tracer Study",
+      "Employer Survey"
+    ]
   },
 
-  PLO2: {
-    vbe: "Ethics and Professionalism",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "apply"} cognitive and analytical skills to address complex problems within ${programme} through evidence-based reasoning.`,
-    indicator: "Successful completion of analytical tasks, projects, or case-based assessments"
+  PEO2: {
+    focus: "Communication and Teamwork",
+    indicators: [
+      "≥ 70% of employers rate graduates as competent or above in communication and teamwork",
+      "Effective participation in multidisciplinary or team-based work environments",
+      "Evidence of effective professional communication in workplace settings"
+    ],
+    dataSource: [
+      "Employer Survey",
+      "Industry Advisory Panel Feedback"
+    ]
   },
 
-  PLO3: {
-    vbe: "Compliance with Standards",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "demonstrate"} practical and technical skills relevant to ${programme} in accordance with established professional standards.`,
-    indicator: "Competent performance in practical, laboratory, or simulated assessments"
+  PEO3: {
+    focus: "Leadership and Lifelong Learning",
+    indicators: [
+      "Graduates assume leadership or supervisory roles within 3–5 years",
+      "Graduates engage in continuing professional development or postgraduate studies",
+      "Independent decision-making in professional practice"
+    ],
+    dataSource: [
+      "Alumni Survey",
+      "Professional Body Records"
+    ]
   },
 
-  PLO4: {
-    vbe: "Honesty and Integrity",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "demonstrate"} effective interpersonal skills and teamwork in professional and academic contexts related to ${programme}.`,
-    indicator: "Peer, supervisor, or facilitator evaluation of teamwork and collaboration"
+  PEO4: {
+    focus: "Innovation and Value Creation",
+    indicators: [
+      "Graduates contribute to innovation, service improvement, or new initiatives",
+      "Involvement in entrepreneurial, research, or improvement projects",
+      "Application of creative and problem-solving skills in professional contexts"
+    ],
+    dataSource: [
+      "Alumni Feedback",
+      "Employer Survey"
+    ]
   },
 
-  PLO5: {
-    vbe: "Honesty and Integrity",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "communicate"} effectively and professionally with stakeholders in contexts relevant to ${programme}.`,
-    indicator: "Clear, ethical and professional communication in written, oral, or digital formats"
-  },
-
-  PLO6: {
-    vbe: "Proper Ethics and Etiquette",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "use"} digital and technological tools responsibly to support learning, practice, or research in ${programme}.`,
-    indicator: "Effective use of digital tools in coursework, projects, or applied tasks"
-  },
-
-  PLO7: {
-    vbe: "Ethics and Professionalism",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "apply"} numeracy and data analysis skills to support decision-making within ${programme}.`,
-    indicator: "Accurate data analysis and interpretation in assessments or projects"
-  },
-
-  PLO8: {
-    vbe: "Honesty and Integrity",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "demonstrate"} leadership, autonomy, and responsibility in learning and professional contexts related to ${programme}.`,
-    indicator: "Demonstrated leadership or independent decision-making in assessed activities"
-  },
-
-  PLO9: {
-    vbe: "Flexibility and Adaptability",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "integrate"} new knowledge for personal development and lifelong learning within ${programme}.`,
-    indicator: "Reflective portfolios or evidence of continuous learning"
-  },
-
-  PLO10: {
-    vbe: "Honesty and Integrity",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "apply"} entrepreneurial thinking to identify opportunities related to ${programme}.`,
-    indicator: "Proposal, innovation task, or opportunity analysis"
-  },
-
-  PLO11: {
-    vbe: "Ethics and Professionalism",
-    statement: programme =>
-      `${LEVEL_VERB[levelSel.value] || "demonstrate"} ethical values, professionalism, and responsible conduct in ${programme}.`,
-    indicator: "Ethics-related assessment, reflective writing, or professional conduct evaluation"
+  PEO5: {
+    focus: "Ethics and Professionalism",
+    indicators: [
+      "Graduates demonstrate ethical and professional conduct with no major disciplinary issues",
+      "Employers report high integrity and professionalism among graduates",
+      "Compliance with professional codes, regulations, and standards"
+    ],
+    dataSource: [
+      "Employer Survey",
+      "Alumni Feedback",
+      "Professional Body Input"
+    ]
   }
 };
-
 
     
   const PEO_PLO_MAP = {
@@ -1580,7 +1585,10 @@ if (data.evidence && Object.keys(data.evidence).length) {
       tab.addEventListener('click', () => logEvent('tab_click', { tab: tab.textContent.trim() }));
     });
 
-    ploSel.addEventListener('change', () => logEvent('peo_plo_check', { peo: peoSel.value, plo: ploSel.value }));
+    ploSel.addEventListener('change', () => logEvent('peo_plo_check', {
+  peo: document.getElementById("peoSelect")?.value || null,
+  plo: ploSel.value
+});
 
     /* init() - call last, after listeners defined */
     (function init(){
