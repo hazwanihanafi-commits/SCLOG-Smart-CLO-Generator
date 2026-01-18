@@ -193,6 +193,54 @@ label.form-label{
   color:#fff;
 }
 
+
+/* =========================
+   DARK MODE (FIX)
+========================= */
+body[data-theme="dark"]{
+  background:linear-gradient(180deg,#0f1020,#15152b);
+  color:#e5e7eb;
+}
+
+body[data-theme="dark"] .card-box{
+  background:#1b1c31;
+  border-color:#2a2b4a;
+  box-shadow:0 12px 28px rgba(0,0,0,.6);
+}
+
+body[data-theme="dark"] .step-header,
+body[data-theme="dark"] .smart-title{
+  color:#c4b5fd;
+}
+
+body[data-theme="dark"] .step-desc,
+body[data-theme="dark"] .muted,
+body[data-theme="dark"] footer{
+  color:#9ca3af;
+}
+
+body[data-theme="dark"] .form-control,
+body[data-theme="dark"] .form-select{
+  background:#0f172a;
+  border-color:#334155;
+  color:#e5e7eb;
+}
+
+body[data-theme="dark"] .logic-box{
+  background:#0f172a;
+  border:1px solid #334155;
+}
+
+body[data-theme="dark"] .nav-tabs .nav-link{
+  background:#1e1b4b;
+  color:#c7d2fe;
+}
+
+body[data-theme="dark"] .nav-tabs .nav-link.active{
+  background:#7c3aed;
+  color:#fff;
+}
+    
 /* ===== GENERATED CLO ===== */
 #cloCard{
   background:#faf7ff;
@@ -235,26 +283,23 @@ footer{
   <div class="container-app">
 
     <!-- HEADER -->
- <div class="card-box mb-3 d-flex justify-content-between align-items-center">
+ <div class="main-header card-box mb-3">
   <div>
-    <div class="app-title">
-      <span class="app-brand">
-        <i class="bi bi-stars me-1"></i> SCLOG
-      </span>
+    <div class="main-title">
+      <i class="bi bi-stars me-2"></i> SCLOG
     </div>
-    <div class="app-subtitle">
-      Smart Course Learning Outcome Generator — logic & mapping
+    <div class="main-subtitle">
+      Smart Course Learning Outcome Generator
     </div>
   </div>
 
-  <div>
-    <button id="darkToggle" class="btn btn-outline-secondary">
-      <i class="bi bi-moon"></i> Dark
-    </button>
-  </div>
+  <button id="darkToggle" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-moon"></i>
+  </button>
 </div>
 
 
+    
 <!-- STEP 1 · Programme Context -->
 <div class="card-box mb-3">
 
@@ -1080,12 +1125,15 @@ function normaliseBloomKey(value) {
 darkToggle.addEventListener('click', () => {
   const curr = document.body.getAttribute('data-theme') || 'light';
   const next = curr === 'light' ? 'dark' : 'light';
-  document.body.setAttribute('data-theme', next);
-  darkToggle.innerHTML = next === 'dark'
-    ? '<i class="bi bi-sun"></i> Light'
-    : '<i class="bi bi-moon"></i> Dark';
-});
 
+  document.body.setAttribute('data-theme', next);
+
+  darkToggle.innerHTML =
+    next === 'dark'
+      ? '<i class="bi bi-sun"></i>'
+      : '<i class="bi bi-moon"></i>';
+});
+    
 /* =========================
    LOAD MAPPING
 ========================= */
