@@ -1346,44 +1346,61 @@ document.addEventListener("DOMContentLoaded", () => {
     peoPloBox.textContent = "—";
   });
 
-  /* ===== CHANGE: Select PEO ===== */
-  peoSelect.addEventListener("change", async () => {
+  /* ===== CHANGE: Select PEO (WITH INDICATORS) ===== */
+peoSelect.addEventListener("change", async () => {
 
-    const peo = peoSelect.value;
-    ploSelect.innerHTML = '<option value="">Select PLO</option>';
-    peoPloBox.textContent = "—";
+  const peo = peoSelect.value;
+  ploSelect.innerHTML = '<option value="">Select PLO</option>';
+  peoPloBox.textContent = "—";
 
-    if (!peo) return;
+  if (!peo) {
+    logicBox.classList.add("d-none");
+    return;
+  }
 
-    const peos = JSON.parse(peoSelect.dataset.map || "[]");
-    const selected = peos.find(p => p.code === peo);
+  const peos = JSON.parse(peoSelect.dataset.map || "[]");
+  const selected = peos.find(p => p.code === peo);
 
-    if (selected) {
-      const mapped = PEO_PLO_MAP[peo] || [];
-      logicBox.classList.remove("d-none");
-      logicBox.innerHTML = `
-        <strong>Why this PEO?</strong><br>
-        ${selected.rationale}
-        <div class="mt-2">
-          <strong>Measured through:</strong> ${mapped.join(", ")}
-        </div>
-      `;
-    }
+  const mapped = PEO_PLO_MAP[peo] || [];
+  const peoData = PROGRAMME_PEO_MAP[peo];
 
-    try {
-      const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-      const plos = await res.json();
-      (plos || []).forEach(p => ploSelect.add(new Option(p, p)));
+  if (selected && peoData) {
+    logicBox.classList.remove("d-none");
+    logicBox.innerHTML = `
+      <strong>${peo} – Programme Educational Objective</strong><br>
+      ${selected.rationale}
 
-      peoPloBox.textContent =
-        "This PLO operationalises the competencies described in the selected PEO.";
+      <div class="mt-3">
+        <strong>PEO Indicators:</strong>
+        <ul>
+          ${peoData.indicators.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </div>
 
-    } catch (e) {
-      console.error("PEO → PLO error", e);
-    }
-  });
+      <div class="mt-2 muted" style="font-size:0.85rem">
+        <strong>Data sources:</strong> ${peoData.dataSource.join(", ")}<br>
+        <strong>Review cycle:</strong> 3–5 years after graduation
+      </div>
 
+      <div class="mt-2">
+        <strong>Operationalised through PLOs:</strong> ${mapped.join(", ")}
+      </div>
+    `;
+  }
+
+  try {
+    const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+    const plos = await res.json();
+    (plos || []).forEach(p => ploSelect.add(new Option(p, p)));
+
+    peoPloBox.textContent =
+      "This PLO operationalises the competencies described in the selected PEO.";
+
+  } catch (e) {
+    console.error("PEO → PLO error", e);
+  }
 });
+
 
     
 /* =========================
