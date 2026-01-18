@@ -1012,11 +1012,6 @@ bloomSel.addEventListener("change", async () => {
 
 /* =========================
    STEP 1 — IEG → PEO (CLEAN, FINAL)
-   ✔ IEG optional
-   ✔ PEO auto-generated from Programme Name
-   ✔ Uses VBE_BY_LEVEL
-   ❌ No API calls
-   ❌ Does NOT touch PLO / Bloom logic
 ========================= */
 
 /* ---------- Generate PEO ---------- */
@@ -1055,18 +1050,22 @@ function generatePEOFromProgramme(programmeName, level){
 }
 
 /* =========================
-   FIX STEP 1 — PEO BUTTON
+   STEP 1 + STEP 2 CONTROLLER
 ========================= */
+document.addEventListener("DOMContentLoaded", () => {
 
-    document.addEventListener("DOMContentLoaded", () => {
+  const btn        = document.getElementById("generatePEO");
+  const peoSelect  = document.getElementById("peoSelect");
+  const peoBox     = document.getElementById("peoSuggestions");
+  const logicBox   = document.getElementById("ieg_peo_logic");
 
-  const btn = document.getElementById("generatePEO");
-  const peoSelect = document.getElementById("peoSelect");
-  const peoBox = document.getElementById("peoSuggestions");
-  const logicBox = document.getElementById("ieg_peo_logic");
+  const ploSelect  = document.getElementById("plo");
+  const peoPloBox  = document.getElementById("peo_plo_logic");
 
+  /* ---------- CLICK: Generate PEO ---------- */
   btn.addEventListener("click", () => {
-    const name = document.getElementById("programmeName").value.trim();
+
+    const name  = document.getElementById("programmeName").value.trim();
     const level = document.getElementById("level").value;
 
     if (!name || !level) {
@@ -1076,6 +1075,7 @@ function generatePEOFromProgramme(programmeName, level){
 
     const peos = generatePEOFromProgramme(name, level);
 
+    /* Render PEO cards */
     peoBox.innerHTML = "";
     peos.forEach(p => {
       peoBox.innerHTML += `
@@ -1084,23 +1084,54 @@ function generatePEOFromProgramme(programmeName, level){
         </div>`;
     });
 
+    /* Fill PEO dropdown */
     peoSelect.innerHTML = '<option value="">Select PEO</option>';
     peos.forEach(p => peoSelect.add(new Option(p.code, p.code)));
     peoSelect.dataset.map = JSON.stringify(peos);
 
+    /* Reset dependent UI */
     logicBox.classList.add("d-none");
+    ploSelect.innerHTML = '<option value="">Select PLO</option>';
+    peoPloBox.textContent = "—";
   });
 
-  peoSelect.addEventListener("change", () => {
-    const peos = JSON.parse(peoSelect.dataset.map || "[]");
-    const p = peos.find(x => x.code === peoSelect.value);
-    if (!p) return;
+  /* ---------- CHANGE: PEO → RATIONALE + PLO ---------- */
+  peoSelect.addEventListener("change", async () => {
 
-    logicBox.classList.remove("d-none");
-    logicBox.textContent = p.rationale;
+    const peo = peoSelect.value;
+    ploSelect.innerHTML = '<option value="">Select PLO</option>';
+    peoPloBox.textContent = "—";
+
+    if (!peo) return;
+
+    /* Show PEO rationale */
+    const peos = JSON.parse(peoSelect.dataset.map || "[]");
+    const selected = peos.find(p => p.code === peo);
+    if (selected) {
+      logicBox.classList.remove("d-none");
+      logicBox.textContent = selected.rationale;
+    }
+
+    /* Fetch PLOs */
+    try {
+      const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+      const plos = await res.json();
+
+      (plos || []).forEach(p =>
+        ploSelect.add(new Option(p, p))
+      );
+
+      peoPloBox.textContent =
+        "The selected Programme Learning Outcomes (PLOs) are aligned with the chosen Programme Educational Objective (PEO).";
+
+    } catch (e) {
+      console.error("PEO → PLO error", e);
+    }
   });
 
 });
+
+
     
 /* =========================
    PLO → STATEMENT + INDICATOR + BLOOM (SINGLE SOURCE)
