@@ -799,7 +799,7 @@ const PROGRAMME_PEO_MAP = {
 ========================= */
 const profileSel = $('profile');
 const levelSel = $('level');
-const iegSel = $('ieg');
+const iegSel = $('ieg_input');
 const ploSel = $('plo');
 
 const bloomSel = $('bloom');
@@ -1417,7 +1417,9 @@ ploSel.addEventListener("change", async () => {
     const p = UNIVERSAL_PLO_MAP[plo];
 
     ploStatementEl.textContent = p.statement(programme);
-    ploIndicatorEl.textContent = p.indicator;
+    ploIndicatorEl.innerHTML =
+  "<ul>" + p.indicator.map(i => `<li>${i}</li>`).join("") + "</ul>";
+
 
     peoPloLogicBox.innerHTML = `
       <strong>Programme Learning Outcome Alignment</strong><br>
