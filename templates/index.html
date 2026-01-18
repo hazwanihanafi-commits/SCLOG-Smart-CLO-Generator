@@ -416,22 +416,19 @@
                   <label class="form-label">Verb</label>
                   <select id="verb" class="form-select"><option value="">Select Verb</option></select>
                 </div> 
-                
-                <div class="col-md-6">
-                  <label class="form-label">Field (topic area)</label>
-                  <select id="field" class="form-select">
-                    <option value="" selected>— Select Field —</option>
-                    <option>Computer Science</option>
-                    <option>Medical & Health</option>
-                    <option>Engineering</option>
-                    <option>Social Sciences</option>
-                    <option>Education</option>
-                    <option>Business</option>
-                    <option>Arts & Humanities</option>
-                  </select>
-                  <div id="content_suggestions" class="mt-2"></div>
-                </div>
 
+
+                <label class="form-label">Course Name</label>
+<input id="courseName"
+  class="form-control"
+  placeholder="e.g. Exercise Physiology II">
+
+                
+            
+                  <div id="content_inline_suggestions"
+     class="mt-2 muted"
+     style="font-size:0.85rem">
+</div>
                 <div class="col-12">
                   <label class="form-label">
   Content (learning focus / object)
@@ -521,12 +518,7 @@
             <div class="meta-item"><strong>Criterion:</strong><div id="criterion" class="muted">—</div></div>
           </div>
 
-          <div class="card-box">
-            <div class="form-label">Quick content suggestions</div>
-            <div id="content_suggestions_right"></div>
-          </div>
-        </div>
-
+  
       </div>
     </div>
 
@@ -641,7 +633,8 @@ const bloomDescEl = $('bloom_desc');
 ========================= */
 let MAP = {};
 let LAST_CLO = null;
-let IEG_TEXT = "";
+let IEG_TEXT = ""; 
+let COURSE_NAME = "";
 
 
 /* =========================
@@ -883,8 +876,7 @@ async function loadMapping() {
 
  
   
-
-  function renderBloomHint() {
+function renderBloomHint() {
   const level = levelSel.value;
   const hintEl = document.getElementById("bloom_hint");
 
@@ -897,20 +889,33 @@ async function loadMapping() {
   const { cognitive, affective, psychomotor, caution } =
     BLOOM_RECOMMENDATION_BY_LEVEL[level];
 
-  hintEl.innerHTML = `
+  let html = `
     <div><strong>🧠 Cognitive:</strong> ${cognitive.join(", ")}</div>
     <div><strong>❤️ Affective:</strong> ${affective.join(", ")}</div>
     <div><strong>✋ Psychomotor:</strong> ${psychomotor.join(", ")}</div>
-    ${
-      caution?.length
-        ? `<div class="mt-1" style="color:#92400e;">
-            ⚠️ <strong>Use sparingly:</strong> ${caution.join(", ")}
-           </div>`
-        : ""
-    }
   `;
-}
 
+  // ✅ Degree-specific explanation
+  if (level === "Degree") {
+    html += `
+      <div class="mt-2 muted">
+        <strong>Degree-level expectation:</strong><br>
+        Students are expected to analyse information, apply knowledge in professional contexts,
+        demonstrate ethical judgement, and perform skills with confidence and adaptability.
+      </div>
+    `;
+  }
+
+  if (caution?.length) {
+    html += `
+      <div class="mt-1" style="color:#92400e;">
+        ⚠️ <strong>Use sparingly:</strong> ${caution.join(", ")}
+      </div>
+    `;
+  }
+
+  hintEl.innerHTML = html;
+}
 
     function updateBloomTag(bloomKey){
   const tag = document.getElementById("bloomTag");
@@ -1078,12 +1083,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const ploSelect  = document.getElementById("plo");
   const peoPloBox  = document.getElementById("peo_plo_logic");
 
+  const courseInput = document.getElementById("courseName");
   const iegInput = document.getElementById("ieg_input");
 
-  /* IEG capture */
-  iegInput.addEventListener("input", e => {
-    IEG_TEXT = e.target.value.trim();
-  });
+  if (courseInput) {
+    courseInput.addEventListener("input", e => {
+      COURSE_NAME = e.target.value.trim();
+    });
+  }
+
+  if (iegInput) {
+    iegInput.addEventListener("input", e => {
+      IEG_TEXT = e.target.value.trim();
+    });
+  }
+
+});
+
+  
 
   /* ---------- CLICK: Generate PEO ---------- */
   btn.addEventListener("click", () => {
