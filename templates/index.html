@@ -1095,50 +1095,6 @@ document.addEventListener("DOMContentLoaded", () => {
     peoSelect.dataset.map = JSON.stringify(peos);
   };
 
-  /* PEO → rationale */
-  peoSelect.onchange = () => {
-    const peos = JSON.parse(peoSelect.dataset.map || "[]");
-    const p = peos.find(x => x.code === peoSelect.value);
-    if (!p) return;
-
-    const box = document.getElementById("ieg_peo_logic");
-    if (box) {
-      box.classList.remove("d-none");
-      box.textContent = p.rationale || "—";
-    }
-  };
-});
- 
-/* ---------- PEO selection (RATIONALE ONLY) ---------- */
-peoSel.addEventListener("change", () => {
-  const peos = JSON.parse(peoSel.dataset.map || "[]");
-  const selected = peos.find(p => p.code === peoSel.value);
-  if (!selected) return;
-
-  iegLogicBox.textContent = selected.rationale || "—";
-
-  // ❗ STOP HERE
-  // ❗ PEO → PLO handled by EXISTING code (API)
-});
-
-function refreshAutoPEO(){
-  const programmeName = document.getElementById("programmeName")?.value.trim();
-  const level = levelSel.value;
-
-  if (!programmeName || !level) {
-    peoSel.innerHTML = '<option value="">Select PEO</option>';
-    iegLogicBox.textContent = "—";
-    return;
-  }
-
-  const peos = generatePEOFromProgramme(programmeName, level);
-
-  peoSel.innerHTML = '<option value="">Select PEO</option>';
-  peos.forEach(p => peoSel.add(new Option(p.code, p.code)));
-  peoSel.dataset.map = JSON.stringify(peos);
-
-  iegLogicBox.textContent = "—";
-}
 
     
 /* =========================
