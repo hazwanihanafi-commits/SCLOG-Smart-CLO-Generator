@@ -419,35 +419,51 @@ def generate():
 
 
     LAST_CLO = {
-         "programme_name": programme_name,
-        "clo": clo,
-        "clo_indicator": "≥60% achievement",
+    # ======================
+    # PROGRAMME CONTEXT
+    # ======================
+    "programme_name": programme_name,
+    "course_name": course_name,
+    "ieg": ieg,
 
-        "plo": plo,
-        "plo_statement": MAP["PLOstatements"].get(level, {}).get(
-            plo, "Full MQF-aligned PLO"
-        ),
-        "plo_indicator": "Programme indicator",
+    # ======================
+    # PEO
+    # ======================
+    "peo": peo,
+    "peo_statement": MAP["PEOstatements"].get(level, {}).get(peo, "Generated PEO"),
 
-        "peo": peo,
-        "peo_statement": MAP["PEOstatements"].get(level, {}).get(
-            peo, "Generated PEO"
-        ),
+    # ======================
+    # PLO
+    # ======================
+    "plo": plo,
+    "plo_statement": MAP["PLOstatements"].get(level, {}).get(
+        plo, "Full MQF-aligned PLO"
+    ),
+    "plo_indicator": "Programme indicator",
 
-        "ieg": ieg,
+    # ======================
+    # CLO
+    # ======================
+    "clo": clo,
+    "clo_indicator": "≥60% achievement",
+    "variants": variants,
 
-        "sc_code": details["SC_Code"],
-        "sc_desc": details["SC_Desc"],
-        "vbe": details["VBE"],
-        "domain": details["Domain"],
+    # ======================
+    # ASSESSMENT
+    # ======================
+    "assessments": assessments,
+    "evidence": evidence,
 
-        "condition": meta["condition"],
-        "criterion": meta["criterion"],
-
-        "variants": variants,
-        "assessments": assessments,
-        "evidence": evidence
-    }
+    # ======================
+    # MQF / VBE
+    # ======================
+    "sc_code": details["SC_Code"],
+    "sc_desc": details["SC_Desc"],
+    "domain": details["Domain"],
+    "condition": meta["condition"],
+    "criterion": meta["criterion"],
+    "vbe": details["VBE"]
+}
 
     return jsonify(LAST_CLO)
 
@@ -528,6 +544,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
