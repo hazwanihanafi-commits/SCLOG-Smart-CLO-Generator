@@ -509,31 +509,7 @@
   </div>
 
 </div>
-            <!-- HISTORY -->
-            <div class="tab-pane fade" id="historyTab">
-              <div class="card-box">
-                <h6>Recent generation</h6>
-                <div id="history_list" class="muted">Server-side history not enabled.</div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- RIGHT SIDEBAR: Mapping metadata -->
-          <div class="card-box mb-3">
-            <div class="form-label">Mapping metadata</div>
-            <div class="meta-item"><strong>SC Code:</strong><div id="sc_code" class="muted">—</div></div>
-            <div class="meta-item"><strong>SC Description:</strong><div id="sc_desc" class="muted">—</div></div>
-            <div class="meta-item"><strong>VBE:</strong><div id="vbe" class="muted">—</div></div>
-            <div class="meta-item"><strong>Domain:</strong><div id="domain" class="muted">—</div></div>
-            <div class="meta-item"><strong>Condition:</strong><div id="condition" class="muted">—</div></div>
-            <div class="meta-item"><strong>Criterion:</strong><div id="criterion" class="muted">—</div></div>
-          </div>
-
-  
-      </div>
-    </div>
+      
 
     <footer>© 2025 • Assoc Prof Dr Hazwani Ahmad Yusof @ Hanafi — Universiti Sains Malaysia (USM)</footer>
   </div>
@@ -1504,6 +1480,7 @@ document.addEventListener("DOMContentLoaded", () => {
       fd.append('domain', domainEl.textContent);
       fd.append('vbe', vbeEl.textContent);
       fd.append("ieg", IEG_TEXT);
+      fd.append("courseName", COURSE_NAME);
 
       logEvent('generate_clo_attempt', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
