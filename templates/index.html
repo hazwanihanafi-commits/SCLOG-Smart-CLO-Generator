@@ -578,7 +578,6 @@ const VBE_BY_LEVEL = {
 const profileSel = $('profile');
 const levelSel = $('level');
 const iegSel = $('ieg');
-const peoSel = $('peo');
 const ploSel = $('plo');
 
 const bloomSel = $('bloom');
@@ -862,9 +861,7 @@ async function loadMapping() {
   const res = await fetch('/api/mapping');
   MAP = await res.json();
 
-  iegSel.innerHTML = '<option value="">Select IEG</option>';
-  (MAP.IEGs || []).forEach(i => iegSel.add(new Option(i, i)));
-
+  
   ploSel.innerHTML = '<option value="">Select PLO</option>';
 }
 
@@ -1056,16 +1053,6 @@ function generatePEOFromProgramme(programmeName, level){
     }
   ];
 }
-
-
-
-
-/* ---------- Trigger auto-PEO ---------- */
-levelSel.addEventListener("change", refreshAutoPEO);
-
-document
-  .getElementById("programmeName")
-  ?.addEventListener("input", refreshAutoPEO);
 
 /* ---------- PEO selection (RATIONALE ONLY) ---------- */
 peoSel.addEventListener("change", () => {
