@@ -1082,7 +1082,6 @@ function generatePEOFromProgramme(programmeName, level){
 /* =========================
    STEP 1 + STEP 2 CONTROLLER (FIXED)
 ========================= */
-
 document.addEventListener("DOMContentLoaded", () => {
 
   const btn        = document.getElementById("generatePEO");
@@ -1093,10 +1092,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const ploSelect  = document.getElementById("plo");
   const peoPloBox  = document.getElementById("peo_plo_logic");
 
-  const courseInput = document.getElementById("courseName");
-  const iegInput    = document.getElementById("ieg_input");
+  const iegInput   = document.getElementById("ieg_input");
+  const courseInput= document.getElementById("courseName");
 
-  /* ---- IEG & Course name capture ---- */
   if (iegInput) {
     iegInput.addEventListener("input", e => {
       IEG_TEXT = e.target.value.trim();
@@ -1109,7 +1107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  /* ---------- CLICK: Generate PEO ---------- */
+  /* ===== CLICK: Generate PEO ===== */
   btn.addEventListener("click", () => {
 
     const name  = document.getElementById("programmeName").value.trim();
@@ -1122,74 +1120,67 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const peos = generatePEOFromProgramme(name, level);
 
-    /* Render PEO cards */
     peoBox.innerHTML = "";
-peos.forEach(p => {
-  const plos = PEO_PLO_MAP[p.code] || [];
+    peos.forEach(p => {
+      const plos = PEO_PLO_MAP[p.code] || [];
+      peoBox.innerHTML += `
+        <div class="logic-box mb-2">
+          <strong>${p.code}</strong><br>
+          ${p.text}
+          <div class="mt-2 muted" style="font-size:0.85rem">
+            <strong>Mapped PLOs:</strong> ${plos.join(", ")}
+          </div>
+        </div>`;
+    });
 
-  peoBox.innerHTML += `
-    <div class="logic-box mb-2">
-      <strong>${p.code}</strong><br>
-      ${p.text}
-      <div class="mt-2 muted" style="font-size:0.85rem">
-        <strong>Mapped PLOs:</strong> ${plos.join(", ")}
-      </div>
-    </div>`;
-});
-
-    /* Fill PEO dropdown */
     peoSelect.innerHTML = '<option value="">Select PEO</option>';
     peos.forEach(p => peoSelect.add(new Option(p.code, p.code)));
     peoSelect.dataset.map = JSON.stringify(peos);
 
-    /* Reset dependent UI */
     logicBox.classList.add("d-none");
     ploSelect.innerHTML = '<option value="">Select PLO</option>';
     peoPloBox.textContent = "—";
   });
 
-  /* ---------- CHANGE: PEO → RATIONALE + PLO ---------- */
-
+  /* ===== CHANGE: Select PEO ===== */
   peoSelect.addEventListener("change", async () => {
 
-  const peo = peoSelect.value;
-  ploSelect.innerHTML = '<option value="">Select PLO</option>';
-  peoPloBox.textContent = "—";
+    const peo = peoSelect.value;
+    ploSelect.innerHTML = '<option value="">Select PLO</option>';
+    peoPloBox.textContent = "—";
 
-  if (!peo) return;
+    if (!peo) return;
 
-  const peos = JSON.parse(peoSelect.dataset.map || "[]");
-  const selected = peos.find(p => p.code === peo);
+    const peos = JSON.parse(peoSelect.dataset.map || "[]");
+    const selected = peos.find(p => p.code === peo);
 
-  if (selected) {
-    const mapped = PEO_PLO_MAP[peo] || [];
+    if (selected) {
+      const mapped = PEO_PLO_MAP[peo] || [];
+      logicBox.classList.remove("d-none");
+      logicBox.innerHTML = `
+        <strong>Why this PEO?</strong><br>
+        ${selected.rationale}
+        <div class="mt-2">
+          <strong>Measured through:</strong> ${mapped.join(", ")}
+        </div>
+      `;
+    }
 
-    logicBox.classList.remove("d-none");
-    logicBox.innerHTML = `
-      <strong>Why this PEO?</strong><br>
-      ${selected.rationale}
-      <div class="mt-2">
-        <strong>Expected achievement is measured through:</strong><br>
-        ${mapped.join(", ")}
-      </div>
-    `;
-  }
+    try {
+      const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+      const plos = await res.json();
+      (plos || []).forEach(p => ploSelect.add(new Option(p, p)));
 
-  try {
-    const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-    const plos = await res.json();
+      peoPloBox.textContent =
+        "This PLO operationalises the competencies described in the selected PEO.";
 
-    (plos || []).forEach(p =>
-      ploSelect.add(new Option(p, p))
-    );
+    } catch (e) {
+      console.error("PEO → PLO error", e);
+    }
+  });
 
-    peoPloBox.textContent =
-      "This PLO directly operationalises the competencies described in the selected PEO.";
-
-  } catch (e) {
-    console.error("PEO → PLO error", e);
-  }
 });
+
     
 /* =========================
    PLO → STATEMENT + INDICATOR + BLOOM (SINGLE SOURCE)
