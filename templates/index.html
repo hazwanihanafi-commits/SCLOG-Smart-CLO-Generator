@@ -293,8 +293,6 @@
       </div>
     </div>
 
-    <!-- PEO rationale box -->
-    <div id="ieg_peo_logic" class="logic-box d-none col-12"></div>
 
     <!-- Generate PEO -->
     <div class="col-12">
@@ -311,6 +309,9 @@
       <label class="form-label mt-3">Select PEO</label>
       <select id="peoSelect" class="form-select"></select>
     </div>
+
+    <!-- PEO rationale box -->
+    <div id="ieg_peo_logic" class="logic-box d-none col-12"></div>
 
   </div>
 </div>
@@ -579,6 +580,14 @@ const VBE_BY_LEVEL = {
     focus:"knowledge creation and ethical leadership"
   }
 };
+
+  const PEO_PLO_MAP = {
+  PEO1: ["PLO1", "PLO2", "PLO3", "PLO6", "PLO7"],
+  PEO2: ["PLO4", "PLO5"],
+  PEO3: ["PLO8", "PLO9"],
+  PEO4: ["PLO10"],
+  PEO5: ["PLO11"]
+};  
 
 /* =========================
    DOM REFERENCES
@@ -1115,12 +1124,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
     /* Render PEO cards */
     peoBox.innerHTML = "";
-    peos.forEach(p => {
-      peoBox.innerHTML += `
-        <div class="logic-box mb-2">
-          <strong>${p.code}</strong><br>${p.text}
-        </div>`;
-    });
+peos.forEach(p => {
+  const plos = PEO_PLO_MAP[p.code] || [];
+
+  peoBox.innerHTML += `
+    <div class="logic-box mb-2">
+      <strong>${p.code}</strong><br>
+      ${p.text}
+      <div class="mt-2 muted" style="font-size:0.85rem">
+        <strong>Mapped PLOs:</strong> ${plos.join(", ")}
+      </div>
+    </div>`;
+});
 
     /* Fill PEO dropdown */
     peoSelect.innerHTML = '<option value="">Select PEO</option>';
@@ -1134,40 +1149,46 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ---------- CHANGE: PEO → RATIONALE + PLO ---------- */
+
   peoSelect.addEventListener("change", async () => {
 
-    const peo = peoSelect.value;
-    ploSelect.innerHTML = '<option value="">Select PLO</option>';
-    peoPloBox.textContent = "—";
+  const peo = peoSelect.value;
+  ploSelect.innerHTML = '<option value="">Select PLO</option>';
+  peoPloBox.textContent = "—";
 
-    if (!peo) return;
+  if (!peo) return;
 
-    /* Show PEO rationale */
-    const peos = JSON.parse(peoSelect.dataset.map || "[]");
-    const selected = peos.find(p => p.code === peo);
+  const peos = JSON.parse(peoSelect.dataset.map || "[]");
+  const selected = peos.find(p => p.code === peo);
 
-    if (selected) {
-      logicBox.classList.remove("d-none");
-      logicBox.textContent = selected.rationale;
-    }
+  if (selected) {
+    const mapped = PEO_PLO_MAP[peo] || [];
 
-    /* Fetch PLO list */
-    try {
-      const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-      const plos = await res.json();
+    logicBox.classList.remove("d-none");
+    logicBox.innerHTML = `
+      <strong>Why this PEO?</strong><br>
+      ${selected.rationale}
+      <div class="mt-2">
+        <strong>Expected achievement is measured through:</strong><br>
+        ${mapped.join(", ")}
+      </div>
+    `;
+  }
 
-      (plos || []).forEach(p =>
-        ploSelect.add(new Option(p, p))
-      );
+  try {
+    const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+    const plos = await res.json();
 
-      peoPloBox.textContent =
-        "This PLO operationalises the selected PEO by translating it into measurable learning outcomes aligned with programme-level competencies.";
+    (plos || []).forEach(p =>
+      ploSelect.add(new Option(p, p))
+    );
 
-    } catch (e) {
-      console.error("PEO → PLO error", e);
-    }
-  });
+    peoPloBox.textContent =
+      "This PLO directly operationalises the competencies described in the selected PEO.";
 
+  } catch (e) {
+    console.error("PEO → PLO error", e);
+  }
 });
     
 /* =========================
