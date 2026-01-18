@@ -377,6 +377,7 @@ def generate():
     level = request.form.get("level", "Degree")
     programme_name = request.form.get("programmeName", "")
     ieg_input = request.form.get("ieg", "").strip()
+    course_name = request.form.get("courseName", "")
 
     details = get_plo_details(plo, profile)
     if not details:
@@ -544,6 +545,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
