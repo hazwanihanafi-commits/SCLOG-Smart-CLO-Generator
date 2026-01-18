@@ -361,6 +361,9 @@ def api_get_statement(level, stype, code):
 # ------------------------------------------------------
 LAST_CLO = {}
 
+programme_name = request.form.get("programmeName", "")
+
+
 @app.route("/generate", methods=["POST"])
 def generate():
     global LAST_CLO
@@ -433,89 +436,75 @@ def generate():
         "Short": f"{verb.capitalize()} {content}."
     }
 
+
+        # Resolve PEO
+    peo = next((p for p,plos in MAP["PEOtoPLO"].items() if plo in plos), None)
+
+
+
+    # Resolve IEG (frontend first)
+    if ieg_input:
+        ieg = ieg_input
+    else:
+        ieg = next((i for i,peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
+
+    assessments = get_assessment(plo, bloom, details["Domain"])
+    evidence = [e for a in assessments for e in get_evidence_for(a)]
+
+   
     
-    # ------------------------------------------------------
-# Map PEO + IEG (CORRECT & PANEL-SAFE)
-# ------------------------------------------------------
-peo = next((p for p, plos in MAP["PEOtoPLO"].items() if plo in plos), None)
-
-# Priority:
-# 1. User-entered IEG (from frontend)
-# 2. JSON IEG → PEO mapping
-# 3. Fallback label
-if ieg_input:
-    ieg = ieg_input
-else:
-    ieg = next(
-        (i for i, peos in MAP["IEGtoPEO"].items() if peo in peos),
-        None
-    )
-
-if not ieg:
-    ieg = "Paste IEG"
-
-
-    # ------------------------------------------------------
-    # Assessments + Evidence
-    # ------------------------------------------------------
-    assessments = get_assessment(plo, bloom, domain)
-    evidence = {a: get_evidence_for(a) for a in assessments}
-
     # ------------------------------------------------------
     # Save for download
     # ------------------------------------------------------
-    LAST_CLO = {
-    # ======================
-    # PROGRAMME CONTEXT
-    # ======================
-    "discipline": profile,
-    "programme_level": level,
-    "programme_name": request.form.get("programme_name", ""),
-    "ieg": ieg_input,
+        LAST_CLO = {
+        # ======================
+        # PROGRAMME CONTEXT
+        # ======================
+        "discipline": profile,
+        "programme_level": level,
+        "programme_name": programme_name,
+        "ieg": ieg,
 
-    # ======================
-    # PEO
-    # ======================
-    "peo": peo,
-    "peo_statement": MAP["PEOstatements"].get(level, {}).get(peo, "Generated PEO"),
-    "peo_indicators": PROGRAMME_PEO_MAP.get(peo, {}).get("indicators", []),
-    "peo_data_sources": PROGRAMME_PEO_MAP.get(peo, {}).get("dataSource", []),
-    "peo_review_cycle": "3–5 years after graduation",
-    "peo_operationalised_plos": MAP["PEOtoPLO"].get(peo, []),
+        # ======================
+        # PEO
+        # ======================
+        "peo": peo,
+        "peo_statement": MAP["PEOstatements"].get(level, {}).get(peo, "Generated PEO"),
 
-    # ======================
-    # PLO
-    # ======================
-    "plo": plo,
-    "plo_statement": MAP["PLOstatements"].get(level, {}).get(
-        plo,
-        UNIVERSAL_PLO_MAP[plo]["statement"](request.form.get("programme_name","the programme"))
-    ),
-    "plo_indicator": UNIVERSAL_PLO_MAP[plo]["indicator"],
+        # ======================
+        # PLO
+        # ======================
+        "plo": plo,
+        "plo_statement": MAP["PLOstatements"].get(level, {}).get(
+            plo,
+            UNIVERSAL_PLO_MAP[plo]["statement"](programme_name or "the programme")
+        ),
+        "plo_indicator": "Programme indicator",
 
-    # ======================
-    # CLO
-    # ======================
-    "clo": clo,
-    "clo_indicator": "≥ 60% achievement",
-    "variants": variants,
+        # ======================
+        # CLO
+        # ======================
+        "clo": clo,
+        "clo_indicator": "≥60% achievement",
 
-    # ======================
-    # ASSESSMENT
-    # ======================
-    "assessments": assessments,
-    "evidence": evidence,
+        # ======================
+        # MQF / VBE
+        # ======================
+        "sc_code": details["SC_Code"],
+        "sc_desc": details["SC_Desc"],
+        "vbe": vbe,
+        "domain": domain,
+        "condition": meta["condition"],
+        "criterion": meta["criterion"],
 
-    # ======================
-    # MQF / VBE
-    # ======================
-    "sc_code": details["SC_Code"],
-    "sc_desc": details["SC_Desc"],
-    "vbe": vbe,
-    "domain": domain,
-    "condition": meta["condition"],
-    "criterion": meta["criterion"]
-}
+        # ======================
+        # ASSESSMENT
+        # ======================
+        "assessments": "; ".join(assessments),
+        "evidence": "; ".join(
+            ", ".join(v) for v in evidence.values()
+        )
+    }
 
 
     return jsonify(LAST_CLO)
@@ -536,10 +525,10 @@ def download_clo():
 
     for key, val in LAST_CLO.items():
         if isinstance(val, dict):
-            continue
-        if isinstance(val, list):
-            val = "; ".join(str(x) for x in val)
-        ws.append([key, val])
+        val = json.dumps(val, ensure_ascii=False)
+    elif isinstance(val, list):
+        val = "; ".join(str(x) for x in val)
+    ws.append([key, val])
 
     out = BytesIO()
     wb.save(out)
@@ -597,6 +586,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
