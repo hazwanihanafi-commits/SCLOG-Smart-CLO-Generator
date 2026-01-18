@@ -686,6 +686,97 @@ const UNIVERSAL_PLO_MAP = {
   }
 };
 
+    /* =========================
+   LEVEL-SENSITIVE PLO WORDING (COPPA)
+========================= */
+
+const LEVEL_VERB = {
+  Diploma: "demonstrate",
+  Degree: "apply",
+  Master: "integrate and evaluate",
+  PhD: "critically synthesise and advance"
+};
+
+const UNIVERSAL_PLOS = {
+  PLO1: {
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "demonstrate"} comprehensive and systematic knowledge relevant to ${programme}, grounded in ethical and professional practice.`,
+    indicator: "≥ 60% achievement in knowledge-based and professional judgement assessments"
+  },
+
+  PLO2: {
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "apply"} cognitive and analytical skills to address complex problems within ${programme} through evidence-based reasoning.`,
+    indicator: "Successful completion of analytical tasks, projects, or case-based assessments"
+  },
+
+  PLO3: {
+    vbe: "Compliance with Standards",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "demonstrate"} practical and technical skills relevant to ${programme} in accordance with established professional standards.`,
+    indicator: "Competent performance in practical, laboratory, or simulated assessments"
+  },
+
+  PLO4: {
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "demonstrate"} effective interpersonal skills and teamwork in professional and academic contexts related to ${programme}.`,
+    indicator: "Peer, supervisor, or facilitator evaluation of teamwork and collaboration"
+  },
+
+  PLO5: {
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "communicate"} effectively and professionally with stakeholders in contexts relevant to ${programme}.`,
+    indicator: "Clear, ethical and professional communication in written, oral, or digital formats"
+  },
+
+  PLO6: {
+    vbe: "Proper Ethics and Etiquette",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "use"} digital and technological tools responsibly to support learning, practice, or research in ${programme}.`,
+    indicator: "Effective use of digital tools in coursework, projects, or applied tasks"
+  },
+
+  PLO7: {
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "apply"} numeracy and data analysis skills to support decision-making within ${programme}.`,
+    indicator: "Accurate data analysis and interpretation in assessments or projects"
+  },
+
+  PLO8: {
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "demonstrate"} leadership, autonomy, and responsibility in learning and professional contexts related to ${programme}.`,
+    indicator: "Demonstrated leadership or independent decision-making in assessed activities"
+  },
+
+  PLO9: {
+    vbe: "Flexibility and Adaptability",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "integrate"} new knowledge for personal development and lifelong learning within ${programme}.`,
+    indicator: "Reflective portfolios or evidence of continuous learning"
+  },
+
+  PLO10: {
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "apply"} entrepreneurial thinking to identify opportunities related to ${programme}.`,
+    indicator: "Proposal, innovation task, or opportunity analysis"
+  },
+
+  PLO11: {
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `${LEVEL_VERB[levelSel.value] || "demonstrate"} ethical values, professionalism, and responsible conduct in ${programme}.`,
+    indicator: "Ethics-related assessment, reflective writing, or professional conduct evaluation"
+  }
+};
+
+
     
   const PEO_PLO_MAP = {
   PEO1: ["PLO1", "PLO2", "PLO3", "PLO6", "PLO7"],
@@ -1293,14 +1384,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
 /* =========================
-   PLO → STATEMENT + INDICATOR + BLOOM (SINGLE SOURCE)
+   PLO → COPPA STATEMENT + VBE + INDICATOR + BLOOM
 ========================= */
 ploSel.addEventListener("change", async () => {
-  const plo = ploSel.value;
 
-  // 🔹 Reset UI related to PLO
+  const plo = ploSel.value;
+  const programme =
+    document.getElementById("programmeName").value || "the programme";
+
+  // 🔹 Reset UI
   ploStatementEl.textContent = "—";
   ploIndicatorEl.textContent = "—";
+  peoPloLogicBox.textContent = "—";
+
   bloomSel.innerHTML = '<option value="">Select Bloom</option>';
   verbSel.innerHTML = '<option value="">Select Verb</option>';
   bloomDescEl.textContent = "Select a Bloom level to see its description.";
@@ -1309,36 +1405,37 @@ ploSel.addEventListener("change", async () => {
 
   if (!plo) return;
 
-  /* 1️⃣ PLO statement */
-  try {
-    const level = levelSel.value || "Degree";
-    const res = await fetch(
-      `/api/get_statement/${encodeURIComponent(level)}/PLO/${encodeURIComponent(plo)}`
-    );
-    const stmt = await res.json();
-    ploStatementEl.textContent = stmt || "—";
-  } catch (e) {
-    console.error("PLO statement error", e);
+  /* =========================
+     1️⃣ COPPA PLO + VBE (PRIMARY SOURCE)
+  ========================= */
+  if (UNIVERSAL_PLO_MAP[plo]) {
+    const p = UNIVERSAL_PLO_MAP[plo];
+
+    ploStatementEl.textContent = p.statement(programme);
+    ploIndicatorEl.textContent = p.indicator;
+
+    peoPloLogicBox.innerHTML = `
+      <strong>Programme Learning Outcome Alignment</strong><br>
+      This Programme Learning Outcome addresses the
+      <em>${p.domain}</em> domain and is underpinned by
+      <strong>${p.vbe}</strong> as its Value-Based Education (VBE) indicator.
+    `;
   }
 
-  /* 2️⃣ PLO indicator */
-  try {
-    ploIndicatorEl.textContent =
-      (MAP.PLOIndicators && MAP.PLOIndicators[plo]) || "—";
-  } catch (e) {
-    console.error("PLO indicator error", e);
-  }
-
-  /* 3️⃣ Load Bloom list */
+  /* =========================
+     2️⃣ LOAD BLOOM LIST (KEEP THIS)
+  ========================= */
   try {
     const res = await fetch(
       `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
     );
     const blooms = await res.json();
 
-    (blooms || []).forEach(b => bloomSel.add(new Option(b, b)));
+    (blooms || []).forEach(b =>
+      bloomSel.add(new Option(b, b))
+    );
 
-    // 🔥 Auto-select first Bloom & force change
+    // 🔥 Auto-select first Bloom
     if (blooms && blooms.length > 0) {
       bloomSel.value = blooms[0];
       bloomSel.dispatchEvent(new Event("change", { bubbles: true }));
@@ -1346,6 +1443,7 @@ ploSel.addEventListener("change", async () => {
   } catch (e) {
     console.error("PLO → Bloom error", e);
   }
+
 });
 
     
