@@ -828,14 +828,6 @@ const peoPloLogicBox = $('peo_plo_logic');
 
 const ploStatementEl = $('plo_statement');
 const ploIndicatorEl = $('plo_indicator');
-
-const scCodeEl = $('sc_code');
-const scDescEl = $('sc_desc');
-const vbeEl = $('vbe');
-const domainEl = $('domain');
-const conditionEl = $('condition');
-const criterionEl = $('criterion');
-
 const generateBtn = $('generateBtn');
 const copyBtn = $('copyBtn');
 const busyEl = $('busy');
@@ -1234,15 +1226,6 @@ bloomSel.addEventListener("change", async () => {
   verbSel.innerHTML = '<option value="">Select Verb</option>';
   (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
 
-  const mres = await fetch(`/api/get_meta/${encodeURIComponent(plo)}/${encodeURIComponent(key)}?profile=${encodeURIComponent(profileSel.value)}`);
-  const meta = await mres.json();
-
-  scCodeEl.textContent = meta.sc_code || '—';
-  scDescEl.textContent = meta.sc_desc || '—';
-  vbeEl.textContent = meta.vbe || '—';
-  domainEl.textContent = meta.domain || '—';
-  conditionEl.textContent = meta.condition || '—';
-  criterionEl.textContent = meta.criterion || '—';
 
 });
 
@@ -1579,8 +1562,6 @@ if (data.evidence && Object.keys(data.evidence).length) {
       plo: ploSel.value,
       bloom: bloomSel.value,
       verb: verbSel.value,
-      domain: domainEl.textContent,
-      vbe: vbeEl.textContent
       });
 
   });
