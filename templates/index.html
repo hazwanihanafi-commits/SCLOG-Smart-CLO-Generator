@@ -412,9 +412,10 @@
   </div>
 </div>
 
- <div id="bloom_hint" class="mt-1" style="font-size:0.85rem; line-height:1.4;">
-  <span class="muted">Select a Bloom level to see recommendations.</span>
-</div>
+                <div id="bloom_level_guidance"
+     class="mt-2 p-2 rounded"
+     style="font-size:0.85rem; background:#f8f5ff;"></div>
+
                 
               
 
@@ -1093,48 +1094,38 @@ async function loadMapping() {
   ploSel.innerHTML = '<option value="">Select PLO</option>';
 }
 
- 
-  
-function renderBloomHint() {
-  const level = levelSel.value;
-  const hintEl = document.getElementById("bloom_hint");
+function renderBloomGuidance(level) {
+  const el = document.getElementById("bloom_level_guidance");
+  if (!el) return;
 
-  if (!level || !BLOOM_RECOMMENDATION_BY_LEVEL[level]) {
-    hintEl.innerHTML =
-      `<span class="muted">Select programme level to see Bloom recommendations.</span>`;
-    return;
-  }
+  const MAP = {
+    Diploma: `
+🟢 <strong>Preferred:</strong> Remember, Understand, Apply<br>
+🟠 <strong>Acceptable:</strong> Receiving, Responding; Perception, Set, Guided Response<br>
+🔴 <strong>Use sparingly:</strong> Analyze, Evaluate, Create
+`,
+    Degree: `
+🟢 <strong>Preferred:</strong> Apply, Analyze<br>
+🟠 <strong>Acceptable:</strong> Responding, Valuing; Guided Response, Mechanism<br>
+🔴 <strong>Use sparingly:</strong> Remember, Understand
+`,
+    Master: `
+🟢 <strong>Preferred:</strong> Analyze, Evaluate, Create; Valuing, Organization<br>
+🟠 <strong>Acceptable:</strong> Mechanism, Adaptation<br>
+🔴 <strong>Use sparingly:</strong> Remember, Understand, Apply
+`,
+    PhD: `
+🟢 <strong>Preferred:</strong> Create; Characterization; Adaptation, Origination<br>
+🔴 <strong>Use sparingly:</strong> Remember, Understand, Apply, Analyze
+`
+  };
 
-  const { cognitive, affective, psychomotor, caution } =
-    BLOOM_RECOMMENDATION_BY_LEVEL[level];
-
-  let html = `
-    <div><strong>🧠 Cognitive:</strong> ${cognitive.join(", ")}</div>
-    <div><strong>❤️ Affective:</strong> ${affective.join(", ")}</div>
-    <div><strong>✋ Psychomotor:</strong> ${psychomotor.join(", ")}</div>
-  `;
-
-  // ✅ Degree-specific explanation
-  if (level === "Degree") {
-    html += `
-      <div class="mt-2 muted">
-        <strong>Degree-level expectation:</strong><br>
-        Students are expected to analyse information, apply knowledge in professional contexts,
-        demonstrate ethical judgement, and perform skills with confidence and adaptability.
-      </div>
-    `;
-  }
-
-  if (caution?.length) {
-    html += `
-      <div class="mt-1" style="color:#92400e;">
-        ⚠️ <strong>Use sparingly:</strong> ${caution.join(", ")}
-      </div>
-    `;
-  }
-
-  hintEl.innerHTML = html;
+  el.innerHTML = `
+<strong>${level}-level Bloom guidance:</strong><br>
+${MAP[level] || "Select a programme level to see guidance."}
+`;
 }
+
 
     function updateBloomTag(bloomKey){
   const tag = document.getElementById("bloomTag");
@@ -1168,10 +1159,7 @@ function renderBloomHint() {
   tag.textContent = "—";
 }
 
-  /* =========================
-   BLOOM LEVEL AUTO-HINT
-========================= */
-levelSel.addEventListener("change", renderBloomHint);
+ 
 
 
 function renderContentSuggestions(domain) {
@@ -1617,19 +1605,19 @@ ploSel.addEventListener('change', () =>
   })
 );
 
+
 /* init() - call last, after listeners defined */
 (function init(){
   loadMapping();
-  renderBloomHint();
 
-  // Clear suggestions on page load (SAFE)
-  if (contentSuggestionsEl) {
-    contentSuggestionsEl.innerHTML = "";
+  // Show Bloom guidance only if level already selected
+  if (levelSel.value) {
+    renderBloomGuidance(levelSel.value);
   }
 
-  // track page init
   logEvent('page_init', { page: 'generator' });
 })();
+
 
   </script>
 </body>
