@@ -84,11 +84,8 @@ body{
 }
 
 .smart-title{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-weight:800;
-  color:var(--primary);
+  font-size: 1.05rem;   /* lebih kecil dari header */
+  font-weight: 800;
 }
 
 .smart-divider{
@@ -97,6 +94,36 @@ body{
   background:linear-gradient(90deg,var(--primary),#a78bfa);
   border-radius:999px;
   margin:6px 0 12px;
+}
+
+    /* =========================
+   MAIN HEADER (PRIMARY)
+========================= */
+.main-header{
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  color: #ffffff;
+  border: none;
+}
+
+.main-header .main-title{
+  font-size: 1.5rem;      /* 🔥 paling besar */
+  font-weight: 900;
+  letter-spacing: 0.3px;
+}
+
+.main-header .main-subtitle{
+  font-size: 0.95rem;
+  opacity: 0.9;
+  margin-top: 2px;
+}
+
+.main-header .btn{
+  border-color: rgba(255,255,255,0.4);
+  color: #fff;
+}
+
+.main-header .btn:hover{
+  background: rgba(255,255,255,0.15);
 }
 
 /* ===== PILLS ===== */
@@ -283,20 +310,24 @@ footer{
   <div class="container-app">
 
     <!-- HEADER -->
- <div class="main-header card-box mb-3">
-  <div>
-    <div class="main-title">
-      <i class="bi bi-stars me-2"></i> SCLOG
+ <div class="main-header card-box mb-4">
+  <div class="d-flex align-items-center justify-content-between">
+    <div>
+      <div class="main-title">
+        <i class="bi bi-stars me-2"></i> SCLOG
+      </div>
+      <div class="main-subtitle">
+        Smart Course Learning Outcome Generator
+      </div>
     </div>
-    <div class="main-subtitle">
-      Smart Course Learning Outcome Generator
-    </div>
-  </div>
 
-  <button id="darkToggle" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-moon"></i>
-  </button>
+    <button id="darkToggle" class="btn btn-outline-secondary btn-sm">
+      <i class="bi bi-moon"></i>
+    </button>
+  </div>
 </div>
+
+ 
 
 
     
@@ -447,12 +478,11 @@ footer{
     <div class="card-box mb-3">
        
           <div class="d-flex align-items-center gap-2 mb-1">
-  <h4 class="smart-title mb-0">
+  <span class="step-pill">STEP 3</span>
+  <h5 class="smart-title mb-0">
     <i class="bi bi-lightning-charge-fill me-1"></i>
     Smart CLO Builder
-  </h4>
-
-  <!-- Auto Bloom tag -->
+  </h5>
   <span id="bloomTag" class="bloom-tag">—</span>
 </div>
           
