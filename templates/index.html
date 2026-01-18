@@ -365,6 +365,9 @@
 </div>
 
 
+   </div> <!-- ✅ END STEP 2 card-box -->
+
+    
     <!-- 3) Smart CLO Builder (main) -->
     <div class="card-box mb-3">
        
@@ -379,6 +382,9 @@
 </div>
           
 <div class="smart-divider mb-2"></div>
+
+     
+
 
           <div class="step-header">Step 3 · Course Learning Outcome (CLO) Construction</div>
 <div class="step-desc">
@@ -842,7 +848,6 @@ const downloadBtn = $('downloadBtn');
 const downloadRubricBtn = $('downloadRubricBtn');
 const darkToggle = $('darkToggle');
 
-const contentSuggestionsEl = $('content_suggestions');
 
 
 const bloomDescEl = $('bloom_desc');
@@ -1277,55 +1282,63 @@ function generatePEOFromProgramme(programmeName, level){
 }
 
 /* =========================
-   STEP 1 + STEP 2 CONTROLLER (FIXED)
+   STEP 1 + STEP 2 + BLOOM CONTROLLER (FINAL & STABLE)
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
 
-  const btn        = document.getElementById("generatePEO");
-  const peoSelect  = document.getElementById("peoSelect");
-  const peoBox     = document.getElementById("peoSuggestions");
-  const logicBox   = document.getElementById("ieg_peo_logic");
+  /* ========= INIT ========= */
+  loadMapping();
 
-  const ploSelect  = document.getElementById("plo");
-  const peoPloBox  = document.getElementById("peo_plo_logic");
+  // show Bloom guidance if level already selected (browser restore)
+  if (levelSel.value) {
+    renderBloomGuidance(levelSel.value);
+  }
 
-  const iegInput   = document.getElementById("ieg_input");
-  const courseInput= document.getElementById("courseName");
+  /* ========= PROGRAMME LEVEL ========= */
+  levelSel.addEventListener("change", () => {
+    renderBloomGuidance(levelSel.value);
+  });
 
+  /* ========= IEG INPUT ========= */
+  const iegInput = document.getElementById("ieg_input");
   if (iegInput) {
     iegInput.addEventListener("input", e => {
       IEG_TEXT = e.target.value.trim();
     });
   }
 
+  /* ========= COURSE NAME ========= */
+  const courseInput = document.getElementById("courseName");
   if (courseInput) {
     courseInput.addEventListener("input", e => {
       COURSE_NAME = e.target.value.trim();
     });
   }
 
-  /* ===== CLICK: Generate PEO ===== */
-  btn.addEventListener("click", () => {
+  /* ========= STEP 1: GENERATE PEO ========= */
+  generateBtnPEO = document.getElementById("generatePEO");
 
-    const name  = document.getElementById("programmeName").value.trim();
-    const level = document.getElementById("level").value;
+  generateBtnPEO.addEventListener("click", () => {
 
-    if (!name || !level) {
+    const programmeName = document.getElementById("programmeName").value.trim();
+    const level = levelSel.value;
+
+    if (!programmeName || !level) {
       alert("Please enter Programme Name and Programme Level");
       return;
     }
 
-    const peos = generatePEOFromProgramme(name, level);
+    const peos = generatePEOFromProgramme(programmeName, level);
 
-    peoBox.innerHTML = "";
+    peoSuggestions.innerHTML = "";
     peos.forEach(p => {
-      const plos = PEO_PLO_MAP[p.code] || [];
-      peoBox.innerHTML += `
+      const mappedPLOs = PEO_PLO_MAP[p.code] || [];
+      peoSuggestions.innerHTML += `
         <div class="logic-box mb-2">
           <strong>${p.code}</strong><br>
           ${p.text}
           <div class="mt-2 muted" style="font-size:0.85rem">
-            <strong>Mapped PLOs:</strong> ${plos.join(", ")}
+            <strong>Mapped PLOs:</strong> ${mappedPLOs.join(", ")}
           </div>
         </div>`;
     });
@@ -1334,134 +1347,144 @@ document.addEventListener("DOMContentLoaded", () => {
     peos.forEach(p => peoSelect.add(new Option(p.code, p.code)));
     peoSelect.dataset.map = JSON.stringify(peos);
 
-    logicBox.classList.add("d-none");
-    ploSelect.innerHTML = '<option value="">Select PLO</option>';
-    peoPloBox.textContent = "—";
+    iegLogicBox.classList.add("d-none");
+    ploSel.innerHTML = '<option value="">Select PLO</option>';
+    peoPloLogicBox.textContent = "—";
   });
 
-  /* ===== CHANGE: Select PEO (WITH INDICATORS) ===== */
-peoSelect.addEventListener("change", async () => {
+  /* ========= STEP 1: SELECT PEO ========= */
+  peoSelect.addEventListener("change", async () => {
 
-  const peo = peoSelect.value;
-  ploSelect.innerHTML = '<option value="">Select PLO</option>';
-  peoPloBox.textContent = "—";
+    const peo = peoSelect.value;
+    ploSel.innerHTML = '<option value="">Select PLO</option>';
+    peoPloLogicBox.textContent = "—";
 
-  if (!peo) {
-    logicBox.classList.add("d-none");
+    if (!peo) {
+      iegLogicBox.classList.add("d-none");
+      return;
+    }
+
+    const peos = JSON.parse(peoSelect.dataset.map || "[]");
+    const selected = peos.find(p => p.code === peo);
+    const peoData = PROGRAMME_PEO_MAP[peo];
+    const mappedPLOs = PEO_PLO_MAP[peo] || [];
+
+    if (selected && peoData) {
+      iegLogicBox.classList.remove("d-none");
+      iegLogicBox.innerHTML = `
+        <strong>${peo} – Programme Educational Objective</strong><br>
+        ${selected.rationale}
+
+        <div class="mt-3">
+          <strong>PEO Indicators:</strong>
+          <ul>
+            ${peoData.indicators.map(i => `<li>${i}</li>`).join("")}
+          </ul>
+        </div>
+
+        <div class="mt-2 muted" style="font-size:0.85rem">
+          <strong>Data sources:</strong> ${peoData.dataSource.join(", ")}<br>
+          <strong>Review cycle:</strong> 3–5 years after graduation
+        </div>
+
+        <div class="mt-2">
+          <strong>Operationalised through PLOs:</strong> ${mappedPLOs.join(", ")}
+        </div>
+      `;
+    }
+
+    try {
+      const res = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+      const plos = await res.json();
+      (plos || []).forEach(p => ploSel.add(new Option(p, p)));
+
+      peoPloLogicBox.textContent =
+        "This PLO operationalises the competencies described in the selected PEO.";
+
+    } catch (err) {
+      console.error("PEO → PLO error", err);
+    }
+  });
+
+  /* ========= STEP 2: SELECT PLO ========= */
+  ploSel.addEventListener("change", async () => {
+
+    const plo = ploSel.value;
+    const programmeName =
+      document.getElementById("programmeName").value || "the programme";
+
+    // reset
+    ploStatementEl.textContent = "—";
+    ploIndicatorEl.textContent = "—";
+    peoPloLogicBox.textContent = "—";
+
+    bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+    verbSel.innerHTML = '<option value="">Select Verb</option>';
+    bloomDescEl.textContent = "Select a Bloom level to see its description.";
+    assessList.innerHTML = "—";
+    evidenceList.innerHTML = "—";
+
+    if (!plo) return;
+
+     if (!profileSel.value) {
+    bloomSel.innerHTML =
+      '<option value="">Select discipline first</option>';
     return;
   }
 
-  const peos = JSON.parse(peoSelect.dataset.map || "[]");
-  const selected = peos.find(p => p.code === peo);
 
-  const mapped = PEO_PLO_MAP[peo] || [];
-  const peoData = PROGRAMME_PEO_MAP[peo];
+    if (UNIVERSAL_PLO_MAP[plo]) {
+      const p = UNIVERSAL_PLO_MAP[plo];
 
-  if (selected && peoData) {
-    logicBox.classList.remove("d-none");
-    logicBox.innerHTML = `
-      <strong>${peo} – Programme Educational Objective</strong><br>
-      ${selected.rationale}
+      ploStatementEl.textContent = p.statement(programmeName);
+      ploIndicatorEl.innerHTML =
+        "<ul>" + p.indicator.map(i => `<li>${i}</li>`).join("") + "</ul>";
 
-      <div class="mt-3">
-        <strong>PEO Indicators:</strong>
-        <ul>
-          ${peoData.indicators.map(i => `<li>${i}</li>`).join("")}
-        </ul>
-      </div>
-
-      <div class="mt-2 muted" style="font-size:0.85rem">
-        <strong>Data sources:</strong> ${peoData.dataSource.join(", ")}<br>
-        <strong>Review cycle:</strong> 3–5 years after graduation
-      </div>
-
-      <div class="mt-2">
-        <strong>Operationalised through PLOs:</strong> ${mapped.join(", ")}
-      </div>
-    `;
-  }
-
-  try {
-    const res  = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-    const plos = await res.json();
-    (plos || []).forEach(p => ploSelect.add(new Option(p, p)));
-
-    peoPloBox.textContent =
-      "This PLO operationalises the competencies described in the selected PEO.";
-
-  } catch (e) {
-    console.error("PEO → PLO error", e);
-  }
-});
-
-
-    
-/* =========================
-   PLO → COPPA STATEMENT + VBE + INDICATOR + BLOOM
-========================= */
-ploSel.addEventListener("change", async () => {
-
-  const plo = ploSel.value;
-  const programme =
-    document.getElementById("programmeName").value || "the programme";
-
-  // 🔹 Reset UI
-  ploStatementEl.textContent = "—";
-  ploIndicatorEl.textContent = "—";
-  peoPloLogicBox.textContent = "—";
-
-  bloomSel.innerHTML = '<option value="">Select Bloom</option>';
-  verbSel.innerHTML = '<option value="">Select Verb</option>';
-  bloomDescEl.textContent = "Select a Bloom level to see its description.";
-  assessList.innerHTML = "—";
-  evidenceList.innerHTML = "—";
-
-  if (!plo) return;
-
-  /* =========================
-     1️⃣ COPPA PLO + VBE (PRIMARY SOURCE)
-  ========================= */
-  if (UNIVERSAL_PLO_MAP[plo]) {
-    const p = UNIVERSAL_PLO_MAP[plo];
-
-    ploStatementEl.textContent = p.statement(programme);
-    ploIndicatorEl.innerHTML =
-  "<ul>" + p.indicator.map(i => `<li>${i}</li>`).join("") + "</ul>";
-
-
-    peoPloLogicBox.innerHTML = `
-      <strong>Programme Learning Outcome Alignment</strong><br>
-      This Programme Learning Outcome addresses the
-      <em>${p.domain}</em> domain and is underpinned by
-      <strong>${p.vbe}</strong> as its Value-Based Education (VBE) indicator.
-    `;
-  }
-
-  /* =========================
-     2️⃣ LOAD BLOOM LIST (KEEP THIS)
-  ========================= */
-  try {
-    const res = await fetch(
-      `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
-    );
-    const blooms = await res.json();
-
-    (blooms || []).forEach(b =>
-      bloomSel.add(new Option(b, b))
-    );
-
-    // 🔥 Auto-select first Bloom
-    if (blooms && blooms.length > 0) {
-      bloomSel.value = blooms[0];
-      bloomSel.dispatchEvent(new Event("change", { bubbles: true }));
+      peoPloLogicBox.innerHTML = `
+        <strong>Programme Learning Outcome Alignment</strong><br>
+        This Programme Learning Outcome addresses the
+        <em>${p.domain}</em> domain and is underpinned by
+        <strong>${p.vbe}</strong> as its Value-Based Education (VBE) indicator.
+      `;
     }
-  } catch (e) {
-    console.error("PLO → Bloom error", e);
-  }
+
+    try {
+      const res = await fetch(
+        `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
+      );
+      const blooms = await res.json();
+
+      (blooms || []).forEach(b =>
+        bloomSel.add(new Option(b, b))
+      );
+
+      if (blooms && blooms.length > 0) {
+        bloomSel.value = blooms[0];
+        bloomSel.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+
+    } catch (err) {
+      console.error("PLO → Bloom error", err);
+    }
+  });
+
+  /* ========= LOG PEO–PLO CHECK (ONCE ONLY) ========= */
+  ploSel.addEventListener("change", () =>
+    logEvent("peo_plo_check", {
+      peo: peoSelect.value || null,
+      plo: ploSel.value
+    })
+  );
+
+  /* ========= TAB LOGGING ========= */
+  document.querySelectorAll("#tabNav .nav-link").forEach(tab => {
+    tab.addEventListener("click", () =>
+      logEvent("tab_click", { tab: tab.textContent.trim() })
+    );
+  });
 
 });
 
-    
     /* Generate CLO */
     generateBtn.addEventListener('click', async () => {
       if (!ploSel.value || !bloomSel.value || !verbSel.value || !contentInput.value.trim()) {
@@ -1558,6 +1581,10 @@ if (data.evidence && Object.keys(data.evidence).length) {
 
   });
       
+  levelSel.addEventListener("change", () => {
+  renderBloomGuidance(levelSel.value);
+});
+
 
     /* Copy CLO */
     copyBtn.addEventListener('click', async () => {
@@ -1597,26 +1624,7 @@ document.querySelectorAll('#tabNav .nav-link').forEach(tab => {
 
 });
 
-// log PEO–PLO checks
-ploSel.addEventListener('change', () =>
-  logEvent('peo_plo_check', {
-    peo: document.getElementById("peoSelect")?.value || null,
-    plo: ploSel.value
-  })
-);
 
-
-/* init() - call last, after listeners defined */
-(function init(){
-  loadMapping();
-
-  // Show Bloom guidance only if level already selected
-  if (levelSel.value) {
-    renderBloomGuidance(levelSel.value);
-  }
-
-  logEvent('page_init', { page: 'generator' });
-})();
 
 
   </script>
