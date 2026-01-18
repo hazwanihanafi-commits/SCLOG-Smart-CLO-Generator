@@ -380,8 +380,12 @@ def generate():
     course_name = request.form.get("courseName", "")
 
     peo_statement = request.form.get("peo_statement", "").strip()
-plo_indicator = request.form.get("plo_indicator", "").strip()
+    plo_indicator = request.form.get("plo_indicator", "").strip()
 
+    # ✅ REQUIRED FIELD CHECK
+    if not plo or not bloom or not verb or not content:
+        return jsonify({"error": "Missing required fields"}), 400
+    
     details = get_plo_details(plo, profile)
     if not details:
         return jsonify({"error": "Invalid PLO"}), 400
@@ -549,6 +553,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
