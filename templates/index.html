@@ -1597,11 +1597,101 @@ if (data.evidence && Object.keys(data.evidence).length) {
       } catch(e) { alert('Copy failed'); }
     });
 
+
+
     /* Downloads */
-    downloadBtn.addEventListener('click', () => {
-      logEvent('download_clo', { plo: ploSel.value || null });
-      window.location = '/download';
+downloadBtn.addEventListener('click', async () => {
+  logEvent('download_clo', { plo: ploSel.value || null });
+
+  const downloadPayload = {
+    /* =========================
+       CORE OUTCOMES
+    ========================= */
+    clo: LAST_CLO?.clo || cloText.innerText.trim(),
+
+    clo_indicator:
+      "≥ 60% of students accurately interpret multi-source clinical or case-based data in structured assessments.",
+
+    /* =========================
+       PROGRAMME ALIGNMENT
+    ========================= */
+    plo: ploSel.value || null,
+
+    plo_statement:
+      UNIVERSAL_PLO_MAP[ploSel.value]?.statement(
+        document.getElementById("programmeName").value || "the programme"
+      ) || "—",
+
+    plo_indicator:
+      UNIVERSAL_PLO_MAP[ploSel.value]?.indicator?.join("; ") || "—",
+
+    peo: peoSelect.value || null,
+
+    peo_statement: (() => {
+      try {
+        const peos = JSON.parse(peoSelect.dataset.map || "[]");
+        return peos.find(p => p.code === peoSelect.value)?.text || "—";
+      } catch {
+        return "—";
+      }
+    })(),
+
+    ieg: IEG_TEXT || "—",
+
+    /* =========================
+       SKILL / COGNITIVE MAPPING
+    ========================= */
+    sc_code: scCodeEl.textContent || "—",
+    sc_desc: scDescEl.textContent || "—",
+
+    vbe: vbeEl.textContent || "—",
+    domain: domainEl.textContent || "—",
+
+    condition: conditionEl.textContent || "—",
+    criterion: criterionEl.textContent || "—",
+
+    /* =========================
+       ASSESSMENT
+    ========================= */
+    assessments: (() => {
+      const key = normaliseBloomKey(bloomSel.value);
+      return ASSESSMENT_MAP[key]?.assessments?.join("; ")
+        || "Case analysis; Analytical task";
+    })()
+  };
+
+  try {
+    const res = await fetch('/download', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(downloadPayload)
     });
+
+    if (!res.ok) throw new Error('Download failed');
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'CLO_Document.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+
+  } catch (e) {
+    console.error(e);
+    alert('Failed to download CLO');
+  }
+});
+
+
+   
+    
+    
+    
+
     downloadRubricBtn.addEventListener('click', () => {
       logEvent('download_rubric', { plo: ploSel.value || null });
       window.location = '/download_rubric';
