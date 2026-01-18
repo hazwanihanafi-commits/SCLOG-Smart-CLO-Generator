@@ -1054,6 +1054,61 @@ function generatePEOFromProgramme(programmeName, level){
   ];
 }
 
+<script>
+/* =========================
+   FIX STEP 1 — PEO BUTTON
+========================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+  const btn = document.getElementById("generatePEO");
+  const peoSelect = document.getElementById("peoSelect");
+  const peoBox = document.getElementById("peoSuggestions");
+
+  if (!btn || !peoSelect || !peoBox) {
+    console.error("❌ STEP 1 elements missing");
+    return;
+  }
+
+  btn.onclick = () => {
+    const name = document.getElementById("programmeName")?.value.trim();
+    const level = document.getElementById("level")?.value;
+
+    if (!name || !level) {
+      alert("Please enter Programme Name and Programme Level");
+      return;
+    }
+
+    const peos = generatePEOFromProgramme(name, level);
+
+    // Render cards
+    peoBox.innerHTML = "";
+    peos.forEach(p => {
+      peoBox.innerHTML += `
+        <div class="logic-box mb-2">
+          <strong>${p.code}</strong><br>${p.text}
+        </div>`;
+    });
+
+    // Fill dropdown
+    peoSelect.innerHTML = '<option value="">Select PEO</option>';
+    peos.forEach(p => peoSelect.add(new Option(p.code, p.code)));
+    peoSelect.dataset.map = JSON.stringify(peos);
+  };
+
+  /* PEO → rationale */
+  peoSelect.onchange = () => {
+    const peos = JSON.parse(peoSelect.dataset.map || "[]");
+    const p = peos.find(x => x.code === peoSelect.value);
+    if (!p) return;
+
+    const box = document.getElementById("ieg_peo_logic");
+    if (box) {
+      box.classList.remove("d-none");
+      box.textContent = p.rationale || "—";
+    }
+  };
+});
+ 
 /* ---------- PEO selection (RATIONALE ONLY) ---------- */
 peoSel.addEventListener("change", () => {
   const peos = JSON.parse(peoSel.dataset.map || "[]");
