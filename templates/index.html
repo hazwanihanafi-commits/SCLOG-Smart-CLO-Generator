@@ -1494,6 +1494,12 @@ document.addEventListener("DOMContentLoaded", () => {
       busyEl.style.display = 'inline';
       generateBtn.disabled = true;
 
+      if (!profileSel.value) {
+  alert("Please select Discipline first.");
+  return;
+}
+
+
       const fd = new FormData();
       fd.append('profile', profileSel.value);
       fd.append('level', levelSel.value);
@@ -1581,9 +1587,7 @@ if (data.evidence && Object.keys(data.evidence).length) {
 
   });
       
-  levelSel.addEventListener("change", () => {
-  renderBloomGuidance(levelSel.value);
-});
+
 
 
     /* Copy CLO */
@@ -1607,7 +1611,8 @@ downloadBtn.addEventListener('click', async () => {
     /* =========================
        CORE OUTCOMES
     ========================= */
-    clo: LAST_CLO?.clo || cloText.innerText.trim(),
+    clo: cloText.innerText.trim(),
+
 
     clo_indicator:
       "≥ 60% of students accurately interpret multi-source clinical or case-based data in structured assessments.",
