@@ -379,6 +379,9 @@ def generate():
     ieg_input = request.form.get("ieg", "").strip()
     course_name = request.form.get("courseName", "")
 
+    peo_statement = request.form.get("peo_statement", "").strip()
+plo_indicator = request.form.get("plo_indicator", "").strip()
+
     details = get_plo_details(plo, profile)
     if not details:
         return jsonify({"error": "Invalid PLO"}), 400
@@ -431,7 +434,7 @@ def generate():
     # PEO
     # ======================
     "peo": peo,
-    "peo_statement": MAP["PEOstatements"].get(level, {}).get(peo, "Generated PEO"),
+     "peo_statement": peo_statement, 
 
     # ======================
     # PLO
@@ -440,7 +443,8 @@ def generate():
     "plo_statement": MAP["PLOstatements"].get(level, {}).get(
         plo, "Full MQF-aligned PLO"
     ),
-    "plo_indicator": "Programme indicator",
+    "plo_indicator": plo_indicator,
+        
 
     # ======================
     # CLO
@@ -545,6 +549,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
