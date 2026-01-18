@@ -355,14 +355,15 @@ def api_get_statement(level, stype, code):
         return jsonify(MAP["PLOstatements"].get(level, {}).get(code, ""))
     return jsonify("")
 
+# ------------------------------------------------------
+# GLOBAL STATE
+# ------------------------------------------------------
+LAST_CLO = {}
+
 
 # ------------------------------------------------------
 # GENERATE CLO
 # ------------------------------------------------------
-LAST_CLO = {}
-
-programme_name = request.form.get("programmeName", "")
-
 
 @app.route("/generate", methods=["POST"])
 def generate():
@@ -374,140 +375,81 @@ def generate():
     verb = request.form.get("verb", "")
     content = request.form.get("content", "")
     level = request.form.get("level", "Degree")
-
+    programme_name = request.form.get("programmeName", "")
     ieg_input = request.form.get("ieg", "").strip()
 
     details = get_plo_details(plo, profile)
     if not details:
         return jsonify({"error": "Invalid PLO"}), 400
 
+    meta = get_meta_data(plo, bloom, profile)
+
     domain = details["Domain"].lower()
     sc_desc = details["SC_Desc"]
     vbe = details["VBE"]
 
-    # META
-    meta = get_meta_data(plo, bloom, profile)
-    condition_clean = meta["condition"].replace("when ", "").replace("by ", "")
-
-    # ------------------------------------------------------
-    # SMART VERB CLEANER (correct indentation)
-    # ------------------------------------------------------
+    # Clean verb duplication
     words = content.strip().split()
-    if words:
-        first_word = words[0].lower()
-        selected = verb.lower()
+    if words and words[0].lower() == verb.lower():
+        content = " ".join(words[1:])
 
-        # Case 1: content starts with same verb
-        if first_word == selected:
-            content = " ".join(words[1:])
-        else:
-            # Case 2: verb-like detection
-            common_verbs = {
-                "interpret","advocate","assess","examine","explain",
-                "analyze","analyse","evaluate","apply","perform","design",
-                "investigate","critique","discuss","use","demonstrate",
-                "measure","review"
-            }
-
-            looks_like_verb = (
-                first_word in common_verbs or
-                first_word.endswith(("ed", "ing"))
-            )
-
-            if looks_like_verb:
-                content = " ".join(words[1:])
-
-    # ------------------------------------------------------
-    # Build CLO
-    # ------------------------------------------------------
     connector = "when" if domain != "psychomotor" else "by"
+    condition_clean = meta["condition"].replace("when ", "").replace("by ", "")
 
     clo = (
         f"{verb.lower()} {content} using {sc_desc.lower()} "
         f"{connector} {condition_clean} guided by {vbe.lower()}."
     ).capitalize()
 
-    # ------------------------------------------------------
-    # Variants
-    # ------------------------------------------------------
     variants = {
         "Standard": clo,
         "Critical Thinking": clo.replace("using", "critically using"),
         "Short": f"{verb.capitalize()} {content}."
     }
 
+    peo = next((p for p, plos in MAP["PEOtoPLO"].items() if plo in plos), None)
 
-        # Resolve PEO
-    peo = next((p for p,plos in MAP["PEOtoPLO"].items() if plo in plos), None)
-
-
-
-    # Resolve IEG (frontend first)
     if ieg_input:
         ieg = ieg_input
     else:
-        ieg = next((i for i,peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
+        ieg = next((i for i, peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
 
-    assessments = get_assessment(plo, bloom, details["Domain"])
+    assessments = get_assessment(plo, bloom, domain)
     evidence = [e for a in assessments for e in get_evidence_for(a)]
 
-   
-    
-    # ------------------------------------------------------
-    # Save for download
-    # ------------------------------------------------------
-        LAST_CLO = {
-        # ======================
-        # PROGRAMME CONTEXT
-        # ======================
-        "discipline": profile,
-        "programme_level": level,
-        "programme_name": programme_name,
-        "ieg": ieg,
-
-        # ======================
-        # PEO
-        # ======================
-        "peo": peo,
-        "peo_statement": MAP["PEOstatements"].get(level, {}).get(peo, "Generated PEO"),
-
-        # ======================
-        # PLO
-        # ======================
-        "plo": plo,
-        "plo_statement": MAP["PLOstatements"].get(level, {}).get(
-            plo,
-            UNIVERSAL_PLO_MAP[plo]["statement"](programme_name or "the programme")
-        ),
-        "plo_indicator": "Programme indicator",
-
-        # ======================
-        # CLO
-        # ======================
+    LAST_CLO = {
+         "programme_name": programme_name,
         "clo": clo,
         "clo_indicator": "≥60% achievement",
 
-        # ======================
-        # MQF / VBE
-        # ======================
+        "plo": plo,
+        "plo_statement": MAP["PLOstatements"].get(level, {}).get(
+            plo, "Full MQF-aligned PLO"
+        ),
+        "plo_indicator": "Programme indicator",
+
+        "peo": peo,
+        "peo_statement": MAP["PEOstatements"].get(level, {}).get(
+            peo, "Generated PEO"
+        ),
+
+        "ieg": ieg,
+
         "sc_code": details["SC_Code"],
         "sc_desc": details["SC_Desc"],
-        "vbe": vbe,
-        "domain": domain,
+        "vbe": details["VBE"],
+        "domain": details["Domain"],
+
         "condition": meta["condition"],
         "criterion": meta["criterion"],
 
-        # ======================
-        # ASSESSMENT
-        # ======================
-        "assessments": "; ".join(assessments),
-        "evidence": "; ".join(
-            ", ".join(v) for v in evidence.values()
-        )
+        "variants": variants,
+        "assessments": assessments,
+        "evidence": evidence
     }
 
-
     return jsonify(LAST_CLO)
+
 
 # ------------------------------------------------------
 # DOWNLOADS
@@ -521,24 +463,23 @@ def download_clo():
     ws = wb.active
     ws.title = "CLO"
 
-    ws.append(["Field","Value"])
+    ws.append(["Field", "Value"])
 
     for key, val in LAST_CLO.items():
         if isinstance(val, dict):
-        val = json.dumps(val, ensure_ascii=False)
-    elif isinstance(val, list):
-        val = "; ".join(str(x) for x in val)
-    ws.append([key, val])
+            val = json.dumps(val, ensure_ascii=False)
+        elif isinstance(val, list):
+            val = "; ".join(str(x) for x in val)
+        ws.append([key, val])
 
     out = BytesIO()
     wb.save(out)
     out.seek(0)
-    fname = f"CLO_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx"
 
     return send_file(
         out,
         as_attachment=True,
-        download_name=fname,
+        download_name=f"CLO_{datetime.now().strftime('%Y%m%d_%H%M')}.xlsx",
         mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
@@ -586,6 +527,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
