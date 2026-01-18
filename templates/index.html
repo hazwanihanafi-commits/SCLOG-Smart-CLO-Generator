@@ -1580,39 +1580,36 @@ if (data.evidence && Object.keys(data.evidence).length) {
       logEvent('variants_toggle', { visible: hidden });
     });
 
-    // tab click events
-    document.querySelectorAll('#tabNav .nav-link').forEach(tab => {
-      tab.addEventListener('click', () => logEvent('tab_click', { tab: tab.textContent.trim() }));
-    });
 
-    ploSel.addEventListener('change', () => logEvent('peo_plo_check', {
-  peo: document.getElementById("peoSelect")?.value || null,
-  plo: ploSel.value
+    // tab click events
+document.querySelectorAll('#tabNav .nav-link').forEach(tab => {
+  tab.addEventListener('click', () =>
+    logEvent('tab_click', { tab: tab.textContent.trim() })
+  );
 });
 
-    /* init() - call last, after listeners defined */
-    (function init(){
-      loadMapping();
-      renderBloomHint();
+// log PEO–PLO checks
+ploSel.addEventListener('change', () =>
+  logEvent('peo_plo_check', {
+    peo: document.getElementById("peoSelect")?.value || null,
+    plo: ploSel.value
+  })
+);
 
-      // Make field default to "— Select Field —"
-      if (fieldSel) {
-        fieldSel.value = "";
-        fieldSel.selectedIndex = 0;
-      }
+/* init() - call last, after listeners defined */
+(function init(){
+  loadMapping();
+  renderBloomHint();
 
-      // Clear suggestions on page load
-      if (contentSuggestionsEl) {
-        contentSuggestionsEl.innerHTML = "";
-      }
-      if (contentSuggestionsRight) {
-        contentSuggestionsRight.innerHTML = "";
-      }
+  // Clear suggestions on page load (SAFE)
+  if (contentSuggestionsEl) {
+    contentSuggestionsEl.innerHTML = "";
+  }
 
-      // track page init
-      logEvent('page_init', { page: 'generator' });
+  // track page init
+  logEvent('page_init', { page: 'generator' });
+})();
 
-    })();
   </script>
 </body>
 </html>
