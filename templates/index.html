@@ -581,6 +581,112 @@ const VBE_BY_LEVEL = {
   }
 };
 
+/* =========================
+   UNIVERSAL PLO + VBE (MQF 2.0)
+========================= */
+
+const UNIVERSAL_PLO_MAP = {
+  PLO1: {
+    domain: "Knowledge and Understanding",
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates demonstrate comprehensive and systematic understanding of relevant knowledge, concepts and principles to address complex and contemporary issues in professional practice.`,
+    indicator:
+      "Achievement in assessments requiring integration and application of programme-level knowledge."
+  },
+
+  PLO2: {
+    domain: "Cognitive Skills",
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates analyse, evaluate and generate solutions or new knowledge through critical and independent inquiry that meets recognised academic or professional standards.`,
+    indicator:
+      "Performance in analytical, evaluative or research-based assessments."
+  },
+
+  PLO3: {
+    domain: "Practical Skills",
+    vbe: "Compliance with Standards",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates demonstrate appropriate practical, technical or methodological skills in accordance with established standards and best practices.`,
+    indicator:
+      "Demonstration of competence in practical or skills-based assessments."
+  },
+
+  PLO4: {
+    domain: "Interpersonal Skills",
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates work effectively and ethically with diverse individuals and teams in professional and scholarly environments.`,
+    indicator:
+      "Effective collaboration and participation in group-based activities."
+  },
+
+  PLO5: {
+    domain: "Communication Skills",
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates communicate ideas, information and findings clearly, professionally and ethically to relevant stakeholders.`,
+    indicator:
+      "Clarity, accuracy and professionalism in written and oral communication."
+  },
+
+  PLO6: {
+    domain: "Digital Skills",
+    vbe: "Proper Ethics and Etiquette",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates apply appropriate digital and technological tools responsibly to support learning, professional practice or research.`,
+    indicator:
+      "Effective and ethical use of digital tools in coursework or projects."
+  },
+
+  PLO7: {
+    domain: "Numeracy Skills",
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates apply appropriate quantitative or analytical methods to interpret data and support informed decision-making.`,
+    indicator:
+      "Accurate data analysis and interpretation in quantitative tasks."
+  },
+
+  PLO8: {
+    domain: "Leadership, Autonomy and Responsibility",
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates demonstrate leadership, autonomy and accountability in professional, academic or organisational contexts.`,
+    indicator:
+      "Demonstration of responsibility, leadership or independent decision-making."
+  },
+
+  PLO9: {
+    domain: "Personal Skills",
+    vbe: "Flexibility and Adaptability",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates engage in lifelong learning and self-development through reflective and adaptive practices.`,
+    indicator:
+      "Evidence of reflection and continuous professional development."
+  },
+
+  PLO10: {
+    domain: "Entrepreneurship Skills",
+    vbe: "Honesty and Integrity",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates apply entrepreneurial or innovative approaches to identify opportunities and create value within their field.`,
+    indicator:
+      "Identification of opportunities or innovative solutions in projects."
+  },
+
+  PLO11: {
+    domain: "Ethics and Professionalism",
+    vbe: "Ethics and Professionalism",
+    statement: programme =>
+      `In the context of the ${programme} programme, graduates uphold ethical principles, professional standards and responsible conduct in all areas of practice.`,
+    indicator:
+      "Consistent demonstration of ethical and professional behaviour."
+  }
+};
+
+    
   const PEO_PLO_MAP = {
   PEO1: ["PLO1", "PLO2", "PLO3", "PLO6", "PLO7"],
   PEO2: ["PLO4", "PLO5"],
@@ -589,6 +695,9 @@ const VBE_BY_LEVEL = {
   PEO5: ["PLO11"]
 };  
 
+
+
+    
 /* =========================
    DOM REFERENCES
 ========================= */
@@ -708,6 +817,7 @@ const BLOOM_RECOMMENDATION_BY_LEVEL = {
     caution: ["Remember", "Understand", "Apply"]
   }
 };
+
     
 /* =========================
    ASSESSMENT & EVIDENCE
