@@ -1241,7 +1241,6 @@ bloomSel.addEventListener("change", async () => {
   conditionEl.textContent = meta.condition || '—';
   criterionEl.textContent = meta.criterion || '—';
 
-  renderContentSuggestions(meta.domain);
 });
 
 /* =========================
@@ -1542,9 +1541,7 @@ if (data.evidence && Object.keys(data.evidence).length) {
 
         
 // ❌ JANGAN letak else → biar evidence dari ASSESSMENT_MAP
-        peoStatementEl.textContent = data.peo_statement || '—';
-        ploStatementEl.textContent = data.plo_statement || '—';
-        ploIndicatorEl.textContent = data.plo_indicator || '—';
+        
 
         logEvent('generate_clo', { plo: ploSel.value, bloom: bloomSel.value, verb: verbSel.value });
 
@@ -1597,12 +1594,13 @@ if (data.evidence && Object.keys(data.evidence).length) {
       logEvent('variants_toggle', { visible: hidden });
     });
 
-
-    // tab click events
+// tab click events
 document.querySelectorAll('#tabNav .nav-link').forEach(tab => {
-  tab.addEventListener('click', () =>
-    logEvent('tab_click', { tab: tab.textContent.trim() })
-  );
+  tab.addEventListener('click', () => {
+    logEvent('tab_click', { tab: tab.textContent.trim() });
+  });
+});
+
 });
 
 // log PEO–PLO checks
