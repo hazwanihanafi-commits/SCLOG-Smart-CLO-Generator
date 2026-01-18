@@ -415,7 +415,8 @@ def generate():
         ieg = next((i for i, peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
 
     assessments = get_assessment(plo, bloom, domain)
-    evidence = [e for a in assessments for e in get_evidence_for(a)]
+    evidence = {a: get_evidence_for(a) for a in assessments}
+
 
     LAST_CLO = {
          "programme_name": programme_name,
@@ -527,6 +528,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
