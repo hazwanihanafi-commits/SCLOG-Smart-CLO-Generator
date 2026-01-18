@@ -1408,8 +1408,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ========= STEP 2: SELECT PLO ========= */
   ploSel.addEventListener("change", async () => {
+    
+    if (!profileSel.value) {
+  alert("Please select Discipline first.");
+  return;
+}
 
     const plo = ploSel.value;
+  if (!plo) return;
+
+
     const programmeName =
       document.getElementById("programmeName").value || "the programme";
 
@@ -1423,14 +1431,6 @@ document.addEventListener("DOMContentLoaded", () => {
     bloomDescEl.textContent = "Select a Bloom level to see its description.";
     assessList.innerHTML = "—";
     evidenceList.innerHTML = "—";
-
-    if (!plo) return;
-
-     if (!profileSel.value) {
-    bloomSel.innerHTML =
-      '<option value="">Select discipline first</option>';
-    return;
-  }
 
 
     if (UNIVERSAL_PLO_MAP[plo]) {
@@ -1493,12 +1493,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       busyEl.style.display = 'inline';
       generateBtn.disabled = true;
-
-      if (!profileSel.value) {
-  alert("Please select Discipline first.");
-  return;
-}
-
 
       const fd = new FormData();
       fd.append('profile', profileSel.value);
