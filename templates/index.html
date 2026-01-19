@@ -1566,6 +1566,20 @@ document.addEventListener("DOMContentLoaded", () => {
       generateBtn.disabled = true;
 
       const fd = new FormData();
+      // ===== CAPTURE PEO STATEMENT =====
+const peoStatementText =
+  iegLogicBox?.innerText
+    ?.replace(/\s+/g, " ")
+    ?.trim() || "";
+
+// ===== CAPTURE PLO INDICATOR =====
+const ploIndicatorText =
+  ploIndicatorEl?.innerText
+    ?.replace(/\s+/g, " ")
+    ?.trim() || "";
+
+fd.append("peo_statement", peoStatementText);
+fd.append("plo_indicator", ploIndicatorText);
       fd.append('profile', profileSel.value);
       fd.append('level', levelSel.value);
       fd.append('plo', ploSel.value);
