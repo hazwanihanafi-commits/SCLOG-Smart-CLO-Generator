@@ -185,6 +185,59 @@ label.form-label{
   box-shadow:0 0 0 3px rgba(124,58,237,.15);
 }
 
+    /* MODE SELECTOR */
+.mode-card {
+  display: block;
+  cursor: pointer;
+}
+
+.mode-card input {
+  display: none;
+}
+
+.mode-body {
+  background: #faf7ff;
+  border: 2px solid #e9d5ff;
+  border-radius: 16px;
+  padding: 16px;
+  height: 100%;
+  transition: all .2s ease;
+}
+
+.mode-icon {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+}
+
+.mode-title {
+  font-weight: 800;
+  color: #6d28d9;
+  margin-bottom: 4px;
+}
+
+.mode-desc {
+  font-size: .85rem;
+  color: #6b7280;
+}
+
+.mode-card input:checked + .mode-body {
+  border-color: #7c3aed;
+  background: linear-gradient(180deg,#f5f3ff,#ede9fe);
+  box-shadow: 0 10px 24px rgba(124,58,237,.18);
+}
+
+/* Dark mode */
+body[data-theme="dark"] .mode-body {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body[data-theme="dark"] .mode-card input:checked + .mode-body {
+  background: linear-gradient(180deg,#1e1b4b,#312e81);
+  border-color: #a78bfa;
+}
+
+
 /* ===== BLOOM GUIDANCE BOX ===== */
 #bloom_level_guidance{
   background:#f5f0ff;
@@ -328,6 +381,67 @@ footer{
 </div>
 
  
+<!-- MODE SELECTOR -->
+<div class="card-box mb-4">
+  <div class="step-header mb-1">
+    Get Started with SCLOG
+  </div>
+  <div class="step-desc mb-3">
+    Choose how you would like to use the Smart Course Learning Outcome Generator.
+  </div>
+
+  <div class="row g-3">
+
+    <!-- MODE 1 -->
+    <div class="col-md-4">
+      <label class="mode-card">
+        <input type="radio" name="mode" value="full" checked>
+        <div class="mode-body">
+          <div class="mode-icon">🏗️</div>
+          <div class="mode-title">Full Programme Setup</div>
+          <div class="mode-desc">
+            Build a new programme with aligned PEOs, PLOs, and CLOs.
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <!-- MODE 2 -->
+    <div class="col-md-4">
+      <label class="mode-card">
+        <input type="radio" name="mode" value="programme">
+        <div class="mode-body">
+          <div class="mode-icon">🧩</div>
+          <div class="mode-title">Programme Review</div>
+          <div class="mode-desc">
+            Review or revise Programme Educational Objectives (PEO) and PLOs.
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <!-- MODE 3 -->
+    <div class="col-md-4">
+      <label class="mode-card">
+        <input type="radio" name="mode" value="clo">
+        <div class="mode-body">
+          <div class="mode-icon">⚡</div>
+          <div class="mode-title">CLO Generator Only</div>
+          <div class="mode-desc">
+            Jump straight to Smart CLO Builder for course-level outcomes.
+          </div>
+        </div>
+      </label>
+    </div>
+
+  </div>
+
+  <div class="text-end mt-3">
+    <button id="startBtn" class="btn btn-primary">
+      Continue →
+    </button>
+  </div>
+</div>
 
 
     
@@ -1280,6 +1394,36 @@ function renderContentSuggestions(domain) {
     ? `<ul class="muted">${list.map(i => `<li>${i}</li>`).join("")}</ul>`
     : `<span class="muted">No suggestions available.</span>`;
 }
+
+
+
+document.getElementById("startBtn").addEventListener("click", () => {
+  const mode = document.querySelector('input[name="mode"]:checked')?.value;
+
+  if (mode === "full") {
+    // show Step 1, Step 2, Step 3
+    document.getElementById("step1").style.display = "block";
+    document.getElementById("step2").style.display = "block";
+    document.getElementById("step3").style.display = "block";
+  }
+
+  if (mode === "programme") {
+    // show Step 1 + Step 2 only
+    document.getElementById("step1").style.display = "block";
+    document.getElementById("step2").style.display = "block";
+    document.getElementById("step3").style.display = "none";
+  }
+
+  if (mode === "clo") {
+    // jump straight to Step 3
+    document.getElementById("step1").style.display = "none";
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("step3").style.display = "block";
+    document.getElementById("step3").scrollIntoView({ behavior: "smooth" });
+  }
+});
+
+
     
 /* =========================
    BLOOM CHANGE (ONLY ONE)
