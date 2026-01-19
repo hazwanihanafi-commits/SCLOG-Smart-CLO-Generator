@@ -870,9 +870,14 @@ body[data-theme="dark"] .form-control::placeholder {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
+  /* =========================
+     HELPER
+  ========================= */
   const $ = id => document.getElementById(id);
 
-  // ===== DOM =====
+  /* =========================
+     DOM
+  ========================= */
   const modeSelector = $("modeSelector");
   const startBtn = $("startBtn");
   const backBtn = $("backBtn");
@@ -884,25 +889,44 @@ document.addEventListener("DOMContentLoaded", () => {
   const profileSel = $("profile");
   const levelSel = $("level");
   const programmeSel = $("programmeName");
+  const iegInput = $("ieg_input");
 
   const peoBtn = $("generatePEO");
   const peoSelect = $("peoSelect");
-  const ploSelect = $("plo");
+  const peoSuggestions = $("peoSuggestions");
+  const iegLogicBox = $("ieg_peo_logic");
+
+  const ploSel = $("plo");
+  const peoPloLogicBox = $("peo_plo_logic");
+  const ploStatementEl = $("plo_statement");
+  const ploIndicatorEl = $("plo_indicator");
 
   const bloomSel = $("bloom");
+  const bloomDescEl = $("bloom_desc");
+  const bloomTag = $("bloomTag");
+  const bloomGuidance = $("bloom_level_guidance");
+
   const verbSel = $("verb");
+  const contentInput = $("content");
 
   const generateBtn = $("generateBtn");
   const busyEl = $("busy");
   const cloCard = $("cloCard");
   const cloText = $("clo_text");
 
-  // ===== INITIAL STATE =====
+  /* =========================
+     INITIAL STATE
+  ========================= */
   [step1, step2, step3].forEach(s => s.classList.add("hidden"));
   backBtn.classList.add("hidden");
   bloomSel.disabled = true;
 
-  // ===== MODE SELECTOR =====
+  let IEG_TEXT = "";
+  let COURSE_NAME = "";
+
+  /* =========================
+     MODE SELECTOR
+  ========================= */
   startBtn.addEventListener("click", () => {
     const mode = document.querySelector('input[name="mode"]:checked')?.value;
     if (!mode) return;
@@ -924,9 +948,10 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mode === "clo") {
       step3.classList.remove("hidden");
     }
+
+    step1.scrollIntoView({ behavior: "smooth" });
   });
 
-  // ===== BACK BUTTON =====
   backBtn.addEventListener("click", () => {
     [step1, step2, step3].forEach(s => s.classList.add("hidden"));
     modeSelector.classList.remove("hidden");
@@ -934,85 +959,94 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  // ===== STEP 1: PEO =====
-  peoBtn.addEventListener("click", () => {
-  const programme = programmeSel.value.trim();
-  const level = levelSel.value;
+  /* =========================
+     IEG + COURSE
+  ========================= */
+  iegInput.addEventListener("input", e => IEG_TEXT = e.target.value.trim());
+  $("courseName").addEventListener("input", e => COURSE_NAME = e.target.value.trim());
 
-  if (!programme || !level) {
-    alert("Please enter Programme Name and Programme Level.");
-    return;
-  }
-
-  // 🔽 Dropdown
-  peoSelect.innerHTML = `
-    <option value="">Select PEO</option>
-    <option value="PEO1">PEO 1 – Employability & Practice</option>
-    <option value="PEO2">PEO 2 – Communication & Teamwork</option>
-    <option value="PEO3">PEO 3 – Leadership & Lifelong Learning</option>
-    <option value="PEO4">PEO 4 – Innovation</option>
-    <option value="PEO5">PEO 5 – Ethics & Professionalism</option>
-  `;
-
-  // 🔥 PEO SUGGESTION BOX
-  peoSuggestions.innerHTML = `
-    <div class="logic-box mb-2">
-      <strong>PEO 1</strong><br>
-      Graduates demonstrate professional competence and employability in ${programme}.
-    </div>
-    <div class="logic-box mb-2">
-      <strong>PEO 2</strong><br>
-      Graduates communicate and collaborate effectively with stakeholders.
-    </div>
-    <div class="logic-box mb-2">
-      <strong>PEO 3</strong><br>
-      Graduates demonstrate leadership and commitment to lifelong learning.
-    </div>
-  `;
-});
-
-
-  // ===== STEP 2: PEO → PLO =====
-  peoSelect.addEventListener("change", async () => {
-    ploSelect.innerHTML = '<option value="">Select PLO</option>';
-    bloomSel.innerHTML = '<option value="">Select Bloom</option>';
-    bloomSel.disabled = true;
-
-    if (!peoSelect.value) return;
-
-    const res = await fetch(`/api/get_plos/${peoSelect.value}`);
-    const plos = await res.json();
-    plos.forEach(p => ploSelect.add(new Option(p, p)));
+  /* =========================
+     BLOOM GUIDANCE
+  ========================= */
+  levelSel.addEventListener("change", () => {
+    bloomGuidance.innerHTML = `<strong>${levelSel.value}-level Bloom guidance</strong>`;
   });
 
-  // ===== STEP 3: PLO → BLOOM =====
-  ploSelect.addEventListener("change", async () => {
-    bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+  /* =========================
+     STEP 1: GENERATE PEO
+  ========================= */
+  peoBtn.addEventListener("click", () => {
+    const programme = programmeSel.value.trim();
+    const level = levelSel.value;
+    if (!programme || !level) {
+      alert("Please enter Programme Name and Level");
+      return;
+    }
+
+    const peos = generatePEOFromProgramme(programme, level);
+    peoSuggestions.innerHTML = "";
+
+    peos.forEach(p => {
+      peoSuggestions.innerHTML += `
+        <div class="logic-box mb-2">
+          <strong>${p.code}</strong><br>${p.text}
+        </div>`;
+    });
+
+    peoSelect.innerHTML = `<option value="">Select PEO</option>`;
+    peos.forEach(p => peoSelect.add(new Option(p.code, p.code)));
+    peoSelect.dataset.map = JSON.stringify(peos);
+  });
+
+  /* =========================
+     STEP 1: SELECT PEO
+  ========================= */
+  peoSelect.addEventListener("change", async () => {
+    const peo = peoSelect.value;
+    ploSel.innerHTML = `<option value="">Select PLO</option>`;
+    if (!peo) return;
+
+    const res = await fetch(`/api/get_plos/${peo}`);
+    const plos = await res.json();
+    (plos || []).forEach(p => ploSel.add(new Option(p, p)));
+  });
+
+  /* =========================
+     STEP 2: SELECT PLO
+  ========================= */
+  ploSel.addEventListener("change", async () => {
+    const plo = ploSel.value;
+    bloomSel.innerHTML = `<option value="">Select Bloom</option>`;
     bloomSel.disabled = true;
+    if (!plo || !profileSel.value) return;
 
-    if (!ploSelect.value || !profileSel.value) return;
-
-    const res = await fetch(`/api/get_blooms/${ploSelect.value}?profile=${profileSel.value}`);
+    const res = await fetch(`/api/get_blooms/${plo}?profile=${profileSel.value}`);
     const blooms = await res.json();
     blooms.forEach(b => bloomSel.add(new Option(b, b)));
-
     bloomSel.disabled = false;
   });
 
-  // ===== BLOOM → VERB =====
+  /* =========================
+     BLOOM → VERB + DESC
+  ========================= */
   bloomSel.addEventListener("change", async () => {
-    verbSel.innerHTML = '<option value="">Select Verb</option>';
-    if (!bloomSel.value) return;
+    const bloom = bloomSel.value;
+    const key = normaliseBloomKey(bloom);
+    bloomDescEl.textContent = BLOOM_DESC[key] || "";
+    bloomTag.textContent = key.toUpperCase();
 
-    const res = await fetch(`/api/get_verbs/${ploSelect.value}/${bloomSel.value}?profile=${profileSel.value}`);
+    verbSel.innerHTML = `<option value="">Select Verb</option>`;
+    const res = await fetch(`/api/get_verbs/${ploSel.value}/${key}?profile=${profileSel.value}`);
     const verbs = await res.json();
     verbs.forEach(v => verbSel.add(new Option(v, v)));
   });
 
-  // ===== GENERATE CLO =====
+  /* =========================
+     GENERATE CLO
+  ========================= */
   generateBtn.addEventListener("click", async () => {
-    if (!ploSelect.value || !bloomSel.value || !verbSel.value || !$("content").value.trim()) {
-      alert("Complete all CLO fields");
+    if (!ploSel.value || !bloomSel.value || !verbSel.value || !contentInput.value.trim()) {
+      alert("Please complete all fields");
       return;
     }
 
@@ -1022,11 +1056,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const fd = new FormData();
     fd.append("profile", profileSel.value);
     fd.append("level", levelSel.value);
-    fd.append("plo", ploSelect.value);
+    fd.append("plo", ploSel.value);
     fd.append("bloom", bloomSel.value);
     fd.append("verb", verbSel.value);
-    fd.append("content", $("content").value);
-    fd.append("courseName", $("courseName").value);
+    fd.append("content", contentInput.value);
+    fd.append("ieg", IEG_TEXT);
+    fd.append("courseName", COURSE_NAME);
     fd.append("programmeName", programmeSel.value);
 
     const res = await fetch("/generate", { method: "POST", body: fd });
@@ -1041,6 +1076,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
 
 </body>
 </html>
