@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>CLO Only Generator</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="p-4">
+
+  <h3>CLO Only Generator</h3>
+
+  <div class="mb-3">
+    <label class="form-label">PLO</label>
+    <select id="plo" class="form-select"></select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Bloom</label>
+    <select id="bloom" class="form-select"></select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Verb</label>
+    <select id="verb" class="form-select"></select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Content</label>
+    <input id="content" class="form-control" placeholder="e.g. ECG waveform abnormalities">
+  </div>
+
+  <button id="generateBtn" class="btn btn-primary mb-3">Generate CLO</button>
+
+  <div id="cloCard" class="card p-3 mb-3" style="display:none">
+    <strong>Generated CLO:</strong>
+    <div id="clo_text" class="mt-2"></div>
+  </div>
+
+  <div class="mb-3">
+    <h6>Variants</h6>
+    <div id="variants_list" class="text-muted"></div>
+  </div>
+
+  <div class="mb-3">
+    <h6>Suggested Assessments</h6>
+    <div id="assess_list" class="text-muted"></div>
+  </div>
+
+  <div class="mb-3">
+    <h6>Suggested Evidence</h6>
+    <div id="evidence_list" class="text-muted"></div>
+  </div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+async function loadPLOs() {
+  const res = await fetch("/api/get_plos/PEO1"); // simple default
+  const list = await res.json();
+  $.plo.innerHTML = '<option value="">Select PLO</option>';
+  list.forEach(p => $.plo.add(new Option(p,p)));
+}
+
+$.plo?.addEventListener("change", async () => {
+  const plo = $.plo.value;
+  $.bloom.innerHTML = "";
+  $.verb.innerHTML = "";
+
+  if (!plo) return;
+
+  const bRes = await fetch(`/api/get_blooms/${plo}`);
+  const blooms = await bRes.json();
+  $.bloom.innerHTML = '<option value="">Select Bloom</option>';
+  blooms.forEach(b => $.bloom.add(new Option(b,b)));
+});
+
+$.bloom?.addEventListener("change", async () => {
+  const plo = $.plo.value;
+  const bloom = $.bloom.value;
+  $.verb.innerHTML = "";
+  if (!plo || !bloom) return;
+
+  const vRes = await fetch(`/api/get_verbs/${plo}/${bloom}`);
+  const verbs = await vRes.json();
+  $.verb.innerHTML = '<option value="">Select Verb</option>';
+  verbs.forEach(v => $.verb.add(new Option(v,v)));
+});
+
+$.generateBtn?.addEventListener("click", async () => {
+  const fd = new FormData();
+  fd.append("plo", $.plo.value);
+  fd.append("bloom", $.bloom.value);
+  fd.append("verb", $.verb.value);
+  fd.append("content", $.content.value);
+
+  const res = await fetch("/generate", { method:"POST", body: fd });
+  const data = await res.json();
+
+  $.cloCard.style.display = "block";
+  $.clo_text.innerText = data.clo || "";
+
+  $.variants_list.innerHTML = "";
+  if (data.variants) {
+    for (const [k,v] of Object.entries(data.variants)) {
+      $.variants_list.innerHTML += `<div><strong>${k}</strong>: ${v}</div>`;
+    }
+  }
+
+  $.assess_list.innerHTML = "";
+  if (data.assessments) {
+    $.assess_list.innerHTML = "<ul>" + data.assessments.map(a => `<li>${a}</li>`).join("") + "</ul>";
+  }
+
+  $.evidence_list.innerHTML = "";
+  if (data.evidence) {
+    for (const a in data.evidence) {
+      $.evidence_list.innerHTML += `<div><strong>${a}:</strong> ${data.evidence[a].join("; ")}</div>`;
+    }
+  }
+});
+
+loadPLOs();
+</script>
+
+</body>
+</html>
