@@ -279,6 +279,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const ploStatementEl = $("plo_statement");
   const ploIndicatorEl = $("plo_indicator");
 
+
   const bloomSel = $("bloom");
   const bloomDescEl = $("bloom_desc");
   const bloomTag = $("bloomTag");
@@ -291,6 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const busyEl = $("busy");
   const cloCard = $("cloCard");
   const cloText = $("clo_text");
+  
+  const peoSuggestions = document.getElementById("peoSuggestions");
+  const peoSelect = document.getElementById("peoSelect");
 
   /* =========================
      INITIAL STATE
@@ -350,44 +354,132 @@ document.addEventListener("DOMContentLoaded", () => {
     bloomGuidance.innerHTML = `<strong>${levelSel.value}-level Bloom guidance</strong>`;
   });
 
-  /* =========================
-     STEP 1: GENERATE PEO
-  ========================= */
-  peoBtn.addEventListener("click", () => {
-    const programme = programmeSel.value.trim();
-    const level = levelSel.value;
-    if (!programme || !level) {
-      alert("Please enter Programme Name and Level");
-      return;
-    }
+  
+ /* =========================
+   STEP 1: GENERATE PEO (PATCHED)
+========================= */
+peoBtn.addEventListener("click", () => {
 
-    const peos = generatePEOFromProgramme(programme, level);
-    peoSuggestions.innerHTML = "";
+  const programme = programmeSel.value.trim();
+  const level = levelSel.value;
 
-    peos.forEach(p => {
-      peoSuggestions.innerHTML += `
-        <div class="logic-box mb-2">
-          <strong>${p.code}</strong><br>${p.text}
-        </div>`;
-    });
+  if (!programme || !level) {
+    alert("Please enter Programme Name and Level");
+    return;
+  }
 
-    peoSelect.innerHTML = `<option value="">Select PEO</option>`;
-    peos.forEach(p => peoSelect.add(new Option(p.code, p.code)));
-    peoSelect.dataset.map = JSON.stringify(peos);
+  const peos = generatePEOFromProgramme(programme, level);
+
+  /* RESET UI */
+  peoSuggestions.innerHTML = "";
+  peoSelect.innerHTML = `<option value="">Select PEO</option>`;
+  ploSel.innerHTML = `<option value="">Select PLO</option>`;
+  iegLogicBox.classList.add("d-none");
+  peoPloLogicBox.textContent = "—";
+
+  /* STORE PEO DATA */
+  peoSelect.dataset.map = JSON.stringify(peos);
+
+  /* RENDER CLICKABLE PEO CARDS */
+  peos.forEach(p => {
+
+    const mappedPLOs = PEO_PLO_MAP[p.code] || [];
+
+    const div = document.createElement("div");
+    div.className = "logic-box mb-2 peo-card";
+    div.style.cursor = "pointer";
+
+    div.innerHTML = `
+      <strong>${p.code}</strong><br>
+      ${p.text}
+      <div class="mt-2 muted" style="font-size:0.85rem">
+        <strong>Mapped PLOs:</strong> ${mappedPLOs.join(", ")}
+      </div>
+    `;
+
+    /* 🔥 CLICK PEO CARD = SELECT DROPDOWN */
+    div.onclick = () => {
+      peoSelect.value = p.code;
+      peoSelect.dispatchEvent(new Event("change"));
+    };
+
+    peoSuggestions.appendChild(div);
+
+    /* ALSO ADD TO DROPDOWN */
+    peoSelect.add(new Option(p.code, p.code));
   });
+
+  /* ✅ AUTO-SELECT FIRST PEO (IMPORTANT) */
+  if (peos.length) {
+    peoSelect.value = peos[0].code;
+    peoSelect.dispatchEvent(new Event("change"));
+  }
+});
+
 
   /* =========================
      STEP 1: SELECT PEO
   ========================= */
   peoSelect.addEventListener("change", async () => {
-    const peo = peoSelect.value;
-    ploSel.innerHTML = `<option value="">Select PLO</option>`;
-    if (!peo) return;
 
-    const res = await fetch(`/api/get_plos/${peo}`);
+  const peo = peoSelect.value;
+  ploSel.innerHTML = '<option value="">Select PLO</option>';
+  peoPloLogicBox.textContent = "—";
+
+  if (!peo) {
+    iegLogicBox.classList.add("d-none");
+    return;
+  }
+
+  const peos = JSON.parse(peoSelect.dataset.map || "[]");
+  const selected = peos.find(p => p.code === peo);
+  const peoData = PROGRAMME_PEO_MAP[peo];
+  const mappedPLOs = PEO_PLO_MAP[peo] || [];
+
+  /* === SHOW PEO INDICATORS === */
+  if (selected && peoData) {
+    iegLogicBox.classList.remove("d-none");
+    iegLogicBox.innerHTML = `
+      <strong>${peo} – Programme Educational Objective</strong><br>
+      ${selected.rationale}
+
+      <div class="mt-3">
+        <strong>PEO Indicators:</strong>
+        <ul>
+          ${peoData.indicators.map(i => `<li>${i}</li>`).join("")}
+        </ul>
+      </div>
+
+      <div class="mt-2 muted" style="font-size:0.85rem">
+        <strong>Data sources:</strong> ${peoData.dataSource.join(", ")}<br>
+        <strong>Review cycle:</strong> 3–5 years after graduation
+      </div>
+
+      <div class="mt-2">
+        <strong>Operationalised through PLOs:</strong> ${mappedPLOs.join(", ")}
+      </div>
+    `;
+  }
+
+  /* === LOAD PLOs === */
+  try {
+    const res = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
     const plos = await res.json();
-    (plos || []).forEach(p => ploSel.add(new Option(p, p)));
-  });
+
+    (plos || []).forEach(p =>
+      ploSel.add(new Option(p, p))
+    );
+
+    peoPloLogicBox.innerHTML = `
+      This Programme Learning Outcome (PLO) operationalises
+      the competencies articulated in the selected PEO.
+    `;
+
+  } catch (err) {
+    console.error("PEO → PLO error", err);
+  }
+});
+
 
   /* =========================
      STEP 2: SELECT PLO
