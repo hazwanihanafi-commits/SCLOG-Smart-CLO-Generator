@@ -49,7 +49,12 @@
 
 /* ===== PAGE ===== */
 body{
-  background:linear-gradient(180deg,#f5f3ff,#faf9ff);
+  background:linear-gradient(
+    180deg,
+    #6d28d9 0%,
+    #a78bfa 22%,
+    #f6f4fb 22%
+  );
   color:var(--text);
   font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto;
 }
@@ -60,6 +65,12 @@ body{
   padding:24px 20px 48px;
 }
 
+@media (min-width: 992px){
+  .container-app{
+    padding-top:20px;
+    padding-bottom:40px;
+  }
+}
 
 /* ===== CARD ===== */
 .card-box{
@@ -96,6 +107,10 @@ body{
   border-radius:999px;
   margin:6px 0 12px;
 }
+
+.card-box:first-of-type{
+  margin-top:8px;
+} 
 
     /* =========================
    MAIN HEADER (PRIMARY)
@@ -151,6 +166,10 @@ body{
   font-size:.7rem;
   padding:4px 8px;
   border-radius:999px;
+}
+
+.header-pill{
+  margin-bottom:24px;
 }
 
 /* ===== TABS ===== */
@@ -304,6 +323,13 @@ footer{
 }
 
 /* ===== MOBILE ===== */
+    
+@media (min-width: 992px){
+  .header-pill{
+    margin-bottom:18px;   /* rapatkan dengan content */
+  }
+}
+    
 @media(max-width:576px){
   .container-app{padding:10px}
   .card-box{padding:14px}
@@ -320,6 +346,8 @@ footer{
     gap:20px;
   }
 }
+
+    
 .row.g-3{
   --bs-gutter-x: 1.5rem;
 }
