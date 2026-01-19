@@ -55,9 +55,8 @@ body{
 }
 
 .container-app{
-  max-width:720px;
-  margin:auto;
-  padding:14px;
+  max-width:1200px;
+  padding:24px 20px 48px;
 }
 
 /* ===== CARD ===== */
@@ -301,7 +300,22 @@ footer{
   .card-box{padding:14px}
 }
 
-    
+    @media (min-width: 992px){
+  .card-box{
+    padding:26px 28px;
+  }
+}
+
+    @media (min-width: 1200px){
+  .profile-row{
+    gap:20px;
+  }
+}
+.row.g-3{
+  --bs-gutter-x: 1.5rem;
+}
+
+
 </style>  
 
 </head>
