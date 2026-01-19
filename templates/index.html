@@ -296,10 +296,6 @@ body[data-theme="dark"] .mode-card input:checked + .mode-body {
   color: #ffffff !important;
 }
 
-    .main-header .btn {
-  color: #ffffff !important;
-}
-
 
 /* =========================
    DARK MODE (FIX)
@@ -391,6 +387,35 @@ body[data-theme="dark"] .form-control {
 @media(max-width:576px){
   .container-app{padding:10px}
   .card-box{padding:14px}
+}
+
+    /* =========================
+   FORCE TEXT VISIBILITY (FINAL)
+========================= */
+
+/* Header buttons (Back, Dark) */
+.main-header .btn,
+.main-header .btn-outline-secondary {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.6) !important;
+}
+
+/* Select + input text */
+.form-select,
+.form-control {
+  color: #111827 !important; /* dark text */
+}
+
+/* Disabled / readonly selects */
+.form-select:disabled {
+  color: #111827 !important;
+  opacity: 1 !important;
+}
+
+/* Dark mode */
+body[data-theme="dark"] .form-select,
+body[data-theme="dark"] .form-control {
+  color: #e5e7eb !important;
 }
 
     
@@ -981,8 +1006,53 @@ bloomSel.addEventListener("change", async () => {
 });
 
 
-});
+  const generateBtn = document.getElementById("generateBtn");
+  const busyEl = document.getElementById("busy");
+  const cloCard = document.getElementById("cloCard");
+  const cloText = document.getElementById("clo_text");
+
+  generateBtn.addEventListener("click", async () => {
+
+    const plo = document.getElementById("plo").value;
+    const bloom = document.getElementById("bloom").value;
+    const verb = document.getElementById("verb").value;
+    const content = document.getElementById("content").value.trim();
+
+    if (!plo || !bloom || !verb || !content) {
+      alert("Please select PLO, Bloom, Verb and enter Content.");
+      return;
+    }
+
+    busyEl.style.display = "inline";
+    generateBtn.disabled = true;
+
+    const fd = new FormData();
+    fd.append("profile", document.getElementById("profile").value);
+    fd.append("level", document.getElementById("level").value);
+    fd.append("plo", plo);
+    fd.append("bloom", bloom);
+    fd.append("verb", verb);
+    fd.append("content", content);
+    fd.append("courseName", document.getElementById("courseName").value);
+    fd.append("programmeName", document.getElementById("programmeName").value);
+
+    try {
+      const res = await fetch("/generate", { method: "POST", body: fd });
+      const data = await res.json();
+
+      cloText.innerText = data.clo;
+      cloCard.style.display = "block";
+
+    } catch (err) {
+      console.error(err);
+      alert("Error generating CLO");
+    } finally {
+      busyEl.style.display = "none";
+      generateBtn.disabled = false;
+    }
+}); // END DOMContentLoaded
 </script>
+
 
 </body>
 </html>
