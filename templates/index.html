@@ -2,865 +2,243 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>SCLOG — Smart CLO Generator</title>
+  <title>SCLOG — Smart Course Learning Outcome Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Bootstrap + icons -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HMBYNXRLBE"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-HMBYNXRLBE', { 'send_page_view': true });
-
-    function logEvent(name, data = {}) {
-      if (typeof gtag === 'function') {
-        try { gtag('event', name, data); } catch(e){ console.debug('gtag error', e); }
-      } else {
-        console.debug('GA not ready - event', name, data);
-      }
-    }
-  </script>
-
-  <!-- Theme CSS -->
+  <!-- THEME -->
   <style>
-
-    /* =================================================
-   SCLOG – PPBMS STYLE (FINAL POLISH)
-================================================= */
-:root{
-  --primary:#7c3aed;
-  --primary-soft:#ede9fe;
-  --bg:#f6f4fb;
-  --card:#ffffff;
-  --text:#2a2344;
-  --muted:#6b7280;
-  --border:#e5e7eb;
-  --success:#16a34a;
-  --warning:#f59e0b;
-  --danger:#dc2626;
-  --radius:16px;
-  --shadow:0 10px 28px rgba(0,0,0,0.06);
-}
-
-/* ===== PAGE ===== */
-body{
-  background:linear-gradient(180deg,#f5f3ff,#faf9ff);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto;
-}
-
-.container-app{
-  max-width:720px;
-  margin:auto;
-  padding:14px;
-}
-
-/* ===== CARD ===== */
-.card-box{
-  background:var(--card);
-  border-radius:var(--radius);
-  padding:18px;
-  border:1px solid var(--border);
-  box-shadow:var(--shadow);
-  margin-bottom:14px;
-}
-
-/* ===== HEADERS ===== */
-.step-header{
-  font-weight:800;
-  font-size:1.05rem;
-  color:var(--primary);
-}
-
-.step-desc{
-  font-size:.9rem;
-  color:var(--muted);
-  margin-bottom:12px;
-}
-
-.smart-title{
-  font-size: 1.05rem;   /* lebih kecil dari header */
-  font-weight: 800;
-}
-
-.smart-divider{
-  width:48px;
-  height:3px;
-  background:linear-gradient(90deg,var(--primary),#a78bfa);
-  border-radius:999px;
-  margin:6px 0 12px;
-}
-
-    
-
-    /* =========================
-   MAIN HEADER (PRIMARY)
-========================= */
-.main-header{
-  background: linear-gradient(135deg, #7c3aed, #a78bfa);
-  color: #ffffff;
-  border: none;
-}
-
-.main-header .main-title{
-  font-size: 1.5rem;      /* 🔥 paling besar */
-  font-weight: 900;
-  letter-spacing: 0.3px;
-}
-
-.main-header .main-subtitle{
-  font-size: 0.95rem;
-  opacity: 0.9;
-  margin-top: 2px;
-}
-
-.main-header .btn{
-  border-color: rgba(255,255,255,0.4);
-  color: #fff;
-}
-
-.main-header .btn:hover{
-  background: rgba(255,255,255,0.15);
-}
-
-/* ===== PILLS ===== */
-.step-pill{
-  background:var(--primary-soft);
-  color:var(--primary);
-  font-weight:800;
-  font-size:.65rem;
-  padding:4px 10px;
-  border-radius:999px;
-}
-
-.bloom-tag{
-  background:var(--primary-soft);
-  color:var(--primary);
-  font-weight:800;
-  font-size:.7rem;
-  padding:4px 8px;
-  border-radius:999px;
-}
-
-/* ===== TABS ===== */
-.nav-tabs{
-  border:none;
-  gap:6px;
-}
-
-.nav-tabs .nav-link{
-  border:none;
-  background:#f3eefe;
-  color:var(--primary);
-  font-weight:600;
-  border-radius:999px;
-  padding:6px 14px;
-}
-
-.nav-tabs .nav-link.active{
-  background:var(--primary);
-  color:#fff;
-}
-
-    /* === FORCE HEADER BUTTON VISIBILITY === */
-.main-header .btn,
-.main-header .btn-outline-secondary {
-  color: #ffffff !important;
-  border-color: rgba(255,255,255,0.5) !important;
-}
-
-.main-header .btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-
-/* ===== FORM ===== */
-label.form-label{
-  font-weight:700;
-  font-size:.85rem;
-  color:#4b5563;
-}
-
-.form-control,.form-select{
-  border-radius:12px;
-  border:1px solid var(--border);
-  padding:10px 12px;
-  background:#fafaff;
-  font-size:.95rem;
-}
-
-.form-control:focus,.form-select:focus{
-  border-color:var(--primary);
-  box-shadow:0 0 0 3px rgba(124,58,237,.15);
-}
-
-    /* MODE SELECTOR */
-.mode-card {
-  display: block;
-  cursor: pointer;
-}
-
-.mode-card input {
-  display: none;
-}
-
-.mode-body {
-  background: #faf7ff;
-  border: 2px solid #e9d5ff;
-  border-radius: 16px;
-  padding: 16px;
-  height: 100%;
-  transition: all .2s ease;
-}
-
-.mode-icon {
-  font-size: 1.6rem;
-  margin-bottom: 6px;
-}
-
-.mode-title {
-  font-weight: 800;
-  color: #6d28d9;
-  margin-bottom: 4px;
-}
-
-.mode-desc {
-  font-size: .85rem;
-  color: #6b7280;
-}
-
-.mode-card input:checked + .mode-body {
-  border-color: #7c3aed;
-  background: linear-gradient(180deg,#f5f3ff,#ede9fe);
-  box-shadow: 0 10px 24px rgba(124,58,237,.18);
-}
-
-/* Dark mode */
-body[data-theme="dark"] .mode-body {
-  background: #0f172a;
-  border-color: #334155;
-}
-
-body[data-theme="dark"] .mode-card input:checked + .mode-body {
-  background: linear-gradient(180deg,#1e1b4b,#312e81);
-  border-color: #a78bfa;
-}
-
-.hidden {
-  display: none !important;
-}
-
-
-/* ===== BLOOM GUIDANCE BOX ===== */
-#bloom_level_guidance{
-  background:#f5f0ff;
-  border:1px dashed #ddd6fe;
-  border-radius:12px;
-  padding:10px;
-  font-size:.85rem;
-}
-
-#bloom_level_guidance .green{color:var(--success)}
-#bloom_level_guidance .amber{color:var(--warning)}
-#bloom_level_guidance .red{color:var(--danger)}
-
-/* ===== BUTTONS ===== */
-.btn{
-  border-radius:12px;
-  font-weight:700;
-}
-
-.btn-primary{
-  background:linear-gradient(90deg,var(--primary),#a78bfa);
-  border:none;
-}
-
-.btn-outline-secondary{
-  border:2px solid var(--primary);
-  color:var(--primary);
-  background:#fff;
-}
-
-.btn-outline-secondary:hover{
-  background:var(--primary);
-  color:#fff;
-}
-
-.btn-primary,
-.btn-primary:disabled {
-  color: #ffffff !important;
-}
-
-
-/* =========================
-   DARK MODE (FIX)
-========================= */
-body[data-theme="dark"]{
-  background:linear-gradient(180deg,#0f1020,#15152b);
-  color:#e5e7eb;
-}
-
-body[data-theme="dark"] .card-box{
-  background:#1b1c31;
-  border-color:#2a2b4a;
-  box-shadow:0 12px 28px rgba(0,0,0,.6);
-}
-
-body[data-theme="dark"] .step-header,
-body[data-theme="dark"] .smart-title{
-  color:#c4b5fd;
-}
-
-body[data-theme="dark"] .step-desc,
-body[data-theme="dark"] .muted,
-body[data-theme="dark"] footer{
-  color:#9ca3af;
-}
-
-body[data-theme="dark"] .form-control,
-body[data-theme="dark"] .form-select{
-  background:#0f172a;
-  border-color:#334155;
-  color:#e5e7eb;
-}
-
-body[data-theme="dark"] .logic-box{
-  background:#0f172a;
-  border:1px solid #334155;
-}
-
-body[data-theme="dark"] .nav-tabs .nav-link{
-  background:#1e1b4b;
-  color:#c7d2fe;
-}
-
-body[data-theme="dark"] .nav-tabs .nav-link.active{
-  background:#7c3aed;
-  color:#fff;
-}
-    
-/* ===== GENERATED CLO ===== */
-#cloCard{
-  background:#faf7ff;
-  border:1px solid #e9d5ff;
-}
-
-#clo_text{
-  font-size:.95rem;
-  line-height:1.5;
-}
-
-/* ===== LOGIC BOX ===== */
-.logic-box{
-  background:#f7f2ff;
-  border-radius:12px;
-  padding:10px;
-  font-size:.85rem;
-}
-
-/* ===== FOOTER ===== */
-footer{
-  font-size:.8rem;
-  color:var(--muted);
-  text-align:center;
-  margin-top:20px;
-}
-
-    /* === SELECT TEXT VISIBILITY FIX === */
-.form-select,
-.form-control {
-  color: #111827; /* slate-900 */
-}
-
-body[data-theme="dark"] .form-select,
-body[data-theme="dark"] .form-control {
-  color: #e5e7eb;
-}
-
-
-/* ===== MOBILE ===== */
-@media(max-width:576px){
-  .container-app{padding:10px}
-  .card-box{padding:14px}
-}
-
-    /* =========================
-   FORCE TEXT VISIBILITY (FINAL)
-========================= */
-
-/* Header buttons (Back, Dark) */
-.main-header .btn,
-.main-header .btn-outline-secondary {
-  color: #ffffff !important;
-  border-color: rgba(255,255,255,0.6) !important;
-}
-
-/* Select + input text */
-.form-select,
-.form-control {
-  color: #111827 !important; /* dark text */
-}
-
-/* Disabled / readonly selects */
-.form-select:disabled {
-  color: #111827 !important;
-  opacity: 1 !important;
-}
-
-/* Dark mode */
-body[data-theme="dark"] .form-select,
-body[data-theme="dark"] .form-control {
-  color: #e5e7eb !important;
-}
-    
-/* FIX HEADER BUTTON VISIBILITY */
-.main-header .btn-outline-secondary {
-  color: #ffffff !important;
-  border-color: rgba(255,255,255,0.8) !important;
-  background: transparent;
-}
-
-.main-header .btn-outline-secondary:hover {
-  background: rgba(255,255,255,0.2);
-}
-
-/* ===== FIX SELECT & INPUT TEXT VISIBILITY (FINAL) ===== */
-
-.form-control,
-.form-select {
-  color: #111827 !important;      /* text hitam */
-  background-color: #fafaff !important;
-}
-
-/* OPTION text (INI PALING PENTING) */
-.form-select option {
-  color: #111827 !important;
-  background-color: #ffffff !important;
-}
-
-/* Disabled select – jangan pudar */
-.form-select:disabled {
-  color: #111827 !important;
-  opacity: 1 !important;
-}
-
-/* Placeholder text */
-.form-control::placeholder {
-  color: #6b7280 !important;
-}
-
-/* ===== DARK MODE SELECT FIX ===== */
-body[data-theme="dark"] .form-control,
-body[data-theme="dark"] .form-select {
-  background-color: #0f172a !important;
-  color: #e5e7eb !important;
-}
-
-body[data-theme="dark"] .form-select option {
-  background-color: #0f172a !important;
-  color: #e5e7eb !important;
-}
-
-body[data-theme="dark"] .form-control::placeholder {
-  color: #9ca3af !important;
-}
-
-    
-</style>  
-
+    :root{
+      --primary:#7c3aed;
+      --primary-soft:#ede9fe;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --radius:16px;
+      --shadow:0 10px 28px rgba(0,0,0,.06);
+    }
+
+    body{
+      background:linear-gradient(180deg,#f5f3ff,#faf9ff);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto;
+      color:#2a2344;
+    }
+
+    .container-app{max-width:900px;margin:auto;padding:20px}
+    .card-box{
+      background:var(--card);
+      border-radius:var(--radius);
+      padding:22px;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+    }
+
+    .main-header{
+      background:linear-gradient(135deg,#7c3aed,#a78bfa);
+      color:#fff;
+    }
+
+    .step-pill{
+      background:var(--primary-soft);
+      color:var(--primary);
+      font-weight:800;
+      font-size:.65rem;
+      padding:4px 10px;
+      border-radius:999px;
+    }
+
+    .step-header{
+      font-weight:800;
+      color:var(--primary);
+      font-size:1.05rem;
+    }
+
+    .step-desc{color:var(--muted);font-size:.9rem}
+
+    .logic-box{
+      background:#f7f2ff;
+      border-radius:12px;
+      padding:12px;
+      font-size:.9rem;
+    }
+
+    .form-control,.form-select{
+      border-radius:12px;
+      background:#fafaff;
+      color:#111827;
+    }
+
+    .bloom-tag{
+      background:var(--primary-soft);
+      color:var(--primary);
+      font-weight:800;
+      font-size:.7rem;
+      padding:4px 8px;
+      border-radius:999px;
+    }
+
+    footer{
+      text-align:center;
+      font-size:.8rem;
+      color:var(--muted);
+      margin-top:30px;
+    }
+  </style>
 </head>
 
-<body data-theme="light">
-  <div class="container-app">
-    </div>
+<body>
 
+<div class="container-app">
 
-    <!-- HEADER -->
- <div class="main-header card-box mb-4">
-  <div class="d-flex align-items-center justify-content-between">
-    <div>
-      <div class="main-title">
-        <i class="bi bi-stars me-2"></i> SCLOG
-      </div>
-      <div class="main-subtitle">
-        Smart Course Learning Outcome Generator
-      </div>
-    </div>
-    
-<div class="d-flex align-items-center gap-2">
-  <button id="backBtn" class="btn btn-outline-secondary btn-sm">← Back</button>
-  <button id="darkToggle" class="btn btn-outline-secondary btn-sm">
-    <i class="bi bi-moon"></i>
-  </button>
-</div>
-</div>
-
-  
- 
-<!-- MODE SELECTOR -->
-<div id="modeSelector" class="card-box mb-4">
-
-  <div class="step-header mb-1">
-    Get Started with SCLOG
-  </div>
-  <div class="step-desc mb-3">
-    Choose how you would like to use the Smart Course Learning Outcome Generator.
-  </div>
-
-  <div class="row g-3">
-
-    <!-- MODE 1 -->
-    <div class="col-md-4">
-      <label class="mode-card">
-        <input type="radio" name="mode" value="full" checked>
-        <div class="mode-body">
-          <div class="mode-icon">🏗️</div>
-          <div class="mode-title">Full Programme Setup</div>
-          <div class="mode-desc">
-            Build a new programme with aligned PEOs, PLOs, and CLOs.
-          </div>
+  <!-- HEADER -->
+  <div class="card-box main-header mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="mb-0"><i class="bi bi-stars me-2"></i>SCLOG</h4>
+        <div style="opacity:.9;font-size:.9rem">
+          Smart Course Learning Outcome Generator
         </div>
-      </label>
-    </div>
-
-    <!-- MODE 2 -->
-    <div class="col-md-4">
-      <label class="mode-card">
-        <input type="radio" name="mode" value="programme">
-        <div class="mode-body">
-          <div class="mode-icon">🧩</div>
-          <div class="mode-title">Programme Review</div>
-          <div class="mode-desc">
-            Review or revise Programme Educational Objectives (PEO) and PLOs.
-          </div>
-        </div>
-      </label>
-    </div>
-
-    <!-- MODE 3 -->
-    <div class="col-md-4">
-      <label class="mode-card">
-        <input type="radio" name="mode" value="clo">
-        <div class="mode-body">
-          <div class="mode-icon">⚡</div>
-          <div class="mode-title">CLO Generator Only</div>
-          <div class="mode-desc">
-            Jump straight to Smart CLO Builder for course-level outcomes.
-          </div>
-        </div>
-      </label>
-    </div>
-
-  </div>
-
-  <div class="text-end mt-3">
-    <button id="startBtn" class="btn btn-primary">
-      Continue →
-    </button>
-  </div>
-</div>
-
-
-    
-<!-- STEP 1 · Programme Context -->
-<div id="step1" class="card-box mb-3 hidden">
-
-  <div class="d-flex align-items-center gap-2 mb-1">
-    <span class="step-pill">STEP 1</span>
-    <div class="step-header mb-0">Programme Context</div>
-  </div>
-
-  <div class="step-desc">
-    Define the Discipline, Programme Level, Institutional Educational Goals (IEG),
-    and Programme Educational Objectives (PEO) to guide appropriate outcome mapping.
-  </div>
-
-  <div class="step-divider"></div>
-
-  <div class="row g-3 profile-row">
-
-    <!-- Academic Profile -->
-    <div class="col-12 col-md-4">
-      <label class="form-label">Discipline (programme context)</label>
-      <select id="profile" class="form-select">
-        <option value="">Select Academic profile</option>
-        <option value="health">Medical & Health</option>
-        <option value="sc">Computer Science & IT</option>
-        <option value="eng">Engineering & Technology</option>
-        <option value="socs">Social Sciences</option>
-        <option value="edu">Education</option>
-        <option value="bus">Business & Management</option>
-        <option value="arts">Arts & Humanities</option>
-      </select>
-    </div>
-
-    <!-- Programme Level -->
-    <div class="col-12 col-md-2">
-      <label class="form-label">Programme Level</label>
-      <select id="level" class="form-select">
-        <option value="">Select Level</option>
-        <option>Diploma</option>
-        <option>Degree</option>
-        <option>Master</option>
-        <option>PhD</option>
-      </select>
-    </div>
-
-    <!-- Programme Name -->
-    <div class="col-12 col-md-6">
-      <label class="form-label">Programme Name</label>
-      <input
-        id="programmeName"
-        type="text"
-        class="form-control"
-        placeholder="e.g. Bachelor of Exercise Science">
-    </div>
-
-    <!-- IEG -->
-    <div class="col-12">
-      <label class="form-label">Institutional Educational Goals (IEG)</label>
-      <textarea
-        id="ieg_input"
-        class="form-control"
-        rows="3"
-        placeholder="Paste or type Institutional Educational Goals here (optional)">
-      </textarea>
-      <div class="muted mt-1" style="font-size:0.85rem">
-        Optional. This will be included in the generated CLO documentation.
       </div>
-    </div>
-
-
-    <!-- Generate PEO -->
-    <div class="col-12">
-      <button id="generatePEO" class="btn btn-outline-primary">
-        Suggest Programme Educational Objectives (PEOs)
+      <button id="darkToggle" class="btn btn-outline-light btn-sm">
+        <i class="bi bi-moon"></i>
       </button>
     </div>
+  </div>
 
-    <!-- PEO suggestions -->
-    <div id="peoSuggestions" class="col-12"></div>
-
-    <!-- Select PEO -->
-    <div class="col-12 col-md-6">
-      <label class="form-label mt-3">Select PEO</label>
-      <select id="peoSelect" class="form-select"></select>
+  <!-- STEP 1 -->
+  <div id="step1-programme" class="card-box">
+    <div class="d-flex gap-2 mb-2">
+      <span class="step-pill">STEP 1</span>
+      <div class="step-header">Programme Context</div>
     </div>
 
-    <!-- PEO rationale box -->
-    <div id="ieg_peo_logic" class="logic-box d-none col-12"></div>
-
-  </div>
-</div>
-
-    
-
-    <!-- 2) PLO for selected PEO -->
-
-<!-- STEP 2 -->
-<div id="step2" class="card-box mb-3 hidden">
-
-
-
-  <div class="d-flex align-items-center gap-2 mb-1">
-    <span class="step-pill">STEP 2</span>
-    <div class="step-header mb-0">
-      Programme Learning Outcomes (PLO)
+    <div class="step-desc mb-3">
+      Define programme context and generate Programme Educational Objectives (PEO).
     </div>
-  </div>
 
-  <div class="step-desc">
-    Select the Programme Learning Outcome (PLO) aligned with the selected
-    Programme Educational Objective (PEO).
-  </div>
-
-  <div class="step-divider"></div>
-
-
-  <label class="form-label">PLO for selected PEO</label>
-  <select id="plo" class="form-select mb-3">
-    <option value="">Select PLO</option>
-  </select>
-
-  <!-- Alignment rationale -->
-  <div class="mb-3">
-    <div class="form-label">Why is this PLO aligned with the selected PEO?</div>
-    <div id="peo_plo_logic" class="logic-box">—</div>
-  </div>
-
-  <!-- Statements & indicator -->
-<div class="mb-3">
-  <h6 class="fw-bold mt-3">PLO and Indicator of Achievement</h6>
-
-  <div>
-    <strong>PLO:</strong>
-    <span id="plo_statement" class="muted">—</span>
-  </div>
-
-  <div class="mt-2">
-    <strong>PLO Indicator:</strong>
-    <span id="plo_indicator" class="muted">—</span>
-  </div>
-</div>
-
-
-   </div> <!-- ✅ END STEP 2 card-box -->
-
-    
-    <!-- 3) Smart CLO Builder (main) -->
-    
-  <div id="step3" class="card-box mb-3 hidden">
-
-
-    <div class="d-flex align-items-center gap-2 mb-1">
-  <span class="step-pill">STEP 3</span>
-  <div class="step-header mb-0">
-    Course Learning Outcome (CLO)
-  </div>
-</div>
-
-<div class="step-desc">
-  Construct a measurable Course Learning Outcome using Bloom’s Taxonomy,
-  suitable action verbs, and clear content focus.
-</div>
-
-    <div class="d-flex align-items-center gap-2 mt-3 mb-1">
-  <h5 class="smart-title mb-0">
-    <i class="bi bi-lightning-charge-fill me-1"></i>
-    Smart CLO Builder
-  </h5>
-  <span id="bloomTag" class="bloom-tag">—</span>
-</div>
-
-<div class="smart-divider mb-2"></div>
-     
-
-
-          
-          <div class="muted mb-2">Create measurable course learning outcomes quickly</div>
-
-          <ul class="nav nav-tabs mb-3" id="tabNav" role="tablist">
-            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#builderTab">Builder</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#variantsTab">Variants</button></li>
-            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#assessmentTab">Assessment</button></li>
-          </ul>
-
-          <div class="tab-content">
-            <!-- BUILDER -->
-            <div class="tab-pane fade show active" id="builderTab">
-              <div class="row g-3">
-                <div class="col-md-6">
-  <label class="form-label">Bloom</label>
-  <select id="bloom" class="form-select">
-    <option value="">Select Bloom</option>
-  </select>
-
-  <!-- Bloom description (UI only) -->
-  <div id="bloom_desc" class="muted mt-1" style="font-size:0.85rem;">
-    Select a Bloom level to see its description.
-  </div>
-</div>
-
-                <div id="bloom_level_guidance"
-     class="mt-2 p-2 rounded"
-     style="font-size:0.85rem; background:#f8f5ff;"></div>
-
-                
-              
-
-                <div class="col-md-6">
-                  <label class="form-label">Verb</label>
-                  <select id="verb" class="form-select"><option value="">Select Verb</option></select>
-                </div> 
-
-
-                <label class="form-label">Course Name</label>
-<input id="courseName"
-  class="form-control"
-  placeholder="e.g. Exercise Physiology II">
-
-                
-            
-                  <div id="content_inline_suggestions"
-     class="mt-2 muted"
-     style="font-size:0.85rem">
-</div>
-                <div class="col-12">
-                  <label class="form-label">
-  Content (learning focus / object)
-</label>
-<div class="muted mb-1" style="font-size:0.85rem">
-  Specify <strong>what</strong> the student will work on (procedure, concept,
-  skill, case, or professional task).
-</div>
-<input id="content" class="form-control"
-       placeholder="e.g., ECG waveform interpretation, laboratory testing procedure, ethical case scenario">
-</div>
-                <div class="col-12 d-flex gap-2 align-items-center">
-                  <button id="generateBtn" class="btn btn-primary"><i class="bi bi-magic me-1"></i> Generate CLO</button>
-                  <button id="copyBtn" class="btn btn-outline-secondary"><i class="bi bi-clipboard me-1"></i> Copy</button>
-                  <div id="busy" class="muted" style="display:none">Generating…</div>
-                </div>
-
-                <div id="cloCard" class="col-12 card-box" style="display:none; margin-top:12px;">
-                  <h6 class="mb-2">Generated CLO</h6>
-                  <div id="clo_text" style="line-height:1.4; font-weight:600;"></div>
-
-                  <div class="mt-3">
-                    <button id="toggleVariants" class="btn btn-outline-secondary btn-sm">Show variants</button>
-                    <div id="variantsPanel" style="display:none; margin-top:10px;"></div>
-                  </div>
-
-                  <div class="mt-3 d-flex gap-2">
-                    <button id="downloadBtn" class="btn btn-success"><i class="bi bi-download me-1"></i> Download CLO</button>
-                    <button id="downloadRubricBtn" class="btn btn-outline-secondary"><i class="bi bi-file-earmark-text me-1"></i> Download Rubric</button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            <!-- VARIANTS -->
-            <div class="tab-pane fade" id="variantsTab">
-              <div id="variants_list" class="muted">Variants will appear after generating a CLO.</div>
-            </div>
-
-            <!-- ASSESSMENT -->
-<div class="tab-pane fade" id="assessmentTab">
-
-  <div class="step-header">Step 4 · Assessment & Evidence</div>
-  <div class="step-desc">
-    Recommended assessment methods and supporting evidence aligned with
-    the selected Bloom’s domain and CLO.
-  </div>
-  <div class="step-divider"></div>
-
-  <div class="row g-3">
-    <div class="col-md-6">
-      <div class="card-box">
-        <h6>Suggested Assessment methods</h6>
-        <div id="assess_list" class="muted">—</div>
+    <div class="row g-3">
+      <div class="col-md-4">
+        <label class="form-label">Discipline</label>
+        <select id="profile" class="form-select">
+          <option value="">Select discipline</option>
+          <option value="health">Medical & Health</option>
+          <option value="sc">Computer Science</option>
+          <option value="eng">Engineering</option>
+          <option value="edu">Education</option>
+        </select>
       </div>
-    </div>
 
-    <div class="col-md-6">
-      <div class="card-box">
-        <h6>Suggested evidence</h6>
-        <div id="evidence_list" class="muted">—</div>
+      <div class="col-md-3">
+        <label class="form-label">Programme Level</label>
+        <select id="level" class="form-select">
+          <option value="">Select level</option>
+          <option>Diploma</option>
+          <option>Degree</option>
+          <option>Master</option>
+          <option>PhD</option>
+        </select>
       </div>
+
+      <div class="col-md-5">
+        <label class="form-label">Programme Name</label>
+        <input id="programmeName" class="form-control" placeholder="e.g. Master of Clinical Exercise Science">
+      </div>
+
+      <div class="col-12">
+        <label class="form-label">Institutional Educational Goals (IEG)</label>
+        <textarea id="ieg_input" class="form-control" rows="3"></textarea>
+      </div>
+
+      <div class="col-12">
+        <button id="generatePEO" class="btn btn-outline-primary">
+          Suggest Programme Educational Objectives (PEOs)
+        </button>
+      </div>
+
+      <div id="peoSuggestions" class="col-12"></div>
+
+      <div class="col-md-6">
+        <label class="form-label mt-3">Select PEO</label>
+        <select id="peoSelect" class="form-select"></select>
+      </div>
+
+      <div id="ieg_peo_logic" class="logic-box d-none col-12"></div>
     </div>
   </div>
+
+  <!-- STEP 2 -->
+  <div id="step2-plo" class="card-box">
+    <div class="d-flex gap-2 mb-2">
+      <span class="step-pill">STEP 2</span>
+      <div class="step-header">Programme Learning Outcomes (PLO)</div>
+    </div>
+
+    <label class="form-label">PLO for selected PEO</label>
+    <select id="plo" class="form-select mb-3"></select>
+
+    <div id="peo_plo_logic" class="logic-box mb-3">—</div>
+
+    <div>
+      <strong>PLO Statement</strong>
+      <div id="plo_statement" class="mt-1"></div>
+    </div>
+
+    <div class="mt-2">
+      <strong>PLO Indicator</strong>
+      <div id="plo_indicator"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3-clo" class="card-box">
+    <div class="d-flex gap-2 mb-2">
+      <span class="step-pill">STEP 3</span>
+      <div class="step-header">Course Learning Outcome (CLO)</div>
+      <span id="bloomTag" class="bloom-tag">—</span>
+    </div>
+
+    <div class="step-desc mb-3">
+      Construct a measurable CLO using Bloom’s Taxonomy.
+    </div>
+
+    <label class="form-label">Bloom</label>
+    <select id="bloom" class="form-select mb-2"></select>
+    <div id="bloom_desc" class="text-muted mb-3"></div>
+
+    <label class="form-label">Verb</label>
+    <select id="verb" class="form-select mb-3"></select>
+
+    <label class="form-label">Course Name</label>
+    <input id="courseName" class="form-control mb-3">
+
+    <label class="form-label">Content (learning focus)</label>
+    <input id="content" class="form-control mb-3">
+
+    <div class="d-flex gap-2">
+      <button id="generateBtn" class="btn btn-primary">
+        <i class="bi bi-magic me-1"></i> Generate CLO
+      </button>
+      <button id="copyBtn" class="btn btn-outline-secondary">
+        Copy
+      </button>
+      <span id="busy" class="text-muted" style="display:none">Generating…</span>
+    </div>
+
+    <div id="cloCard" class="card-box mt-4" style="display:none">
+      <strong>Generated CLO</strong>
+      <div id="clo_text" class="mt-2"></div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 • Assoc Prof Dr Hazwani Ahmad Yusof @ Hanafi — Universiti Sains Malaysia
+  </footer>
 
 </div>
-      
-
-    <footer>© 2025 • Assoc Prof Dr Hazwani Ahmad Yusof @ Hanafi — Universiti Sains Malaysia (USM)</footer>
-  </div>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
