@@ -279,6 +279,15 @@ body[data-theme="dark"] .mode-card input:checked + .mode-body {
   color:#fff;
 }
 
+.btn-primary,
+.btn-primary:disabled {
+  color: #ffffff !important;
+}
+
+    .main-header .btn {
+  color: #ffffff !important;
+}
+
 
 /* =========================
    DARK MODE (FIX)
@@ -760,7 +769,7 @@ footer{
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =========================
-     SHORT HELPER
+     HELPERS
   ========================= */
   const $ = id => document.getElementById(id);
 
@@ -769,32 +778,38 @@ document.addEventListener("DOMContentLoaded", () => {
   ========================= */
   const modeSelector = $("modeSelector");
   const startBtn     = $("startBtn");
-  const step1        = $("step1");
-  const step2        = $("step2");
-  const step3        = $("step3");
-  const darkToggle   = $("darkToggle");
-  const backBtn      = $("backBtn");   // 🔙 NEW
+  const backBtn      = $("backBtn");
 
+  const step1 = $("step1");
+  const step2 = $("step2");
+  const step3 = $("step3");
+
+  const darkToggle = $("darkToggle");
+
+  const profileSel   = $("profile");
   const levelSel     = $("level");
   const programmeSel = $("programmeName");
-  const peoBtn       = $("generatePEO");
-  const peoSelect    = $("peoSelect");
-  const ploSelect    = $("plo");
+
+  const peoBtn    = $("generatePEO");
+  const peoSelect = $("peoSelect");
+  const ploSelect = $("plo");
+
+  const bloomSel  = $("bloom");
+  const verbSel   = $("verb");
 
   /* =========================
      INITIAL STATE
   ========================= */
-  [step1, step2, step3].forEach(el => el?.classList.add("hidden"));
-  backBtn?.classList.add("hidden");
-
-  let CURRENT_MODE = null;
+  [step1, step2, step3].forEach(s => s.classList.add("hidden"));
+  backBtn.classList.add("hidden");
+  bloomSel.disabled = true;
 
   /* =========================
      MODE SELECTOR
   ========================= */
   startBtn.addEventListener("click", () => {
     const mode = document.querySelector('input[name="mode"]:checked')?.value;
-    CURRENT_MODE = mode;
+    if (!mode) return;
 
     modeSelector.classList.add("hidden");
     backBtn.classList.remove("hidden");
@@ -820,28 +835,21 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =========================
-     BACK BUTTON (HEADER)
+     BACK BUTTON
   ========================= */
   backBtn.addEventListener("click", () => {
-    // Reset steps
-    [step1, step2, step3].forEach(el => el?.classList.add("hidden"));
-
-    // Show mode selector
+    [step1, step2, step3].forEach(s => s.classList.add("hidden"));
     modeSelector.classList.remove("hidden");
     backBtn.classList.add("hidden");
-
-    CURRENT_MODE = null;
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
   /* =========================
      DARK MODE
   ========================= */
-  darkToggle?.addEventListener("click", () => {
+  darkToggle.addEventListener("click", () => {
     const next =
-      document.body.getAttribute("data-theme") === "dark"
-        ? "light"
-        : "dark";
+      document.body.getAttribute("data-theme") === "dark" ? "light" : "dark";
 
     document.body.setAttribute("data-theme", next);
     darkToggle.innerHTML =
@@ -851,9 +859,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =========================
-     STEP 1 → GENERATE PEO
+     STEP 1: GENERATE PEO
   ========================= */
-  peoBtn?.addEventListener("click", () => {
+  peoBtn.addEventListener("click", () => {
     const programme = programmeSel.value.trim();
     const level = levelSel.value;
 
@@ -873,11 +881,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* =========================
-     STEP 2 → PEO → PLO
+     STEP 2: PEO → PLO
   ========================= */
-  peoSelect?.addEventListener("change", async () => {
+  peoSelect.addEventListener("change", async () => {
     const peo = peoSelect.value;
     ploSelect.innerHTML = '<option value="">Select PLO</option>';
+    bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+    bloomSel.disabled = true;
 
     if (!peo) return;
 
@@ -888,9 +898,35 @@ document.addEventListener("DOMContentLoaded", () => {
       (plos || []).forEach(p =>
         ploSelect.add(new Option(p, p))
       );
-
     } catch (err) {
       console.error("Failed to load PLOs", err);
+    }
+  });
+
+  /* =========================
+     STEP 3: PLO → BLOOM  ✅ FIXED
+  ========================= */
+  ploSelect.addEventListener("change", async () => {
+    const plo = ploSelect.value;
+    bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+    bloomSel.disabled = true;
+
+    if (!plo || !profileSel.value) return;
+
+    try {
+      const res = await fetch(
+        `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
+      );
+      const blooms = await res.json();
+
+      (blooms || []).forEach(b =>
+        bloomSel.add(new Option(b, b))
+      );
+
+      bloomSel.disabled = false; // 🔥 THIS FIXES YOUR ISSUE
+
+    } catch (err) {
+      console.error("Failed to load Blooms", err);
     }
   });
 
