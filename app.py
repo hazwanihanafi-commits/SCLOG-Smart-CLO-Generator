@@ -563,7 +563,7 @@ def workflow():
 
 @app.route("/clo-only")
 def clo_only():
-    return render_template("clo-only.html")
+    return render_template("clo_only.html")
 
 @app.route("/generator")
 def generator():
@@ -574,6 +574,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
