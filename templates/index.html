@@ -237,6 +237,10 @@ body[data-theme="dark"] .mode-card input:checked + .mode-body {
   border-color: #a78bfa;
 }
 
+.hidden {
+  display: none !important;
+}
+
 
 /* ===== BLOOM GUIDANCE BOX ===== */
 #bloom_level_guidance{
@@ -361,6 +365,8 @@ footer{
 
 <body data-theme="light">
   <div class="container-app">
+    </div>
+
 
     <!-- HEADER -->
  <div class="main-header card-box mb-4">
@@ -382,7 +388,8 @@ footer{
 
  
 <!-- MODE SELECTOR -->
-<div class="card-box mb-4">
+<div id="modeSelector" class="card-box mb-4">
+
   <div class="step-header mb-1">
     Get Started with SCLOG
   </div>
@@ -446,7 +453,8 @@ footer{
 
     
 <!-- STEP 1 · Programme Context -->
-<div class="card-box mb-3">
+<div id="step1" class="card-box mb-3">
+
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 1</span>
@@ -540,8 +548,9 @@ footer{
 
     <!-- 2) PLO for selected PEO -->
 
-      <!-- STEP 2 -->
-<div class="card-box mb-3">
+<!-- STEP 2 -->
+<div id="step2" class="card-box mb-3">
+
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 2</span>
@@ -590,7 +599,7 @@ footer{
     
     <!-- 3) Smart CLO Builder (main) -->
     
-  <div class="card-box mb-3">
+  <div id="step3" class="card-box mb-3">
 
     <div class="d-flex align-items-center gap-2 mb-1">
   <span class="step-pill">STEP 3</span>
@@ -1397,32 +1406,6 @@ function renderContentSuggestions(domain) {
 
 
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  const mode = document.querySelector('input[name="mode"]:checked')?.value;
-
-  if (mode === "full") {
-    // show Step 1, Step 2, Step 3
-    document.getElementById("step1").style.display = "block";
-    document.getElementById("step2").style.display = "block";
-    document.getElementById("step3").style.display = "block";
-  }
-
-  if (mode === "programme") {
-    // show Step 1 + Step 2 only
-    document.getElementById("step1").style.display = "block";
-    document.getElementById("step2").style.display = "block";
-    document.getElementById("step3").style.display = "none";
-  }
-
-  if (mode === "clo") {
-    // jump straight to Step 3
-    document.getElementById("step1").style.display = "none";
-    document.getElementById("step2").style.display = "none";
-    document.getElementById("step3").style.display = "block";
-    document.getElementById("step3").scrollIntoView({ behavior: "smooth" });
-  }
-});
-
 
     
 /* =========================
@@ -1500,6 +1483,41 @@ function generatePEOFromProgramme(programmeName, level){
    STEP 1 + STEP 2 + BLOOM CONTROLLER (FINAL & STABLE)
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
+  
+const modeSelector = document.getElementById("modeSelector");
+const step1 = document.getElementById("step1");
+const step2 = document.getElementById("step2");
+const step3 = document.getElementById("step3");
+const startBtn = document.getElementById("startBtn");
+
+// Hide steps initially
+step1.classList.add("hidden");
+step2.classList.add("hidden");
+step3.classList.add("hidden");
+
+startBtn.addEventListener("click", () => {
+  const mode = document.querySelector('input[name="mode"]:checked')?.value;
+
+  modeSelector.classList.add("hidden");
+
+  if (mode === "full") {
+    step1.classList.remove("hidden");
+    step2.classList.remove("hidden");
+    step3.classList.remove("hidden");
+    step1.scrollIntoView({ behavior: "smooth" });
+  }
+
+  if (mode === "programme") {
+    step1.classList.remove("hidden");
+    step2.classList.remove("hidden");
+    step3.classList.add("hidden");
+    step1.scrollIntoView({ behavior: "smooth" });
+  }
+
+  if (mode === "clo") {
+    step3.classList.remove("hidden");
+    step3.scrollIntoView({ behavior: "smooth" });
+  }
 
   /* ========= INIT ========= */
   loadMapping();
@@ -1508,6 +1526,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (levelSel.value) {
     renderBloomGuidance(levelSel.value);
   }
+
+});
+
+
+});
+
 
   /* ========= PROGRAMME LEVEL ========= */
   levelSel.addEventListener("change", () => {
@@ -1683,6 +1707,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  
   /* ========= LOG PEO–PLO CHECK (ONCE ONLY) ========= */
   ploSel.addEventListener("change", () =>
     logEvent("peo_plo_check", { 
