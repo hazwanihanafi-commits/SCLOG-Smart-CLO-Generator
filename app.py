@@ -438,7 +438,11 @@ def generate():
     # PEO
     # ======================
     "peo": peo,
-     "peo_statement": peo_statement, 
+     "peo_statement": (
+    peo_statement
+    if peo_statement
+    else MAP.get("PEOstatements", {}).get(peo, "")
+),
 
     # ======================
     # PLO
@@ -447,7 +451,16 @@ def generate():
     "plo_statement": MAP["PLOstatements"].get(level, {}).get(
         plo, "Full MQF-aligned PLO"
     ),
-    "plo_indicator": plo_indicator,
+    "plo_indicator": (
+    plo_indicator
+    if plo_indicator
+    else "; ".join(
+        MAP.get("PLOindicators", {})
+        .get(level, {})
+        .get(plo, [])
+    )
+),
+
         
 
     # ======================
@@ -557,6 +570,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
