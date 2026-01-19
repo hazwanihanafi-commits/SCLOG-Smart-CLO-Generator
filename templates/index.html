@@ -96,6 +96,8 @@ body{
   margin:6px 0 12px;
 }
 
+    
+
     /* =========================
    MAIN HEADER (PRIMARY)
 ========================= */
@@ -379,13 +381,16 @@ footer{
         Smart Course Learning Outcome Generator
       </div>
     </div>
-
-    <button id="darkToggle" class="btn btn-outline-secondary btn-sm">
-      <i class="bi bi-moon"></i>
-    </button>
-  </div>
+    
+<div class="d-flex align-items-center gap-2">
+  <button id="backBtn" class="btn btn-outline-secondary btn-sm">← Back</button>
+  <button id="darkToggle" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-moon"></i>
+  </button>
+</div>
 </div>
 
+  
  
 <!-- MODE SELECTOR -->
 <div id="modeSelector" class="card-box mb-4">
@@ -754,31 +759,45 @@ footer{
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ========= SHORT HELPER ========= */
+  /* =========================
+     SHORT HELPER
+  ========================= */
   const $ = id => document.getElementById(id);
 
-  /* ========= DOM ELEMENTS ========= */
+  /* =========================
+     DOM ELEMENTS
+  ========================= */
   const modeSelector = $("modeSelector");
   const startBtn     = $("startBtn");
   const step1        = $("step1");
   const step2        = $("step2");
   const step3        = $("step3");
   const darkToggle   = $("darkToggle");
+  const backBtn      = $("backBtn");   // 🔙 NEW
 
-  /* ========= SAFETY CHECK ========= */
-  if (!modeSelector || !startBtn) {
-    console.error("Mode selector elements not found");
-    return;
-  }
+  const levelSel     = $("level");
+  const programmeSel = $("programmeName");
+  const peoBtn       = $("generatePEO");
+  const peoSelect    = $("peoSelect");
+  const ploSelect    = $("plo");
 
-  /* ========= INITIAL STATE ========= */
+  /* =========================
+     INITIAL STATE
+  ========================= */
   [step1, step2, step3].forEach(el => el?.classList.add("hidden"));
+  backBtn?.classList.add("hidden");
 
-  /* ========= MODE SELECTOR ========= */
+  let CURRENT_MODE = null;
+
+  /* =========================
+     MODE SELECTOR
+  ========================= */
   startBtn.addEventListener("click", () => {
     const mode = document.querySelector('input[name="mode"]:checked')?.value;
+    CURRENT_MODE = mode;
 
     modeSelector.classList.add("hidden");
+    backBtn.classList.remove("hidden");
 
     if (mode === "full") {
       step1.classList.remove("hidden");
@@ -800,7 +819,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ========= DARK MODE ========= */
+  /* =========================
+     BACK BUTTON (HEADER)
+  ========================= */
+  backBtn.addEventListener("click", () => {
+    // Reset steps
+    [step1, step2, step3].forEach(el => el?.classList.add("hidden"));
+
+    // Show mode selector
+    modeSelector.classList.remove("hidden");
+    backBtn.classList.add("hidden");
+
+    CURRENT_MODE = null;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  /* =========================
+     DARK MODE
+  ========================= */
   darkToggle?.addEventListener("click", () => {
     const next =
       document.body.getAttribute("data-theme") === "dark"
@@ -808,15 +844,58 @@ document.addEventListener("DOMContentLoaded", () => {
         : "dark";
 
     document.body.setAttribute("data-theme", next);
-
     darkToggle.innerHTML =
       next === "dark"
         ? '<i class="bi bi-sun"></i>'
         : '<i class="bi bi-moon"></i>';
   });
 
-});
+  /* =========================
+     STEP 1 → GENERATE PEO
+  ========================= */
+  peoBtn?.addEventListener("click", () => {
+    const programme = programmeSel.value.trim();
+    const level = levelSel.value;
 
-  </script>
+    if (!programme || !level) {
+      alert("Please enter Programme Name and Programme Level.");
+      return;
+    }
+
+    peoSelect.innerHTML = `
+      <option value="">Select PEO</option>
+      <option value="PEO1">PEO 1 – Employability & Practice</option>
+      <option value="PEO2">PEO 2 – Communication & Teamwork</option>
+      <option value="PEO3">PEO 3 – Leadership & Lifelong Learning</option>
+      <option value="PEO4">PEO 4 – Innovation</option>
+      <option value="PEO5">PEO 5 – Ethics & Professionalism</option>
+    `;
+  });
+
+  /* =========================
+     STEP 2 → PEO → PLO
+  ========================= */
+  peoSelect?.addEventListener("change", async () => {
+    const peo = peoSelect.value;
+    ploSelect.innerHTML = '<option value="">Select PLO</option>';
+
+    if (!peo) return;
+
+    try {
+      const res = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
+      const plos = await res.json();
+
+      (plos || []).forEach(p =>
+        ploSelect.add(new Option(p, p))
+      );
+
+    } catch (err) {
+      console.error("Failed to load PLOs", err);
+    }
+  });
+
+});
+</script>
+
 </body>
 </html>
