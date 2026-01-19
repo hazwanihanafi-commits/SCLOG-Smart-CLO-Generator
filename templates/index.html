@@ -167,6 +167,18 @@ body{
   color:#fff;
 }
 
+    /* === FORCE HEADER BUTTON VISIBILITY === */
+.main-header .btn,
+.main-header .btn-outline-secondary {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.5) !important;
+}
+
+.main-header .btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+
 /* ===== FORM ===== */
 label.form-label{
   font-weight:700;
@@ -362,6 +374,18 @@ footer{
   text-align:center;
   margin-top:20px;
 }
+
+    /* === SELECT TEXT VISIBILITY FIX === */
+.form-select,
+.form-control {
+  color: #111827; /* slate-900 */
+}
+
+body[data-theme="dark"] .form-select,
+body[data-theme="dark"] .form-control {
+  color: #e5e7eb;
+}
+
 
 /* ===== MOBILE ===== */
 @media(max-width:576px){
@@ -929,6 +953,33 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Failed to load Blooms", err);
     }
   });
+
+  /* =========================
+   BLOOM → VERB (FIX)
+========================= */
+bloomSel.addEventListener("change", async () => {
+  const bloom = bloomSel.value;
+  const plo = ploSelect.value;
+
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+
+  if (!bloom || !plo) return;
+
+  try {
+    const res = await fetch(
+      `/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`
+    );
+    const verbs = await res.json();
+
+    (verbs || []).forEach(v =>
+      verbSel.add(new Option(v, v))
+    );
+
+  } catch (err) {
+    console.error("Failed to load verbs", err);
+  }
+});
+
 
 });
 </script>
