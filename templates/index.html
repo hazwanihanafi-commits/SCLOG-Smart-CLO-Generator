@@ -29,318 +29,302 @@
   <!-- Theme CSS -->
   <style>
 
-    //* =========================
-   BASE COLOR SYSTEM
+    /* =================================================
+   SCLOG – PPBMS STYLE (FINAL POLISH)
+================================================= */
+:root{
+  --primary:#7c3aed;
+  --primary-soft:#ede9fe;
+  --bg:#f6f4fb;
+  --card:#ffffff;
+  --text:#2a2344;
+  --muted:#6b7280;
+  --border:#e5e7eb;
+  --success:#16a34a;
+  --warning:#f59e0b;
+  --danger:#dc2626;
+  --radius:16px;
+  --shadow:0 10px 28px rgba(0,0,0,0.06);
+}
+
+/* ===== PAGE ===== */
+body{
+  background:linear-gradient(180deg,#f5f3ff,#faf9ff);
+  color:var(--text);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto;
+}
+
+.container-app{
+  max-width:1200px;
++ margin:auto;
+  padding:24px 20px 48px;
+}
+
+
+/* ===== CARD ===== */
+.card-box{
+  background:var(--card);
+  border-radius:var(--radius);
+  padding:18px;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+}
+
+/* ===== HEADERS ===== */
+.step-header{
+  font-weight:800;
+  font-size:1.05rem;
+  color:var(--primary);
+}
+
+.step-desc{
+  font-size:.9rem;
+  color:var(--muted);
+  margin-bottom:12px;
+}
+
+.smart-title{
+  font-size: 1.05rem;   /* lebih kecil dari header */
+  font-weight: 800;
+}
+
+.smart-divider{
+  width:48px;
+  height:3px;
+  background:linear-gradient(90deg,var(--primary),#a78bfa);
+  border-radius:999px;
+  margin:6px 0 12px;
+}
+
+    /* =========================
+   MAIN HEADER (PRIMARY)
 ========================= */
-:root {
-  --primary: #6d28d9;
-  --primary-soft: #ede9fe;
-  --text-main: #1f2937;     /* slate-800 */
-  --text-muted: #6b7280;
-  --bg-input: #fafaff;
-  --border-soft: #e5e7eb;
-}
-
-/* =========================
-   BODY
-========================= */
-body {
-  color: var(--text-main);
-  background: linear-gradient(180deg, #f5f3ff, #faf9ff);
-}
-
-/* =========================
-   HEADER
-========================= */
-.main-header {
-  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-  color: #ffffff;
-}
-
-.main-header * {
-  color: #ffffff;
-}
-
-.main-header .btn {
-  color: #ffffff;
-  border-color: rgba(255,255,255,0.6);
-}
-
-.main-header .btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-/* =========================
-   LABEL & TEXT
-========================= */
-label,
-.form-label {
-  color: var(--text-main);
-  font-weight: 600;
-}
-
-.muted {
-  color: var(--text-muted);
-}
-
-/* =========================
-   INPUT & SELECT (CRITICAL)
-========================= */
-.form-control,
-.form-select {
-  color: var(--text-main);
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-soft);
-  border-radius: 12px;
-}
-
-/* option text — PALING PENTING */
-.form-select option {
-  color: var(--text-main);
-  background-color: #ffffff;
-}
-
-/* placeholder */
-.form-control::placeholder {
-  color: var(--text-muted);
-}
-
-/* disabled select jangan pudar */
-.form-select:disabled {
-  color: var(--text-main);
-  opacity: 1;
-  background-color: var(--bg-input);
-}
-
-/* focus */
-.form-control:focus,
-.form-select:focus {
-  border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(109,40,217,0.15);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-.btn-primary {
-  background: linear-gradient(90deg, #6d28d9, #8b5cf6);
+.main-header{
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
   color: #ffffff;
   border: none;
 }
 
-.btn-outline-secondary {
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.btn-outline-secondary:hover {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-/* =========================
-   LOGIC / INFO BOX
-========================= */
-.logic-box {
-  background: #f7f2ff;
-  color: #3b2a63;
-  border-radius: 12px;
-  padding: 12px;
-}
-
-/* =========================
-   DARK MODE (RINGKAS & SELAMAT)
-========================= */
-body[data-theme="dark"] {
-  background: linear-gradient(180deg, #0f1020, #15152b);
-  color: #e5e7eb;
-}
-
-body[data-theme="dark"] .form-control,
-body[data-theme="dark"] .form-select {
-  background-color: #0f172a;
-  color: #e5e7eb;
-  border-color: #334155;
-}
-
-body[data-theme="dark"] .form-select option {
-  background-color: #0f172a;
-  color: #e5e7eb;
-}
-
-body[data-theme="dark"] .logic-box {
-  background: rgba(30,16,48,0.5);
-  color: #e5e7eb;
-}
-
-/* ================================
-   MOBILE FIX — SCLOG (FINAL)
-================================ */
-
-@media (max-width: 768px) {
-
-  /* ===== PAGE ===== */
-  body {
-    font-size: 15px;
-    line-height: 1.6;
-  }
-
-  /* ===== CARD ===== */
-  .card-box {
-    padding: 16px !important;
-    margin-bottom: 18px !important;
-    border-radius: 18px !important;
-  }
-
-  /* ===== STEP HEADER ===== */
-  .step-header {
-    font-size: 1.15rem !important;
-    font-weight: 900 !important;
-    margin-bottom: 6px;
-  }
-
-  .step-desc {
-    font-size: 0.95rem !important;
-    margin-bottom: 14px;
-  }
-
-  .step-pill {
-    font-size: 0.75rem;
-    padding: 6px 12px;
-  }
-
-  /* ===== FORM LABELS ===== */
-  label.form-label {
-    font-size: 0.95rem !important;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .form-control,
-  .form-select {
-    font-size: 1rem !important;
-    padding: 12px 14px !important;
-    border-radius: 14px;
-  }
-
-  /* ===== SMART CLO BUILDER ===== */
-  .smart-title {
-    font-size: 1.2rem !important;
-    font-weight: 900 !important;
-  }
-
-  .smart-divider {
-    width: 72px;
-    height: 4px;
-    margin: 10px 0 16px;
-  }
-
-  /* ===== TABS ===== */
-  .nav-tabs {
-    gap: 8px;
-    margin-bottom: 16px;
-  }
-
-  .nav-tabs .nav-link {
-    font-size: 0.95rem;
-    padding: 10px 14px;
-    border-radius: 999px;
-  }
-
-  /* ===== BUTTONS ===== */
-  .btn {
-    font-size: 1rem !important;
-    padding: 12px 16px !important;
-    border-radius: 14px;
-  }
-
-  .btn-primary {
-    font-weight: 800;
-  }
-
-  /* ===== LOGIC BOX ===== */
-  .logic-box {
-    font-size: 0.95rem;
-    padding: 14px;
-    border-radius: 14px;
-  }
-
-  /* ===== GENERATED CLO ===== */
-  #clo_text {
-    font-size: 1.05rem !important;
-    line-height: 1.6;
-  }
-
-  /* =========================================
-   STEP CARD RESTORE — SCLOG
-========================================= */
-
-/* Wrapper untuk setiap step */
-.step-card {
-  background: #ffffff;
-  border-radius: 20px;
-  padding: 18px 18px 20px;
-  margin-bottom: 22px;
-  box-shadow: 0 12px 30px rgba(109,40,217,0.08);
-  border: 1px solid rgba(109,40,217,0.12);
-}
-
-body[data-theme="dark"] .step-card {
-  background: rgba(26,16,38,0.85);
-  border-color: rgba(255,255,255,0.06);
-  box-shadow: 0 18px 36px rgba(0,0,0,0.55);
-}
-
-/* STEP header row */
-.step-card-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-.step-card-header .step-pill {
-  font-size: 0.7rem;
+.main-header .main-title{
+  font-size: 1.5rem;      /* 🔥 paling besar */
   font-weight: 900;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.3px;
 }
 
-.step-card-header .step-title {
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: #4c1d95;
-}
-
-/* STEP description */
-.step-card-desc {
+.main-header .main-subtitle{
   font-size: 0.95rem;
-  color: #6b7280;
-  margin-bottom: 14px;
+  opacity: 0.9;
+  margin-top: 2px;
 }
 
-/* Divider */
-.step-card-divider {
-  border-top: 1px dashed rgba(109,40,217,0.25);
-  margin: 14px 0 18px;
+.main-header .btn{
+  border-color: rgba(255,255,255,0.4);
+  color: #fff;
 }
 
-/* Mobile emphasis */
-@media (max-width: 768px) {
-  .step-card {
-    padding: 16px;
-    border-radius: 22px;
-  }
+.main-header .btn:hover{
+  background: rgba(255,255,255,0.15);
+}
 
-  .step-card-header .step-title {
-    font-size: 1.2rem;
-  }
-
-  .step-card-desc {
-    font-size: 0.95rem;
-  }
+.main-header-wrapper{
+  width:100%;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  padding:18px 0;
 }
 
     
+/* ===== PILLS ===== */
+.step-pill{
+  background:var(--primary-soft);
+  color:var(--primary);
+  font-weight:800;
+  font-size:.65rem;
+  padding:4px 10px;
+  border-radius:999px;
+}
+
+.bloom-tag{
+  background:var(--primary-soft);
+  color:var(--primary);
+  font-weight:800;
+  font-size:.7rem;
+  padding:4px 8px;
+  border-radius:999px;
+}
+
+/* ===== TABS ===== */
+.nav-tabs{
+  border:none;
+  gap:6px;
+}
+
+.nav-tabs .nav-link{
+  border:none;
+  background:#f3eefe;
+  color:var(--primary);
+  font-weight:600;
+  border-radius:999px;
+  padding:6px 14px;
+}
+
+.nav-tabs .nav-link.active{
+  background:var(--primary);
+  color:#fff;
+}
+
+/* ===== FORM ===== */
+label.form-label{
+  font-weight:700;
+  font-size:.85rem;
+  color:#4b5563;
+}
+
+.form-control,.form-select{
+  border-radius:12px;
+  border:1px solid var(--border);
+  padding:10px 12px;
+  background:#fafaff;
+  font-size:.95rem;
+}
+
+.form-control:focus,.form-select:focus{
+  border-color:var(--primary);
+  box-shadow:0 0 0 3px rgba(124,58,237,.15);
+}
+
+/* ===== BLOOM GUIDANCE BOX ===== */
+#bloom_level_guidance{
+  background:#f5f0ff;
+  border:1px dashed #ddd6fe;
+  border-radius:12px;
+  padding:10px;
+  font-size:.85rem;
+}
+
+#bloom_level_guidance .green{color:var(--success)}
+#bloom_level_guidance .amber{color:var(--warning)}
+#bloom_level_guidance .red{color:var(--danger)}
+
+/* ===== BUTTONS ===== */
+.btn{
+  border-radius:12px;
+  font-weight:700;
+}
+
+.btn-primary{
+  background:linear-gradient(90deg,var(--primary),#a78bfa);
+  border:none;
+}
+
+.btn-outline-secondary{
+  border:2px solid var(--primary);
+  color:var(--primary);
+  background:#fff;
+}
+
+.btn-outline-secondary:hover{
+  background:var(--primary);
+  color:#fff;
+}
+
+
+/* =========================
+   DARK MODE (FIX)
+========================= */
+body[data-theme="dark"]{
+  background:linear-gradient(180deg,#0f1020,#15152b);
+  color:#e5e7eb;
+}
+
+body[data-theme="dark"] .card-box{
+  background:#1b1c31;
+  border-color:#2a2b4a;
+  box-shadow:0 12px 28px rgba(0,0,0,.6);
+}
+
+body[data-theme="dark"] .step-header,
+body[data-theme="dark"] .smart-title{
+  color:#c4b5fd;
+}
+
+body[data-theme="dark"] .step-desc,
+body[data-theme="dark"] .muted,
+body[data-theme="dark"] footer{
+  color:#9ca3af;
+}
+
+body[data-theme="dark"] .form-control,
+body[data-theme="dark"] .form-select{
+  background:#0f172a;
+  border-color:#334155;
+  color:#e5e7eb;
+}
+
+body[data-theme="dark"] .logic-box{
+  background:#0f172a;
+  border:1px solid #334155;
+}
+
+body[data-theme="dark"] .nav-tabs .nav-link{
+  background:#1e1b4b;
+  color:#c7d2fe;
+}
+
+body[data-theme="dark"] .nav-tabs .nav-link.active{
+  background:#7c3aed;
+  color:#fff;
+}
+    
+/* ===== GENERATED CLO ===== */
+#cloCard{
+  background:#faf7ff;
+  border:1px solid #e9d5ff;
+}
+
+#clo_text{
+  font-size:.95rem;
+  line-height:1.5;
+}
+
+/* ===== LOGIC BOX ===== */
+.logic-box{
+  background:#f7f2ff;
+  border-radius:12px;
+  padding:10px;
+  font-size:.85rem;
+}
+
+/* ===== FOOTER ===== */
+footer{
+  font-size:.8rem;
+  color:var(--muted);
+  text-align:center;
+  margin-top:20px;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:576px){
+  .container-app{padding:10px}
+  .card-box{padding:14px}
+}
+
+    @media (min-width: 992px){
+  .card-box{
+    padding:26px 28px;
+  }
+}
+
+    @media (min-width: 1200px){
+  .profile-row{
+    gap:20px;
+  }
+}
+.row.g-3{
+  --bs-gutter-x: 1.5rem;
+}
+
+
 </style>  
 
 </head>
