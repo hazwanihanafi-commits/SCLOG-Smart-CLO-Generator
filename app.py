@@ -561,6 +561,10 @@ def landing():
 def workflow():
     return render_template("index.html")
 
+@app.route("/clo-only")
+def clo_only():
+    return render_template("clo-only.html")
+
 @app.route("/generator")
 def generator():
     return render_template("generator.html")
@@ -570,6 +574,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
