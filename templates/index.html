@@ -56,8 +56,10 @@ body{
 
 .container-app{
   max-width:1200px;
++ margin:auto;
   padding:24px 20px 48px;
 }
+
 
 /* ===== CARD ===== */
 .card-box{
@@ -125,6 +127,13 @@ body{
   background: rgba(255,255,255,0.15);
 }
 
+.main-header-wrapper{
+  width:100%;
+  background: linear-gradient(135deg, #7c3aed, #a78bfa);
+  padding:18px 0;
+}
+
+    
 /* ===== PILLS ===== */
 .step-pill{
   background:var(--primary-soft);
@@ -321,9 +330,9 @@ footer{
 </head>
 
 <body data-theme="light">
+  
+  <div class="main-header-wrapper">
   <div class="container-app">
-
-    <!-- HEADER -->
  <div class="main-header card-box mb-4">
   <div class="d-flex align-items-center justify-content-between">
     <div>
