@@ -541,6 +541,10 @@ def download_rubric():
 # UI
 # ------------------------------------------------------
 @app.route("/")
+def landing():
+    return render_template("landing.html")
+
+@app.route("/")
 def index():
     return render_template("index.html")
 
@@ -553,6 +557,7 @@ def generator():
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
