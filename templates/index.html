@@ -516,8 +516,7 @@ body[data-theme="dark"] .form-control {
 
     
 <!-- STEP 1 · Programme Context -->
-<div id="step1" class="card-box mb-3">
-
+<div id="step1" class="card-box mb-3 hidden">
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 1</span>
@@ -612,7 +611,8 @@ body[data-theme="dark"] .form-control {
     <!-- 2) PLO for selected PEO -->
 
 <!-- STEP 2 -->
-<div id="step2" class="card-box mb-3">
+<div id="step2" class="card-box mb-3 hidden">
+
 
 
   <div class="d-flex align-items-center gap-2 mb-1">
@@ -662,7 +662,8 @@ body[data-theme="dark"] .form-control {
     
     <!-- 3) Smart CLO Builder (main) -->
     
-  <div id="step3" class="card-box mb-3">
+  <div id="step3" class="card-box mb-3 hidden">
+
 
     <div class="d-flex align-items-center gap-2 mb-1">
   <span class="step-pill">STEP 3</span>
@@ -854,34 +855,37 @@ document.addEventListener("DOMContentLoaded", () => {
   bloomSel.disabled = true;
 
   /* =========================
-     MODE SELECTOR
-  ========================= */
-  startBtn.addEventListener("click", () => {
-    const mode = document.querySelector('input[name="mode"]:checked')?.value;
-    if (!mode) return;
+   MODE SELECTOR (FINAL)
+========================= */
+startBtn.addEventListener("click", () => {
+  const mode = document.querySelector('input[name="mode"]:checked')?.value;
+  if (!mode) return;
 
-    modeSelector.classList.add("hidden");
-    backBtn.classList.remove("hidden");
+  // 🔒 HARD RESET — ini yang paling penting
+  modeSelector.classList.add("hidden");
+  backBtn.classList.remove("hidden");
 
-    if (mode === "full") {
-      step1.classList.remove("hidden");
-      step2.classList.remove("hidden");
-      step3.classList.remove("hidden");
-      step1.scrollIntoView({ behavior: "smooth" });
-    }
+  step1.classList.add("hidden");
+  step2.classList.add("hidden");
+  step3.classList.add("hidden");
 
-    if (mode === "programme") {
-      step1.classList.remove("hidden");
-      step2.classList.remove("hidden");
-      step3.classList.add("hidden");
-      step1.scrollIntoView({ behavior: "smooth" });
-    }
+  if (mode === "full") {
+    step1.classList.remove("hidden");
+    step2.classList.remove("hidden");
+    step3.classList.remove("hidden");
+  }
 
-    if (mode === "clo") {
-      step3.classList.remove("hidden");
-      step3.scrollIntoView({ behavior: "smooth" });
-    }
-  });
+  if (mode === "programme") {
+    step1.classList.remove("hidden");
+    step2.classList.remove("hidden");
+  }
+
+  if (mode === "clo") {
+    step3.classList.remove("hidden");
+  }
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
 
   /* =========================
      BACK BUTTON
