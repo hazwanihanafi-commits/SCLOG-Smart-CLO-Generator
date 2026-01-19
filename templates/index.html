@@ -271,6 +271,73 @@ body[data-theme="dark"] .logic-box {
     line-height: 1.6;
   }
 
+  /* =========================================
+   STEP CARD RESTORE — SCLOG
+========================================= */
+
+/* Wrapper untuk setiap step */
+.step-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 18px 18px 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 12px 30px rgba(109,40,217,0.08);
+  border: 1px solid rgba(109,40,217,0.12);
+}
+
+body[data-theme="dark"] .step-card {
+  background: rgba(26,16,38,0.85);
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.55);
+}
+
+/* STEP header row */
+.step-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.step-card-header .step-pill {
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.step-card-header .step-title {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #4c1d95;
+}
+
+/* STEP description */
+.step-card-desc {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-bottom: 14px;
+}
+
+/* Divider */
+.step-card-divider {
+  border-top: 1px dashed rgba(109,40,217,0.25);
+  margin: 14px 0 18px;
+}
+
+/* Mobile emphasis */
+@media (max-width: 768px) {
+  .step-card {
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .step-card-header .step-title {
+    font-size: 1.2rem;
+  }
+
+  .step-card-desc {
+    font-size: 0.95rem;
+  }
 }
 
     
