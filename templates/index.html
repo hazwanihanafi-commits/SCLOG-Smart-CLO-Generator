@@ -829,46 +829,9 @@ body[data-theme="dark"] .form-control {
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =========================
-     HELPERS
-  ========================= */
   const $ = id => document.getElementById(id);
 
-  /* =========================
-     DOM ELEMENTS
-  ========================= */
-  const modeSelector = $("modeSelector");
-  const startBtn     = $("startBtn");
-  const backBtn      = $("backBtn");
-
-  const step1 = $("step1");
-  const step2 = $("step2");
-  const step3 = $("step3");
-
-  const darkToggle = $("darkToggle");
-
-  const profileSel   = $("profile");
-  const levelSel     = $("level");
-  const programmeSel = $("programmeName");
-
-  const peoBtn    = $("generatePEO");
-  const peoSelect = $("peoSelect");
-  const ploSelect = $("plo");
-
-  const bloomSel  = $("bloom");
-  const verbSel   = $("verb");
-
-  /* =========================
-     INITIAL STATE
-  ========================= */
-  [step1, step2, step3].forEach(s => s.classList.add("hidden"));
-  backBtn.classList.add("hidden");
-  bloomSel.disabled = true;
-
- document.addEventListener("DOMContentLoaded", () => {
-
-  const $ = id => document.getElementById(id);
-
+  // ===== DOM =====
   const modeSelector = $("modeSelector");
   const startBtn = $("startBtn");
   const backBtn = $("backBtn");
@@ -877,25 +840,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const step2 = $("step2");
   const step3 = $("step3");
 
-  // Initial state
+  const profileSel = $("profile");
+  const levelSel = $("level");
+  const programmeSel = $("programmeName");
+
+  const peoBtn = $("generatePEO");
+  const peoSelect = $("peoSelect");
+  const ploSelect = $("plo");
+
+  const bloomSel = $("bloom");
+  const verbSel = $("verb");
+
+  const generateBtn = $("generateBtn");
+  const busyEl = $("busy");
+  const cloCard = $("cloCard");
+  const cloText = $("clo_text");
+
+  // ===== INITIAL STATE =====
   [step1, step2, step3].forEach(s => s.classList.add("hidden"));
   backBtn.classList.add("hidden");
+  bloomSel.disabled = true;
 
-  // CONTINUE
+  // ===== MODE SELECTOR =====
   startBtn.addEventListener("click", () => {
     const mode = document.querySelector('input[name="mode"]:checked')?.value;
-    if (!mode) {
-      alert("Please select a mode first");
-      return;
-    }
+    if (!mode) return;
 
-    // HARD RESET
     modeSelector.classList.add("hidden");
     backBtn.classList.remove("hidden");
-
-    step1.classList.add("hidden");
-    step2.classList.add("hidden");
-    step3.classList.add("hidden");
 
     if (mode === "full") {
       step1.classList.remove("hidden");
@@ -911,27 +883,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (mode === "clo") {
       step3.classList.remove("hidden");
     }
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  // BACK
-  backBtn.addEventListener("click", () => {
-    step1.classList.add("hidden");
-    step2.classList.add("hidden");
-    step3.classList.add("hidden");
-
-    modeSelector.classList.remove("hidden");
-    backBtn.classList.add("hidden");
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
-
-});
-
-  /* =========================
-     BACK BUTTON
-  ========================= */
+  // ===== BACK BUTTON =====
   backBtn.addEventListener("click", () => {
     [step1, step2, step3].forEach(s => s.classList.add("hidden"));
     modeSelector.classList.remove("hidden");
@@ -939,133 +893,62 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 
-  /* =========================
-     DARK MODE
-  ========================= */
-  darkToggle.addEventListener("click", () => {
-    const next =
-      document.body.getAttribute("data-theme") === "dark" ? "light" : "dark";
-
-    document.body.setAttribute("data-theme", next);
-    darkToggle.innerHTML =
-      next === "dark"
-        ? '<i class="bi bi-sun"></i>'
-        : '<i class="bi bi-moon"></i>';
-  });
-
-  /* =========================
-     STEP 1: GENERATE PEO
-  ========================= */
+  // ===== STEP 1: PEO =====
   peoBtn.addEventListener("click", () => {
-    const programme = programmeSel.value.trim();
-    const level = levelSel.value;
-
-    if (!programme || !level) {
-      alert("Please enter Programme Name and Programme Level.");
+    if (!programmeSel.value || !levelSel.value) {
+      alert("Enter Programme Name & Level");
       return;
     }
 
     peoSelect.innerHTML = `
       <option value="">Select PEO</option>
-      <option value="PEO1">PEO 1 – Employability & Practice</option>
-      <option value="PEO2">PEO 2 – Communication & Teamwork</option>
-      <option value="PEO3">PEO 3 – Leadership & Lifelong Learning</option>
-      <option value="PEO4">PEO 4 – Innovation</option>
-      <option value="PEO5">PEO 5 – Ethics & Professionalism</option>
+      <option value="PEO1">PEO 1 – Employability</option>
+      <option value="PEO2">PEO 2 – Communication</option>
+      <option value="PEO3">PEO 3 – Leadership</option>
     `;
   });
 
-  /* =========================
-     STEP 2: PEO → PLO
-  ========================= */
+  // ===== STEP 2: PEO → PLO =====
   peoSelect.addEventListener("change", async () => {
-    const peo = peoSelect.value;
     ploSelect.innerHTML = '<option value="">Select PLO</option>';
     bloomSel.innerHTML = '<option value="">Select Bloom</option>';
     bloomSel.disabled = true;
 
-    if (!peo) return;
+    if (!peoSelect.value) return;
 
-    try {
-      const res = await fetch(`/api/get_plos/${encodeURIComponent(peo)}`);
-      const plos = await res.json();
-
-      (plos || []).forEach(p =>
-        ploSelect.add(new Option(p, p))
-      );
-    } catch (err) {
-      console.error("Failed to load PLOs", err);
-    }
+    const res = await fetch(`/api/get_plos/${peoSelect.value}`);
+    const plos = await res.json();
+    plos.forEach(p => ploSelect.add(new Option(p, p)));
   });
 
-  /* =========================
-     STEP 3: PLO → BLOOM  ✅ FIXED
-  ========================= */
+  // ===== STEP 3: PLO → BLOOM =====
   ploSelect.addEventListener("change", async () => {
-    const plo = ploSelect.value;
     bloomSel.innerHTML = '<option value="">Select Bloom</option>';
     bloomSel.disabled = true;
 
-    if (!plo || !profileSel.value) return;
+    if (!ploSelect.value || !profileSel.value) return;
 
-    try {
-      const res = await fetch(
-        `/api/get_blooms/${encodeURIComponent(plo)}?profile=${encodeURIComponent(profileSel.value)}`
-      );
-      const blooms = await res.json();
+    const res = await fetch(`/api/get_blooms/${ploSelect.value}?profile=${profileSel.value}`);
+    const blooms = await res.json();
+    blooms.forEach(b => bloomSel.add(new Option(b, b)));
 
-      (blooms || []).forEach(b =>
-        bloomSel.add(new Option(b, b))
-      );
-
-      bloomSel.disabled = false; // 🔥 THIS FIXES YOUR ISSUE
-
-    } catch (err) {
-      console.error("Failed to load Blooms", err);
-    }
+    bloomSel.disabled = false;
   });
 
-  /* =========================
-   BLOOM → VERB (FIX)
-========================= */
-bloomSel.addEventListener("change", async () => {
-  const bloom = bloomSel.value;
-  const plo = ploSelect.value;
+  // ===== BLOOM → VERB =====
+  bloomSel.addEventListener("change", async () => {
+    verbSel.innerHTML = '<option value="">Select Verb</option>';
+    if (!bloomSel.value) return;
 
-  verbSel.innerHTML = '<option value="">Select Verb</option>';
-
-  if (!bloom || !plo) return;
-
-  try {
-    const res = await fetch(
-      `/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloom)}?profile=${encodeURIComponent(profileSel.value)}`
-    );
+    const res = await fetch(`/api/get_verbs/${ploSelect.value}/${bloomSel.value}?profile=${profileSel.value}`);
     const verbs = await res.json();
+    verbs.forEach(v => verbSel.add(new Option(v, v)));
+  });
 
-    (verbs || []).forEach(v =>
-      verbSel.add(new Option(v, v))
-    );
-
-  } catch (err) {
-    console.error("Failed to load verbs", err);
-  }
-});
-
-
-  const generateBtn = document.getElementById("generateBtn");
-  const busyEl = document.getElementById("busy");
-  const cloCard = document.getElementById("cloCard");
-  const cloText = document.getElementById("clo_text");
-
+  // ===== GENERATE CLO =====
   generateBtn.addEventListener("click", async () => {
-
-    const plo = document.getElementById("plo").value;
-    const bloom = document.getElementById("bloom").value;
-    const verb = document.getElementById("verb").value;
-    const content = document.getElementById("content").value.trim();
-
-    if (!plo || !bloom || !verb || !content) {
-      alert("Please select PLO, Bloom, Verb and enter Content.");
+    if (!ploSelect.value || !bloomSel.value || !verbSel.value || !$("content").value.trim()) {
+      alert("Complete all CLO fields");
       return;
     }
 
@@ -1073,34 +956,27 @@ bloomSel.addEventListener("change", async () => {
     generateBtn.disabled = true;
 
     const fd = new FormData();
-    fd.append("profile", document.getElementById("profile").value);
-    fd.append("level", document.getElementById("level").value);
-    fd.append("plo", plo);
-    fd.append("bloom", bloom);
-    fd.append("verb", verb);
-    fd.append("content", content);
-    fd.append("courseName", document.getElementById("courseName").value);
-    fd.append("programmeName", document.getElementById("programmeName").value);
+    fd.append("profile", profileSel.value);
+    fd.append("level", levelSel.value);
+    fd.append("plo", ploSelect.value);
+    fd.append("bloom", bloomSel.value);
+    fd.append("verb", verbSel.value);
+    fd.append("content", $("content").value);
+    fd.append("courseName", $("courseName").value);
+    fd.append("programmeName", programmeSel.value);
 
-    try {
-      const res = await fetch("/generate", { method: "POST", body: fd });
-      const data = await res.json();
+    const res = await fetch("/generate", { method: "POST", body: fd });
+    const data = await res.json();
 
-      cloText.innerText = data.clo;
-      cloCard.style.display = "block";
+    cloText.innerText = data.clo;
+    cloCard.style.display = "block";
 
-    } catch (err) {
-      console.error(err);
-      alert("Error generating CLO");
-    } finally {
-      busyEl.style.display = "none";
-      generateBtn.disabled = false;
-    }
-}); 
+    busyEl.style.display = "none";
+    generateBtn.disabled = false;
+  });
 
 });
 </script>
-
 
 </body>
 </html>
