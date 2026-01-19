@@ -417,6 +417,17 @@ body[data-theme="dark"] .form-select,
 body[data-theme="dark"] .form-control {
   color: #e5e7eb !important;
 }
+    
+/* FIX HEADER BUTTON VISIBILITY */
+.main-header .btn-outline-secondary {
+  color: #ffffff !important;
+  border-color: rgba(255,255,255,0.8) !important;
+  background: transparent;
+}
+
+.main-header .btn-outline-secondary:hover {
+  background: rgba(255,255,255,0.2);
+}
 
     
 </style>  
@@ -854,37 +865,68 @@ document.addEventListener("DOMContentLoaded", () => {
   backBtn.classList.add("hidden");
   bloomSel.disabled = true;
 
-  /* =========================
-   MODE SELECTOR (FINAL)
-========================= */
-startBtn.addEventListener("click", () => {
-  const mode = document.querySelector('input[name="mode"]:checked')?.value;
-  if (!mode) return;
+ document.addEventListener("DOMContentLoaded", () => {
 
-  // 🔒 HARD RESET — ini yang paling penting
-  modeSelector.classList.add("hidden");
-  backBtn.classList.remove("hidden");
+  const $ = id => document.getElementById(id);
 
-  step1.classList.add("hidden");
-  step2.classList.add("hidden");
-  step3.classList.add("hidden");
+  const modeSelector = $("modeSelector");
+  const startBtn = $("startBtn");
+  const backBtn = $("backBtn");
 
-  if (mode === "full") {
-    step1.classList.remove("hidden");
-    step2.classList.remove("hidden");
-    step3.classList.remove("hidden");
-  }
+  const step1 = $("step1");
+  const step2 = $("step2");
+  const step3 = $("step3");
 
-  if (mode === "programme") {
-    step1.classList.remove("hidden");
-    step2.classList.remove("hidden");
-  }
+  // Initial state
+  [step1, step2, step3].forEach(s => s.classList.add("hidden"));
+  backBtn.classList.add("hidden");
 
-  if (mode === "clo") {
-    step3.classList.remove("hidden");
-  }
+  // CONTINUE
+  startBtn.addEventListener("click", () => {
+    const mode = document.querySelector('input[name="mode"]:checked')?.value;
+    if (!mode) {
+      alert("Please select a mode first");
+      return;
+    }
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+    // HARD RESET
+    modeSelector.classList.add("hidden");
+    backBtn.classList.remove("hidden");
+
+    step1.classList.add("hidden");
+    step2.classList.add("hidden");
+    step3.classList.add("hidden");
+
+    if (mode === "full") {
+      step1.classList.remove("hidden");
+      step2.classList.remove("hidden");
+      step3.classList.remove("hidden");
+    }
+
+    if (mode === "programme") {
+      step1.classList.remove("hidden");
+      step2.classList.remove("hidden");
+    }
+
+    if (mode === "clo") {
+      step3.classList.remove("hidden");
+    }
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  // BACK
+  backBtn.addEventListener("click", () => {
+    step1.classList.add("hidden");
+    step2.classList.add("hidden");
+    step3.classList.add("hidden");
+
+    modeSelector.classList.remove("hidden");
+    backBtn.classList.add("hidden");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
 });
 
   /* =========================
