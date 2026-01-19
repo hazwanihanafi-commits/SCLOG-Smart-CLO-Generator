@@ -429,6 +429,47 @@ body[data-theme="dark"] .form-control {
   background: rgba(255,255,255,0.2);
 }
 
+/* ===== FIX SELECT & INPUT TEXT VISIBILITY (FINAL) ===== */
+
+.form-control,
+.form-select {
+  color: #111827 !important;      /* text hitam */
+  background-color: #fafaff !important;
+}
+
+/* OPTION text (INI PALING PENTING) */
+.form-select option {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+/* Disabled select – jangan pudar */
+.form-select:disabled {
+  color: #111827 !important;
+  opacity: 1 !important;
+}
+
+/* Placeholder text */
+.form-control::placeholder {
+  color: #6b7280 !important;
+}
+
+/* ===== DARK MODE SELECT FIX ===== */
+body[data-theme="dark"] .form-control,
+body[data-theme="dark"] .form-select {
+  background-color: #0f172a !important;
+  color: #e5e7eb !important;
+}
+
+body[data-theme="dark"] .form-select option {
+  background-color: #0f172a !important;
+  color: #e5e7eb !important;
+}
+
+body[data-theme="dark"] .form-control::placeholder {
+  color: #9ca3af !important;
+}
+
     
 </style>  
 
@@ -895,18 +936,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ===== STEP 1: PEO =====
   peoBtn.addEventListener("click", () => {
-    if (!programmeSel.value || !levelSel.value) {
-      alert("Enter Programme Name & Level");
-      return;
-    }
+  const programme = programmeSel.value.trim();
+  const level = levelSel.value;
 
-    peoSelect.innerHTML = `
-      <option value="">Select PEO</option>
-      <option value="PEO1">PEO 1 – Employability</option>
-      <option value="PEO2">PEO 2 – Communication</option>
-      <option value="PEO3">PEO 3 – Leadership</option>
-    `;
-  });
+  if (!programme || !level) {
+    alert("Please enter Programme Name and Programme Level.");
+    return;
+  }
+
+  // 🔽 Dropdown
+  peoSelect.innerHTML = `
+    <option value="">Select PEO</option>
+    <option value="PEO1">PEO 1 – Employability & Practice</option>
+    <option value="PEO2">PEO 2 – Communication & Teamwork</option>
+    <option value="PEO3">PEO 3 – Leadership & Lifelong Learning</option>
+    <option value="PEO4">PEO 4 – Innovation</option>
+    <option value="PEO5">PEO 5 – Ethics & Professionalism</option>
+  `;
+
+  // 🔥 PEO SUGGESTION BOX
+  peoSuggestions.innerHTML = `
+    <div class="logic-box mb-2">
+      <strong>PEO 1</strong><br>
+      Graduates demonstrate professional competence and employability in ${programme}.
+    </div>
+    <div class="logic-box mb-2">
+      <strong>PEO 2</strong><br>
+      Graduates communicate and collaborate effectively with stakeholders.
+    </div>
+    <div class="logic-box mb-2">
+      <strong>PEO 3</strong><br>
+      Graduates demonstrate leadership and commitment to lifelong learning.
+    </div>
+  `;
+});
+
 
   // ===== STEP 2: PEO → PLO =====
   peoSelect.addEventListener("change", async () => {
