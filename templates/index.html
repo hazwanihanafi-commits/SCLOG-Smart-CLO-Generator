@@ -36,165 +36,120 @@
    SCLOG – FINAL LAYOUT CSS (EDGE-TO-EDGE, CLEAN)
    Safe drop-in. No JS impact.
 ========================================================= */
+/* =========================================================
+   SCLOG — FINAL CLEAN UI (ACADEMIC / AUDIT READY)
+   Safe drop-in. No JS impact.
+========================================================= */
 
 /* =========================
    ROOT
 ========================= */
 :root {
-  --primary: #6d28d9;
-  --primary-soft: #ede9fe;
+  --primary: #2563eb;
+  --primary-dark: #1e40af;
+  --primary-soft: #e0e7ff;
+
   --text-main: #1f2937;
   --text-muted: #6b7280;
-  --bg-page: #f5f3ff;
+
+  --bg-page: #f8fafc;
   --bg-card: #ffffff;
-  --border-soft: rgba(109,40,217,0.12);
-  --shadow-soft: 0 12px 32px rgba(109,40,217,0.08);
-  --radius: 18px;
+
+  --border-soft: #e5e7eb;
+  --shadow-soft: 0 4px 12px rgba(0,0,0,0.04);
+
+  --radius: 14px;
 }
 
 /* =========================
-   RESET CONTAINERS
+   RESET
 ========================= */
 .container,
-.container-fluid,
-.container-app {
+.container-fluid {
   max-width: none !important;
-  margin: 0 !important;
   padding: 0 !important;
 }
 
-/* =========================
-   BODY
-========================= */
 body {
-  background: linear-gradient(180deg, #f5f3ff, #faf9ff);
+  margin: 0;
+  background: var(--bg-page);
   color: var(--text-main);
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
 }
 
 /* =========================
-   PAGE WRAPPER
+   HEADER (SINGLE, CLEAN)
 ========================= */
-.page-wrapper {
+.app-header {
   width: 100%;
-}
-
-/* =========================
-   HEADER (FULL WIDTH)
-========================= */
-.main-header {
-  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+  background: linear-gradient(90deg, var(--primary), var(--primary-dark));
   color: #ffffff;
-  padding: 28px 32px;
-}
-
-.main-header * {
-  color: #ffffff;
-}
-
-.main-header-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.main-title {
-  font-weight: 900;
-  font-size: 1.6rem;
-}
-
-.main-subtitle {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-/* Header buttons */
-.main-header .btn {
-  border-radius: 999px;
-  border-color: rgba(255,255,255,0.6);
-  color: #ffffff;
-}
-
-.main-header .btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-/* =========================
-   CONTENT AREA
-========================= */
-.page-content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 32px;
-}
-
-    .app-header {
-  width: 100%;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
-  color: #ffffff;
-  padding: 12px 0;          /* buang padding kiri/kanan */
+  padding: 10px 0;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-/* CONTAINER DALAM HEADER */
 .app-header-inner {
-  width: 100%;
-  padding: 0 20px;          /* kawal jarak tepi */
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* BRAND — PAKSA KE KIRI */
 .app-brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-right: auto;       /* 🔥 ini kunci utama */
-  color: #fff;
 }
 
 .app-brand i {
-  font-size: 1.6rem;
-  color: #ffd43b;
+  font-size: 1.4rem;
+  color: #fde047;
 }
 
 .app-title {
   font-weight: 800;
-  font-size: 1.25rem;
+  font-size: 1.1rem;
 }
 
 .app-subtitle {
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   opacity: 0.85;
 }
 
-/* ACTIONS — KEKANAN */
 .header-actions {
   display: flex;
-  align-items: center;
   gap: 8px;
 }
 
 .header-actions .btn {
-  color: #fff;
-  border-color: rgba(255,255,255,0.7);
+  border-radius: 999px;
+  border-color: rgba(255,255,255,0.6);
+  color: #ffffff;
 }
 
 /* =========================
-   STEP CARD (IMPORTANT)
+   PAGE CONTENT
+========================= */
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+/* =========================
+   CARD
 ========================= */
 .card-box {
   background: var(--bg-card);
   border-radius: var(--radius);
-  padding: 22px 24px;
+  padding: 20px;
   border: 1px solid var(--border-soft);
   box-shadow: var(--shadow-soft);
-  margin-bottom: 28px;
+  margin-bottom: 20px;
 }
 
 /* =========================
@@ -202,28 +157,28 @@ body {
 ========================= */
 .step-pill {
   background: var(--primary-soft);
-  color: var(--primary);
-  font-size: 0.75rem;
-  font-weight: 900;
-  padding: 6px 12px;
+  color: var(--primary-dark);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
   border-radius: 999px;
 }
 
 .step-header {
-  font-size: 1.15rem;
-  font-weight: 900;
-  color: #4c1d95;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--primary-dark);
 }
 
 .step-desc {
+  font-size: 0.9rem;
   color: var(--text-muted);
-  font-size: 0.95rem;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .step-divider {
-  border-top: 1px dashed rgba(109,40,217,0.25);
-  margin: 16px 0 20px;
+  border-top: 1px dashed #c7d2fe;
+  margin: 12px 0 16px;
 }
 
 /* =========================
@@ -231,50 +186,39 @@ body {
 ========================= */
 label.form-label {
   font-weight: 700;
-  color: var(--text-main);
+  font-size: 0.9rem;
 }
 
 .form-control,
 .form-select {
-  border-radius: 14px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 10px 12px;
   border: 1px solid var(--border-soft);
-  background: #fafaff;
-  color: var(--text-main);
-}
-
-.form-control::placeholder {
-  color: var(--text-muted);
-}
-
-.form-select option {
-  color: var(--text-main);
   background: #ffffff;
 }
 
 .form-control:focus,
 .form-select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(109,40,217,0.15);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
 }
 
 /* =========================
    BUTTONS
 ========================= */
 .btn {
-  border-radius: 14px;
-  font-weight: 800;
+  border-radius: 12px;
+  font-weight: 700;
 }
 
 .btn-primary {
-  background: linear-gradient(90deg, #6d28d9, #8b5cf6);
+  background: linear-gradient(90deg, var(--primary), #3b82f6);
   border: none;
-  color: #ffffff;
 }
 
 .btn-outline-secondary {
-  color: var(--primary);
   border-color: var(--primary);
+  color: var(--primary);
 }
 
 .btn-outline-secondary:hover {
@@ -283,38 +227,28 @@ label.form-label {
 }
 
 /* =========================
-   LOGIC BOX
-========================= */
-.logic-box {
-  background: #f7f2ff;
-  border-radius: 14px;
-  padding: 14px;
-  color: #3b2a63;
-}
-
-/* =========================
-   SMART CLO BUILDER
+   SMART CLO
 ========================= */
 .smart-title {
-  font-size: 1.2rem;
-  font-weight: 900;
-  color: var(--primary);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary-dark);
 }
 
 .smart-divider {
-  height: 4px;
-  width: 72px;
-  background: linear-gradient(90deg, var(--primary), #8b5cf6);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary), #60a5fa);
   border-radius: 999px;
-  margin: 10px 0 16px;
+  margin: 8px 0 14px;
 }
 
 .bloom-tag {
   background: var(--primary-soft);
-  color: var(--primary);
-  font-size: 0.75rem;
-  font-weight: 900;
-  padding: 6px 10px;
+  color: var(--primary-dark);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 4px 10px;
   border-radius: 999px;
 }
 
@@ -323,17 +257,16 @@ label.form-label {
 ========================= */
 .nav-tabs {
   border-bottom: none;
-  gap: 8px;
-  margin-bottom: 16px;
+  gap: 6px;
 }
 
 .nav-tabs .nav-link {
   border: none;
   border-radius: 999px;
-  padding: 10px 16px;
-  background: #f3eefe;
-  color: var(--primary);
+  background: #eef2ff;
+  color: var(--primary-dark);
   font-weight: 700;
+  padding: 8px 14px;
 }
 
 .nav-tabs .nav-link.active {
@@ -342,58 +275,54 @@ label.form-label {
 }
 
 /* =========================
-   GENERATED CLO
+   GENERATED CLO (HIGHLIGHT)
 ========================= */
 #cloCard {
-  background: #faf7ff;
-  border: 1px solid rgba(109,40,217,0.15);
+  background: #f8fafc;
+  border: 1px solid #c7d2fe;
+  box-shadow: 0 8px 24px rgba(37,99,235,0.12);
+}
+
+#clo_text {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-weight: 600;
+}
+
+/* =========================
+   LOGIC BOX
+========================= */
+.logic-box {
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 0.9rem;
 }
 
 /* =========================
    FOOTER
 ========================= */
 footer {
-  margin-top: 32px;
   text-align: center;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
+  margin: 24px 0 12px;
 }
 
 /* =========================
    MOBILE
 ========================= */
 @media (max-width: 768px) {
-
-  .main-header {
-    padding: 20px 16px;
-  }
-
-  .main-header-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
   .page-content {
     padding: 16px;
   }
 
   .card-box {
-    padding: 18px;
-    border-radius: 20px;
-  }
-
-  .step-header {
-    font-size: 1.2rem;
-  }
-
-  .smart-title {
-    font-size: 1.25rem;
+    padding: 16px;
   }
 
   .btn {
     width: 100%;
-    padding: 14px;
   }
 }
 
@@ -401,31 +330,17 @@ footer {
    DARK MODE
 ========================= */
 body[data-theme="dark"] {
-  background: linear-gradient(180deg, #0f1020, #15152b);
+  background: #0f172a;
   color: #e5e7eb;
 }
 
 body[data-theme="dark"] .card-box {
-  background: rgba(26,16,38,0.85);
-  border-color: rgba(255,255,255,0.06);
-  box-shadow: 0 18px 36px rgba(0,0,0,0.55);
-}
-
-body[data-theme="dark"] .form-control,
-body[data-theme="dark"] .form-select {
-  background: #0f172a;
-  color: #e5e7eb;
-  border-color: #334155;
-}
-
-body[data-theme="dark"] .form-select option {
-  background: #0f172a;
-  color: #e5e7eb;
+  background: #020617;
+  border-color: #1e293b;
 }
 
 body[data-theme="dark"] .logic-box {
-  background: rgba(30,16,48,0.5);
-  color: #e5e7eb;
+  background: #020617;
 }
 
 </style>  
