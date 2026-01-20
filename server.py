@@ -91,36 +91,102 @@ def get_verbs(plo, bloom):
 # GENERATE CLO (CLO-ONLY)
 # ------------------------------
 @clo_only.route("/clo-only/generate", methods=["POST"])
-def generate_clo():
+def clo_only_generate():
     data = request.form
 
-    plo     = data.get("plo")
-    bloom   = data.get("bloom")
-    verb    = data.get("verb")
-    content = data.get("content")
-    degree  = data.get("degree","Bachelor")
-    profile = data.get("profile","sc")
+    # ----------------------
+    # BASIC INPUT
+    # ----------------------
+    profile = data.get("profile", "sc")
+    plo     = data.get("plo", "")
+    bloom   = data.get("bloom", "")
+    verb    = data.get("verb", "")
+    content = data.get("content", "")
+    level   = data.get("degree", "Bachelor")
+
+    # ----------------------
+    # REQUIRED FIELD CHECK
+    # ----------------------
+    if not plo or not bloom or not verb or not content:
+        return jsonify({"error": "Missing required fields"}), 400
 
     details = get_plo_details(plo, profile)
     if not details:
-        return jsonify({"error":"Invalid PLO"}), 400
+        return jsonify({"error": "Invalid PLO"}), 400
 
-    domain = details["Domain"].lower()
-    allowed = DEGREE_BLOOM_LIMIT[domain][degree]
+    # ----------------------
+    # META (SAME AS FULL APP)
+    # ----------------------
+    meta = get_meta_data(plo, bloom, profile)
 
+    domain  = details["Domain"].lower()
+    sc_desc = details["SC_Desc"]
+    vbe     = details["VBE"]
+
+    # ----------------------
+    # DEGREE × BLOOM ENFORCEMENT
+    # ----------------------
+    allowed = DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])
     if bloom.lower() not in allowed:
         return jsonify({
-            "error": f"Bloom '{bloom}' not allowed for {degree} ({domain})"
+            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
         }), 400
 
-    clo = f"{verb.lower()} {content}".capitalize()
+    # ----------------------
+    # CLEAN VERB DUPLICATION
+    # ----------------------
+    words = content.strip().split()
+    if words and words[0].lower() == verb.lower():
+        content = " ".join(words[1:])
 
+    # ----------------------
+    # CLO CONSTRUCTION (IDENTICAL LOGIC)
+    # ----------------------
+    connector = "when" if domain != "psychomotor" else "by"
+    condition_clean = (
+        meta["condition"]
+        .replace("when ", "")
+        .replace("by ", "")
+    )
+
+    clo = (
+        f"{verb.lower()} {content} using {sc_desc.lower()} "
+        f"{connector} {condition_clean} guided by {vbe.lower()}."
+    ).capitalize()
+
+    # ----------------------
+    # VARIANTS (SAME AS FULL)
+    # ----------------------
+    variants = {
+        "Standard": clo,
+        "Critical Thinking": clo.replace("using", "critically using"),
+        "Short": f"{verb.capitalize()} {content}."
+    }
+
+    # ----------------------
+    # ASSESSMENT & EVIDENCE
+    # ----------------------
+    assessments = get_assessment(plo, bloom, domain)
+    evidence = {a: get_evidence_for(a) for a in assessments}
+
+    # ----------------------
+    # RETURN PAYLOAD
+    # ----------------------
     return jsonify({
         "clo": clo,
-        "plo": plo,
-        "bloom": bloom,
-        "degree": degree,
-        "domain": domain
+        "variants": variants,
+
+        "meta": {
+            "domain": domain,
+            "bloom": bloom,
+            "sc": sc_desc,
+            "vbe": vbe,
+            "criterion": meta.get("criterion", ""),
+            "condition": meta.get("condition", "")
+        },
+
+        "assessments": assessments,
+        "evidence": evidence
     })
 
 # ------------------------------
