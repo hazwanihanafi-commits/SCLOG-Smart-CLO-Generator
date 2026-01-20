@@ -1,0 +1,133 @@
+{
+  "PLO1": {
+    "title": "Knowledge and Understanding",
+    "refers_to": "Foundational and advanced knowledge of the discipline, including the ability to recall and recognise key concepts while anticipating implications for future professional practice.",
+    "sc_code": "SC2",
+    "sc_description": "Anticipatory thinking",
+    "vbe": "Ethics and Professionalism",
+    "sdg": [3, 13],
+    "domain": "Cognitive",
+    "bloom_reason": "Remember",
+    "short_desc": "Disciplinary knowledge with awareness of future implications."
+  },
+
+  "PLO2": {
+    "title": "Cognitive and Analytical Skills",
+    "refers_to": "Ability to analyse complex problems by integrating knowledge, evidence, and anticipatory thinking to support ethical and sustainable decision-making.",
+    "sc_code": "SC6",
+    "sc_description": "Integrated problem solving",
+    "vbe": "Ethics and Professionalism",
+    "sdg": [3, 9],
+    "domain": "Cognitive",
+    "bloom_reason": "Analyze",
+    "short_desc": "Analytical and problem-solving skills for complex and future-oriented issues."
+  },
+
+  "PLO3": {
+    "title": "Practical and Technical Skills",
+    "refers_to": "Ability to perform and adapt professional or technical procedures strategically in response to changing contexts and practice requirements.",
+    "sc_code": "SC4",
+    "sc_description": "Strategic thinking",
+    "vbe": "Professional practice standards",
+    "sdg": [3, 4, 17],
+    "domain": "Psychomotor",
+    "bloom_reason": "Adaptation",
+    "short_desc": "Strategic application and adaptation of practical skills."
+  },
+
+  "PLO4": {
+    "title": "Interpersonal and Teamwork Skills",
+    "refers_to": "Ability to interact, collaborate, and respond effectively within teams by demonstrating integrity and shared professional responsibility.",
+    "sc_code": "SC5",
+    "sc_description": "Collaboration",
+    "vbe": "Integrity",
+    "sdg": [3, 17],
+    "domain": "Affective",
+    "bloom_reason": "Respond",
+    "short_desc": "Effective collaboration and teamwork."
+  },
+
+  "PLO5": {
+    "title": "Ethical Values and Professional Conduct",
+    "refers_to": "Commitment to ethical norms, etiquette, and responsible professional behaviour in decision-making and practice.",
+    "sc_code": "SC8",
+    "sc_description": "Normative thinking",
+    "vbe": "Ethics and Etiquette",
+    "sdg": [3, 16],
+    "domain": "Affective",
+    "bloom_reason": "Value",
+    "short_desc": "Ethical judgement and professional values."
+  },
+
+  "PLO6": {
+    "title": "Systems and Sustainability Awareness",
+    "refers_to": "Ability to understand and organise actions by considering interconnected systems and long-term sustainability implications.",
+    "sc_code": "SC8",
+    "sc_description": "Systems thinking",
+    "vbe": "Ethics and Professionalism",
+    "sdg": [3, 11, 13],
+    "domain": "Affective",
+    "bloom_reason": "Organize",
+    "short_desc": "Systems thinking and sustainability awareness."
+  },
+
+  "PLO7": {
+    "title": "Applied Problem Response",
+    "refers_to": "Ability to respond appropriately to complex professional situations by applying integrated problem-solving skills guided by ethical considerations.",
+    "sc_code": "SC6",
+    "sc_description": "Integrated problem solving",
+    "vbe": "Ethics and Professionalism",
+    "sdg": [3, 4],
+    "domain": "Affective",
+    "bloom_reason": "Respond",
+    "short_desc": "Responsible response to complex professional challenges."
+  },
+
+  "PLO8": {
+    "title": "Leadership and Responsibility",
+    "refers_to": "Ability to demonstrate leadership, professionalism, and responsibility when working with others in professional and organisational contexts.",
+    "sc_code": "SC9",
+    "sc_description": "Leadership",
+    "vbe": "Professionalism and Teamwork",
+    "sdg": [3, 5],
+    "domain": "Affective",
+    "bloom_reason": "Value",
+    "short_desc": "Leadership, teamwork, and professional responsibility."
+  },
+
+  "PLO9": {
+    "title": "Personal and Professional Well-being",
+    "refers_to": "Ability to reflect on personal values, well-being, and professional roles to support lifelong learning and responsible practice.",
+    "sc_code": "SC7",
+    "sc_description": "Self-awareness",
+    "vbe": "Professionalism and Well-being",
+    "sdg": [3, 8, 9],
+    "domain": "Affective",
+    "bloom_reason": "Characterize",
+    "short_desc": "Self-awareness and lifelong learning."
+  },
+
+  "PLO10": {
+    "title": "Entrepreneurship and Innovation",
+    "refers_to": "Ability to identify opportunities, apply innovative thinking, and create value responsibly with honesty and integrity.",
+    "sc_code": "ENT",
+    "sc_description": "Entrepreneurial thinking",
+    "vbe": "Honesty and Integrity",
+    "sdg": [3, 16],
+    "domain": "Affective",
+    "bloom_reason": "Value",
+    "short_desc": "Entrepreneurial and innovative thinking."
+  },
+
+  "PLO11": {
+    "title": "Ethics and Professional Accountability",
+    "refers_to": "Consistent demonstration of ethical awareness, professional conduct, and accountability in all academic and professional activities.",
+    "sc_code": "ETH",
+    "sc_description": "Ethical awareness",
+    "vbe": "Professional conduct",
+    "sdg": [3, 17],
+    "domain": "Affective",
+    "bloom_reason": "Characterize",
+    "short_desc": "Ethical awareness and professional accountability."
+  }
+}
