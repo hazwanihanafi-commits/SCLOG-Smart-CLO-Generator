@@ -562,18 +562,19 @@ def workflow():
     return render_template("index.html")
 
 @app.route("/clo-only")
-def clo_only():
+def clo_only_page():
     return render_template("clo_only.html")
 
-@app.route("/generator")
-def generator():
-    return render_template("generator.html")
+from server import clo_only as clo_only_bp
+app.register_blueprint(clo_only_bp)
+
 
 # ------------------------------------------------------
 # RUN
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
