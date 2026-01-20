@@ -13,6 +13,8 @@ from flask import (
 import pandas as pd
 from openpyxl import Workbook, load_workbook
 
+
+
 # ------------------------------------------------------
 # App setup
 # ------------------------------------------------------
@@ -26,6 +28,30 @@ app = Flask(
 
 WORKBOOK_PATH = os.path.join(BASE_DIR, "SCLOG.xlsx")
 FRONT_JSON = os.path.join(app.static_folder, "data", "SCLOG_front.json")
+
+# ------------------------------------------------------
+# DEGREE × DOMAIN × BLOOM LIMIT (CLO-ONLY & CORE)
+# ------------------------------------------------------
+DEGREE_BLOOM_LIMIT = {
+    "cognitive": {
+        "Diploma": ["remember", "understand", "apply"],
+        "Bachelor": ["apply", "analyze", "analyse", "evaluate"],
+        "Master": ["analyze", "analyse", "evaluate", "create"],
+        "PhD": ["evaluate", "create"]
+    },
+    "affective": {
+        "Diploma": ["receive", "respond"],
+        "Bachelor": ["respond", "value"],
+        "Master": ["value", "organization"],
+        "PhD": ["organization", "characterization"]
+    },
+    "psychomotor": {
+        "Diploma": ["perception", "set", "guided response"],
+        "Bachelor": ["guided response", "mechanism"],
+        "Master": ["complex overt response", "adaptation"],
+        "PhD": ["adaptation", "origination"]
+    }
+}
 
 
 # ------------------------------------------------------
@@ -308,6 +334,7 @@ def api_get_blooms(plo):
     return jsonify(blooms)
 
 
+
 @app.route("/api/get_verbs/<plo>/<bloom>")
 def api_get_verbs(plo, bloom):
     profile = request.args.get("profile","sc").lower()
@@ -425,7 +452,51 @@ def generate():
     assessments = get_assessment(plo, bloom, domain)
     evidence = {a: get_evidence_for(a) for a in assessments}
 
+@app.route("/clo-only/generate", methods=["POST"])
+def clo_only_generate():
+    data = request.form
 
+    plo     = data.get("plo")
+    bloom   = data.get("bloom")
+    verb    = data.get("verb")
+    content = data.get("content")
+    level   = data.get("degree","Bachelor")
+    profile = data.get("profile","sc")
+
+    details = get_plo_details(plo, profile)
+    if not details:
+        return jsonify({"error":"Invalid PLO"}), 400
+
+    # 🔹 LETAK SINI
+    domain = details["Domain"].lower()
+
+    allowed = (
+        DEGREE_BLOOM_LIMIT
+        .get(domain, {})
+        .get(level, [])
+    )
+
+    # 🔒 ENFORCE
+    if bloom.lower() not in allowed:
+        return jsonify({
+            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
+        }), 400
+
+    clo = f"{verb.lower()} {content}".capitalize()
+
+    return jsonify({
+        "clo": clo,
+        "plo": plo,
+        "bloom": bloom,
+        "degree": level,
+        "domain": domain
+    })
+
+
+
+
+
+    
     LAST_CLO = {
     # ======================
     # PROGRAMME CONTEXT
@@ -569,11 +640,15 @@ def clo_only():
 def generator():
     return render_template("generator.html")
 
+
+
+
 # ------------------------------------------------------
 # RUN
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
