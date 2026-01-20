@@ -1,77 +1,438 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>SCLOG — Programme Workflow</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8" />
+  <title>SCLOG — Smart CLO Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Bootstrap + Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Bootstrap + icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet" />
 
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-HMBYNXRLBE"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HMBYNXRLBE', { 'send_page_view': true });
+
+    function logEvent(name, data = {}) {
+      if (typeof gtag === 'function') {
+        try { gtag('event', name, data); } catch(e){ console.debug('gtag error', e); }
+      } else {
+        console.debug('GA not ready - event', name, data);
+      }
+    }
+  </script>
+
+  <!-- Theme CSS -->
   <style>
-    body {
-      background-color: #f4f6f9;
-    }
 
-    /* ===== HEADER (SAME AS CLO-ONLY) ===== */
+    /* =================================================
+   SCLOG – PPBMS STYLE (FINAL POLISH)
+================================================= */
+/* =========================================================
+   SCLOG – FINAL LAYOUT CSS (EDGE-TO-EDGE, CLEAN)
+   Safe drop-in. No JS impact.
+========================================================= */
+
+/* =========================
+   ROOT
+========================= */
+:root {
+  --primary: #6d28d9;
+  --primary-soft: #ede9fe;
+  --text-main: #1f2937;
+  --text-muted: #6b7280;
+  --bg-page: #f5f3ff;
+  --bg-card: #ffffff;
+  --border-soft: rgba(109,40,217,0.12);
+  --shadow-soft: 0 12px 32px rgba(109,40,217,0.08);
+  --radius: 18px;
+}
+
+/* =========================
+   RESET CONTAINERS
+========================= */
+.container,
+.container-fluid,
+.container-app {
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* =========================
+   BODY
+========================= */
+body {
+  background: linear-gradient(180deg, #f5f3ff, #faf9ff);
+  color: var(--text-main);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+/* =========================
+   PAGE WRAPPER
+========================= */
+.page-wrapper {
+  width: 100%;
+}
+
+/* =========================
+   HEADER (FULL WIDTH)
+========================= */
+.main-header {
+  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+  color: #ffffff;
+  padding: 28px 32px;
+}
+
+.main-header * {
+  color: #ffffff;
+}
+
+.main-header-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.main-title {
+  font-weight: 900;
+  font-size: 1.6rem;
+}
+
+.main-subtitle {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+/* Header buttons */
+.main-header .btn {
+  border-radius: 999px;
+  border-color: rgba(255,255,255,0.6);
+  color: #ffffff;
+}
+
+.main-header .btn:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* =========================
+   CONTENT AREA
+========================= */
+.page-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
     .app-header {
-      background: linear-gradient(135deg, #1f3c88, #274b9f);
-      color: white;
-      padding: 1rem 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
+  width: 100%;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #ffffff;
+  padding: 12px 0;          /* buang padding kiri/kanan */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
 
-    .app-header h5 {
-      margin: 0;
-      font-weight: 600;
-    }
+/* CONTAINER DALAM HEADER */
+.app-header-inner {
+  width: 100%;
+  padding: 0 20px;          /* kawal jarak tepi */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
-    .app-header small {
-      opacity: 0.85;
-      font-size: 0.85rem;
-    }
+/* BRAND — PAKSA KE KIRI */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;       /* 🔥 ini kunci utama */
+  color: #fff;
+}
 
-    /* ===== CARD ===== */
-    .app-card {
-      background: #fff;
-      border-radius: 14px;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-      padding: 1.75rem;
-    }
+.app-brand i {
+  font-size: 1.6rem;
+  color: #ffd43b;
+}
 
-    .step-title {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-    }
-
-    .step-desc {
-      font-size: 0.9rem;
-      color: #6c757d;
-      margin-bottom: 1rem;
-    }
-
-    .step-header {
-  font-size: 1.25rem;
+.app-title {
   font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.app-subtitle {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* ACTIONS — KEKANAN */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-actions .btn {
+  color: #fff;
+  border-color: rgba(255,255,255,0.7);
+}
+
+/* =========================
+   STEP CARD (IMPORTANT)
+========================= */
+.card-box {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 22px 24px;
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 28px;
+}
+
+/* =========================
+   STEP HEADER
+========================= */
+.step-pill {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+.step-header {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #4c1d95;
 }
 
 .step-desc {
-  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 14px;
 }
 
-    .form-label {
-      font-weight: 500;
-    }
+.step-divider {
+  border-top: 1px dashed rgba(109,40,217,0.25);
+  margin: 16px 0 20px;
+}
 
-    hr {
-      margin: 2rem 0;
-    }
-  </style>
+/* =========================
+   FORM
+========================= */
+label.form-label {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.form-control,
+.form-select {
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 1px solid var(--border-soft);
+  background: #fafaff;
+  color: var(--text-main);
+}
+
+.form-control::placeholder {
+  color: var(--text-muted);
+}
+
+.form-select option {
+  color: var(--text-main);
+  background: #ffffff;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(109,40,217,0.15);
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.btn {
+  border-radius: 14px;
+  font-weight: 800;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, #6d28d9, #8b5cf6);
+  border: none;
+  color: #ffffff;
+}
+
+.btn-outline-secondary {
+  color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-outline-secondary:hover {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+/* =========================
+   LOGIC BOX
+========================= */
+.logic-box {
+  background: #f7f2ff;
+  border-radius: 14px;
+  padding: 14px;
+  color: #3b2a63;
+}
+
+/* =========================
+   SMART CLO BUILDER
+========================= */
+.smart-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--primary);
+}
+
+.smart-divider {
+  height: 4px;
+  width: 72px;
+  background: linear-gradient(90deg, var(--primary), #8b5cf6);
+  border-radius: 999px;
+  margin: 10px 0 16px;
+}
+
+.bloom-tag {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+/* =========================
+   NAV TABS
+========================= */
+.nav-tabs {
+  border-bottom: none;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.nav-tabs .nav-link {
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: #f3eefe;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.nav-tabs .nav-link.active {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+/* =========================
+   GENERATED CLO
+========================= */
+#cloCard {
+  background: #faf7ff;
+  border: 1px solid rgba(109,40,217,0.15);
+}
+
+/* =========================
+   FOOTER
+========================= */
+footer {
+  margin-top: 32px;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =========================
+   MOBILE
+========================= */
+@media (max-width: 768px) {
+
+  .main-header {
+    padding: 20px 16px;
+  }
+
+  .main-header-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .page-content {
+    padding: 16px;
+  }
+
+  .card-box {
+    padding: 18px;
+    border-radius: 20px;
+  }
+
+  .step-header {
+    font-size: 1.2rem;
+  }
+
+  .smart-title {
+    font-size: 1.25rem;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+  }
+}
+
+/* =========================
+   DARK MODE
+========================= */
+body[data-theme="dark"] {
+  background: linear-gradient(180deg, #0f1020, #15152b);
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .card-box {
+  background: rgba(26,16,38,0.85);
+  border-color: rgba(255,255,255,0.06);
+  box-shadow: 0 18px 36px rgba(0,0,0,0.55);
+}
+
+body[data-theme="dark"] .form-control,
+body[data-theme="dark"] .form-select {
+  background: #0f172a;
+  color: #e5e7eb;
+  border-color: #334155;
+}
+
+body[data-theme="dark"] .form-select option {
+  background: #0f172a;
+  color: #e5e7eb;
+}
+
+body[data-theme="dark"] .logic-box {
+  background: rgba(30,16,48,0.5);
+  color: #e5e7eb;
+}
+
+</style>  
+
 </head>
 
-<body>
-
+<body data-theme="light">
 
   <header class="app-header">
   <div class="app-header-inner">
@@ -100,9 +461,7 @@
 
     
 <!-- STEP 1 · Programme Context -->
-  <div class="container my-4" style="max-width: 920px">
-
-<div class="card-box mb-4">
+<div class="card-box mb-3">
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 1</span>
@@ -197,7 +556,7 @@
     <!-- 2) PLO for selected PEO -->
 
       <!-- STEP 2 -->
-<div class="card-box mb-4">
+<div class="card-box mb-3">
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 2</span>
@@ -246,7 +605,7 @@
     
     <!-- 3) Smart CLO Builder (main) -->
     
-  <div class="card-box mb-4">
+  <div class="card-box mb-3">
 
     <div class="d-flex align-items-center gap-2 mb-1">
   <span class="step-pill">STEP 3</span>
@@ -393,8 +752,6 @@
     <footer>© 2025 • Assoc Prof Dr Hazwani Ahmad Yusof @ Hanafi — Universiti Sains Malaysia (USM)</footer>
   </div>
 
-
-    
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -696,8 +1053,6 @@ const evidenceList = $('evidence_list');
 const downloadBtn = $('downloadBtn');
 const downloadRubricBtn = $('downloadRubricBtn');
 const darkToggle = $('darkToggle');
-const peoSuggestions = $('peoSuggestions');
-const peoSelect = $('peoSelect');  
 
 
 
@@ -1161,7 +1516,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ========= STEP 1: GENERATE PEO ========= */
-  const generateBtnPEO = document.getElementById("generatePEO");
+  generateBtnPEO = document.getElementById("generatePEO");
 
   generateBtnPEO.addEventListener("click", () => {
 
@@ -1175,19 +1530,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const peos = generatePEOFromProgramme(programmeName, level);
 
-    peoSuggestions.innerHTML += `
-  <div class="card-box mt-3">
-    <div class="fw-bold">${p.code}</div>
-
-    <div class="mt-1">
-      ${p.text}
-    </div>
-
-    <div class="mt-2 muted" style="font-size:0.85rem">
-      <strong>Mapped PLOs:</strong> ${mappedPLOs.join(", ")}
-    </div>
-  </div>
-`;
+    peoSuggestions.innerHTML = "";
+    peos.forEach(p => {
+      const mappedPLOs = PEO_PLO_MAP[p.code] || [];
+      peoSuggestions.innerHTML += `
+        <div class="logic-box mb-2">
+          <strong>${p.code}</strong><br>
+          ${p.text}
+          <div class="mt-2 muted" style="font-size:0.85rem">
+            <strong>Mapped PLOs:</strong> ${mappedPLOs.join(", ")}
+          </div>
+        </div>`;
     });
 
     peoSelect.innerHTML = '<option value="">Select PEO</option>';
