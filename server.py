@@ -1,5 +1,11 @@
 # server.py
-from app import get_meta_data, get_plo_details, load_df
+from utils import (
+    load_df,
+    get_plo_details,
+    get_meta_data,
+    get_assessment,
+    get_evidence_for
+)
 from flask import Blueprint, request, jsonify, send_file
 from openpyxl import Workbook
 from io import BytesIO
