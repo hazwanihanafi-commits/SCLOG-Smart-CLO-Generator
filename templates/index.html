@@ -51,6 +51,15 @@
       margin-bottom: 1rem;
     }
 
+    .step-header {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.step-desc {
+  margin-top: 4px;
+}
+
     .form-label {
       font-weight: 500;
     }
@@ -91,7 +100,9 @@
 
     
 <!-- STEP 1 · Programme Context -->
-<div class="card-box mb-3">
+  <div class="container my-4" style="max-width: 920px">
+
+<div class="card-box mb-4">
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 1</span>
@@ -186,7 +197,7 @@
     <!-- 2) PLO for selected PEO -->
 
       <!-- STEP 2 -->
-<div class="card-box mb-3">
+<div class="card-box mb-4">
 
   <div class="d-flex align-items-center gap-2 mb-1">
     <span class="step-pill">STEP 2</span>
@@ -235,7 +246,7 @@
     
     <!-- 3) Smart CLO Builder (main) -->
     
-  <div class="card-box mb-3">
+  <div class="card-box mb-4">
 
     <div class="d-flex align-items-center gap-2 mb-1">
   <span class="step-pill">STEP 3</span>
@@ -1164,17 +1175,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const peos = generatePEOFromProgramme(programmeName, level);
 
-    peoSuggestions.innerHTML = "";
-    peos.forEach(p => {
-      const mappedPLOs = PEO_PLO_MAP[p.code] || [];
-      peoSuggestions.innerHTML += `
-        <div class="logic-box mb-2">
-          <strong>${p.code}</strong><br>
-          ${p.text}
-          <div class="mt-2 muted" style="font-size:0.85rem">
-            <strong>Mapped PLOs:</strong> ${mappedPLOs.join(", ")}
-          </div>
-        </div>`;
+    peoSuggestions.innerHTML += `
+  <div class="card-box mt-3">
+    <div class="fw-bold">${p.code}</div>
+
+    <div class="mt-1">
+      ${p.text}
+    </div>
+
+    <div class="mt-2 muted" style="font-size:0.85rem">
+      <strong>Mapped PLOs:</strong> ${mappedPLOs.join(", ")}
+    </div>
+  </div>
+`;
     });
 
     peoSelect.innerHTML = '<option value="">Select PEO</option>';
