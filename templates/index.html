@@ -521,6 +521,8 @@ const evidenceList = $('evidence_list');
 const downloadBtn = $('downloadBtn');
 const downloadRubricBtn = $('downloadRubricBtn');
 const darkToggle = $('darkToggle');
+const peoSuggestions = $('peoSuggestions');
+const peoSelect = $('peoSelect');  
 
 
 
@@ -984,7 +986,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   /* ========= STEP 1: GENERATE PEO ========= */
-  generateBtnPEO = document.getElementById("generatePEO");
+  const generateBtnPEO = document.getElementById("generatePEO");
 
   generateBtnPEO.addEventListener("click", () => {
 
