@@ -5,83 +5,147 @@
   <title>SCLOG — CLO Only Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+  <style>
+    body {
+      background-color: #f4f6f9;
+    }
+
+    /* ===== HEADER ===== */
+    .app-header {
+      background: linear-gradient(135deg, #1f3c88, #274b9f);
+      color: #fff;
+      padding: 1rem 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .app-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .app-header small {
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    /* ===== CARD ===== */
+    .app-card {
+      background: #remember;
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+      padding: 1.75rem;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    #cloCard {
+      background: #f8fafc;
+      border-left: 4px solid #0d6efd;
+    }
+  </style>
 </head>
 
-<body class="bg-light p-4">
+<body>
 
-<div class="container" style="max-width:720px">
+<!-- ================= HEADER ================= -->
+<div class="app-header">
+  <div class="container d-flex justify-content-between align-items-center">
 
-  <h3 class="mb-4">⚡ CLO Only Generator</h3>
+    <!-- LEFT -->
+    <div>
+      <h1>✨ SCLOG</h1>
+      <small>Smart Course Learning Outcome Generator</small>
+    </div>
 
-  <!-- DEGREE -->
-  <div class="mb-3">
-    <label class="form-label">Degree Level</label>
-    <select id="degree" class="form-select">
-      <option value="">Select Degree</option>
-      <option>Diploma</option>
-      <option>Bachelor</option>
-      <option>Master</option>
-      <option>PhD</option>
-    </select>
+    <!-- RIGHT -->
+    <div>
+      <a href="/app" class="btn btn-outline-light btn-sm rounded-pill px-3">
+        <i class="bi bi-arrow-left"></i> Back
+      </a>
+    </div>
+
   </div>
+</div>
 
-  <!-- PLO -->
-  <div class="mb-3">
-    <label class="form-label">Programme Learning Outcome (PLO)</label>
-    <select id="plo" class="form-select">
-      <option value="">Select PLO</option>
-      <option>PLO1</option>
-      <option>PLO2</option>
-      <option>PLO3</option>
-      <option>PLO4</option>
-      <option>PLO5</option>
-      <option>PLO6</option>
-      <option>PLO7</option>
-      <option>PLO8</option>
-      <option>PLO9</option>
-      <option>PLO10</option>
-      <option>PLO11</option>
-    </select>
+<!-- ================= CONTENT ================= -->
+<div class="container my-4" style="max-width:760px">
+
+  <div class="app-card">
+
+    <h5 class="mb-4">⚡ CLO Only Generator</h5>
+
+    <!-- DEGREE -->
+    <div class="mb-3">
+      <label class="form-label">Degree Level</label>
+      <select id="degree" class="form-select">
+        <option value="">Select Degree</option>
+        <option>Diploma</option>
+        <option>Bachelor</option>
+        <option>Master</option>
+        <option>PhD</option>
+      </select>
+    </div>
+
+    <!-- PLO -->
+    <div class="mb-3">
+      <label class="form-label">Programme Learning Outcome (PLO)</label>
+      <select id="plo" class="form-select">
+        <option value="">Select PLO</option>
+        <option>PLO1</option><option>PLO2</option><option>PLO3</option>
+        <option>PLO4</option><option>PLO5</option><option>PLO6</option>
+        <option>PLO7</option><option>PLO8</option><option>PLO9</option>
+        <option>PLO10</option><option>PLO11</option>
+      </select>
+    </div>
+
+    <!-- BLOOM -->
+    <div class="mb-3">
+      <label class="form-label">Bloom Level</label>
+      <select id="bloom" class="form-select">
+        <option value="">Select Bloom</option>
+      </select>
+    </div>
+
+    <!-- VERB -->
+    <div class="mb-3">
+      <label class="form-label">Action Verb</label>
+      <select id="verb" class="form-select">
+        <option value="">Select Verb</option>
+      </select>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="mb-4">
+      <label class="form-label">Content / Learning Focus</label>
+      <input id="content" class="form-control"
+        placeholder="e.g. ECG waveform abnormalities">
+    </div>
+
+    <!-- GENERATE -->
+    <button id="generateBtn" class="btn btn-primary w-100 mb-3">
+      Generate CLO
+    </button>
+
+    <!-- OUTPUT -->
+    <div id="cloCard" class="card p-3 mb-3" style="display:none">
+      <strong>Generated CLO</strong>
+      <div id="clo_text" class="mt-2"></div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <button id="downloadBtn" class="btn btn-success w-100">
+      Download CLO (Excel)
+    </button>
+
   </div>
-
-  <!-- BLOOM -->
-  <div class="mb-3">
-    <label class="form-label">Bloom Level</label>
-    <select id="bloom" class="form-select">
-      <option value="">Select Bloom</option>
-    </select>
-  </div>
-
-  <!-- VERB -->
-  <div class="mb-3">
-    <label class="form-label">Action Verb</label>
-    <select id="verb" class="form-select">
-      <option value="">Select Verb</option>
-    </select>
-  </div>
-
-  <!-- CONTENT -->
-  <div class="mb-3">
-    <label class="form-label">Content / Learning Focus</label>
-    <input id="content" class="form-control"
-      placeholder="e.g. ECG waveform abnormalities">
-  </div>
-
-  <button id="generateBtn" class="btn btn-primary w-100 mb-3">
-    Generate CLO
-  </button>
-
-  <!-- OUTPUT -->
-  <div id="cloCard" class="card p-3 mb-3" style="display:none">
-    <strong>Generated CLO</strong>
-    <div id="clo_text" class="mt-2"></div>
-  </div>
-
-  <button id="downloadBtn" class="btn btn-success w-100">
-    Download CLO (Excel)
-  </button>
-
 </div>
 
 <script>
@@ -100,14 +164,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let generatedData = null;
 
-  /* ---------------------------
-     DEGREE / PLO → BLOOM
-  --------------------------- */
   async function loadBlooms() {
     bloomSel.innerHTML = `<option value="">Select Bloom</option>`;
     verbSel.innerHTML  = `<option value="">Select Verb</option>`;
 
-    if (!ploSel.value || !degreeSel.value) return;
+    if (!degreeSel.value || !ploSel.value) return;
 
     const res = await fetch(
       `/api/get_blooms/${ploSel.value}?degree=${degreeSel.value}`
@@ -119,9 +180,6 @@ document.addEventListener("DOMContentLoaded", () => {
   degreeSel.addEventListener("change", loadBlooms);
   ploSel.addEventListener("change", loadBlooms);
 
-  /* ---------------------------
-     BLOOM → VERB
-  --------------------------- */
   bloomSel.addEventListener("change", async () => {
     verbSel.innerHTML = `<option value="">Select Verb</option>`;
     if (!bloomSel.value || !ploSel.value) return;
@@ -133,11 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
     verbs.forEach(v => verbSel.add(new Option(v, v)));
   });
 
-  /* ---------------------------
-     GENERATE CLO (CLO-ONLY)
-  --------------------------- */
   $("generateBtn").addEventListener("click", async () => {
-
     if (!degreeSel.value || !ploSel.value || !bloomSel.value ||
         !verbSel.value || !content.value.trim()) {
       alert("Please complete all fields.");
@@ -163,14 +217,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     generatedData = data;
-
     cloText.innerText = data.clo;
     cloCard.style.display = "block";
   });
 
-  /* ---------------------------
-     DOWNLOAD (POST, STATELESS)
-  --------------------------- */
   $("downloadBtn").addEventListener("click", async () => {
     if (!generatedData) {
       alert("Generate CLO first.");
@@ -185,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const blob = await res.blob();
     const url = window.URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "CLO_Only.xlsx";
