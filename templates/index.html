@@ -49,21 +49,18 @@
 
 /* ===== PAGE ===== */
 body{
-  background:linear-gradient(
-    180deg,
-    #6d28d9 0%,
-    #a78bfa 22%,
-    #f6f4fb 22%
-  );
+  background:#f6f4fb;
   color:var(--text);
   font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto;
 }
+  
 
 .container-app{
-  max-width:1200px;
-+ margin:auto;
-  padding:24px 20px 48px;
+  max-width:100%;
+  margin:0;
+  padding:24px 40px 48px;
 }
+
 
 @media (min-width: 992px){
   .container-app{
@@ -71,6 +68,28 @@ body{
     padding-bottom:40px;
   }
 }
+
+/* FULL WIDTH WRAPPER */
+.page-wrapper {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* CONTENT AREA (still readable) */
+.page-content {
+  max-width: 1400px;   /* boleh 1600px kalau nak luas */
+  margin: 0 auto;
+  padding: 24px 32px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 16px;
+  }
+}
+
 
 /* ===== CARD ===== */
 .card-box{
@@ -111,6 +130,27 @@ body{
 .card-box:first-of-type{
   margin-top:8px;
 } 
+
+@media (min-width: 992px){
+  .card-box{
+    padding: 28px 32px;
+    margin-bottom: 20px;
+  }
+}
+
+    @media (min-width: 1200px){
+  .profile-row{
+    gap: 24px;
+  }
+}
+
+    @media (min-width: 1200px){
+  .profile-row{
+    gap: 24px;
+  }
+}
+
+    
 
     /* =========================
    MAIN HEADER (PRIMARY)
@@ -353,6 +393,30 @@ footer{
 }
 
 
+    /* ===== STEP HEADER (DESKTOP EMPHASIS) ===== */
+@media (min-width: 992px){
+
+  .step-pill{
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 6px 14px;
+    letter-spacing: 0.06em;
+  }
+
+  .step-header{
+    font-size: 1.25rem;
+    font-weight: 900;
+  }
+
+  @media (min-width: 992px){
+  .step-header{
+    border-left: 4px solid var(--primary);
+    padding-left: 10px;
+  }
+}
+
+
+
 </style>  
 
 </head>
@@ -362,6 +426,7 @@ footer{
   <!-- FULL WIDTH HEADER -->
   <div class="main-header-wrapper">
     <div class="container-app">
+
 
       <div class="main-header card-box">
         <div class="d-flex align-items-center justify-content-between">
