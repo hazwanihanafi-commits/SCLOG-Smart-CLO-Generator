@@ -63,168 +63,324 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
-<div class="app-header">
-  <div class="container d-flex justify-content-between align-items-center">
 
-    <div>
-      <h5>✨ SCLOG</h5>
-      <small>Smart Course Learning Outcome Generator</small>
+  <header class="app-header">
+  <div class="app-header-inner">
+
+    <div class="app-brand">
+      <i class="bi bi-stars"></i>
+      <div>
+        <div class="app-title">SCLOG</div>
+        <div class="app-subtitle">
+          Smart Course Learning Outcome Generator
+        </div>
+      </div>
     </div>
 
-    <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3">
-      <i class="bi bi-arrow-left"></i> Back
-    </a>
+    <div class="header-actions">
+      <a href="/" class="btn btn-outline-light btn-sm">← Back</a>
+      <button id="darkToggle" class="btn btn-outline-light btn-sm">
+        <i class="bi bi-moon"></i>
+      </button>
+    </div>
+
+  </div>
+</header>
+ 
+
+
+    
+<!-- STEP 1 · Programme Context -->
+<div class="card-box mb-3">
+
+  <div class="d-flex align-items-center gap-2 mb-1">
+    <span class="step-pill">STEP 1</span>
+    <div class="step-header mb-0">Programme Context</div>
+  </div>
+
+  <div class="step-desc">
+    Define the Discipline, Programme Level, Institutional Educational Goals (IEG),
+    and Programme Educational Objectives (PEO) to guide appropriate outcome mapping.
+  </div>
+
+  <div class="step-divider"></div>
+
+  <div class="row g-3 profile-row">
+
+    <!-- Academic Profile -->
+    <div class="col-12 col-md-4">
+      <label class="form-label">Discipline (programme context)</label>
+      <select id="profile" class="form-select">
+        <option value="">Select Academic profile</option>
+        <option value="health">Medical & Health</option>
+        <option value="sc">Computer Science & IT</option>
+        <option value="eng">Engineering & Technology</option>
+        <option value="socs">Social Sciences</option>
+        <option value="edu">Education</option>
+        <option value="bus">Business & Management</option>
+        <option value="arts">Arts & Humanities</option>
+      </select>
+    </div>
+
+    <!-- Programme Level -->
+    <div class="col-12 col-md-2">
+      <label class="form-label">Programme Level</label>
+      <select id="level" class="form-select">
+        <option value="">Select Level</option>
+        <option>Diploma</option>
+        <option>Degree</option>
+        <option>Master</option>
+        <option>PhD</option>
+      </select>
+    </div>
+
+    <!-- Programme Name -->
+    <div class="col-12 col-md-6">
+      <label class="form-label">Programme Name</label>
+      <input
+        id="programmeName"
+        type="text"
+        class="form-control"
+        placeholder="e.g. Bachelor of Exercise Science">
+    </div>
+
+    <!-- IEG -->
+    <div class="col-12">
+      <label class="form-label">Institutional Educational Goals (IEG)</label>
+      <textarea
+        id="ieg_input"
+        class="form-control"
+        rows="3"
+        placeholder="Paste or type Institutional Educational Goals here (optional)">
+      </textarea>
+      <div class="muted mt-1" style="font-size:0.85rem">
+        Optional. This will be included in the generated CLO documentation.
+      </div>
+    </div>
+
+
+    <!-- Generate PEO -->
+    <div class="col-12">
+      <button id="generatePEO" class="btn btn-outline-primary">
+        Suggest Programme Educational Objectives (PEOs)
+      </button>
+    </div>
+
+    <!-- PEO suggestions -->
+    <div id="peoSuggestions" class="col-12"></div>
+
+    <!-- Select PEO -->
+    <div class="col-12 col-md-6">
+      <label class="form-label mt-3">Select PEO</label>
+      <select id="peoSelect" class="form-select"></select>
+    </div>
+
+    <!-- PEO rationale box -->
+    <div id="ieg_peo_logic" class="logic-box d-none col-12"></div>
 
   </div>
 </div>
 
-<!-- ================= WORKFLOW CONTENT ================= -->
-<div class="container my-4" style="max-width: 900px">
+    
 
-  <div class="app-card">
+    <!-- 2) PLO for selected PEO -->
 
-    <!-- ================= STEP 1 ================= -->
-    <div>
-      <div class="step-title">Step 1 · Programme Context</div>
-      <div class="step-desc">
-        Define programme discipline, level, and institutional goals to guide outcome mapping.
-      </div>
+      <!-- STEP 2 -->
+<div class="card-box mb-3">
 
-      <div class="mb-3">
-        <label class="form-label">Discipline (Programme Context)</label>
-        <select id="profile" class="form-select">
-  <option value="">Select Academic profile</option>
-  <option value="health">Medical & Health</option>
-  <option value="sc">Computer Science & IT</option>
-  <option value="eng">Engineering & Technology</option>
-  <option value="socs">Social Sciences</option>
-  <option value="edu">Education</option>
-  <option value="bus">Business & Management</option>
-  <option value="arts">Arts & Humanities</option>
-</select>
-      </div>
+  <div class="d-flex align-items-center gap-2 mb-1">
+    <span class="step-pill">STEP 2</span>
+    <div class="step-header mb-0">
+      Programme Learning Outcomes (PLO)
+    </div>
+  </div>
 
-      <div class="mb-3">
-        <label class="form-label">Programme Level</label>
-        <select id="level" class="form-select">
-          <option value="">Select Level</option>
-          <option>Diploma</option>
-          <option>Degree</option>
-          <option>Master</option>
-          <option>PhD</option>
-        </select>
-      </div>
+  <div class="step-desc">
+    Select the Programme Learning Outcome (PLO) aligned with the selected
+    Programme Educational Objective (PEO).
+  </div>
 
-      <div class="mb-3">
-        <label class="form-label">Programme Name</label>
-        <input id="programmeName" class="form-control"
-               placeholder="e.g. Bachelor of Exercise Science">
+  <div class="step-divider"></div>
+
+
+  <label class="form-label">PLO for selected PEO</label>
+  <select id="plo" class="form-select mb-3">
+    <option value="">Select PLO</option>
+  </select>
+
+  <!-- Alignment rationale -->
+  <div class="mb-3">
+    <div class="form-label">Why is this PLO aligned with the selected PEO?</div>
+    <div id="peo_plo_logic" class="logic-box">—</div>
+  </div>
+
+  <!-- Statements & indicator -->
+<div class="mb-3">
+  <h6 class="fw-bold mt-3">PLO and Indicator of Achievement</h6>
+
+  <div>
+    <strong>PLO:</strong>
+    <span id="plo_statement" class="muted">—</span>
+  </div>
+
+  <div class="mt-2">
+    <strong>PLO Indicator:</strong>
+    <span id="plo_indicator" class="muted">—</span>
+  </div>
+</div>
+
+
+   </div> <!-- ✅ END STEP 2 card-box -->
+
+    
+    <!-- 3) Smart CLO Builder (main) -->
+    
+  <div class="card-box mb-3">
+
+    <div class="d-flex align-items-center gap-2 mb-1">
+  <span class="step-pill">STEP 3</span>
+  <div class="step-header mb-0">
+    Course Learning Outcome (CLO)
+  </div>
+</div>
+
+<div class="step-desc">
+  Construct a measurable Course Learning Outcome using Bloom’s Taxonomy,
+  suitable action verbs, and clear content focus.
+</div>
+
+    <div class="d-flex align-items-center gap-2 mt-3 mb-1">
+  <h5 class="smart-title mb-0">
+    <i class="bi bi-lightning-charge-fill me-1"></i>
+    Smart CLO Builder
+  </h5>
+  <span id="bloomTag" class="bloom-tag">—</span>
+</div>
+
+<div class="smart-divider mb-2"></div>
+     
+
+
+          
+          <div class="muted mb-2">Create measurable course learning outcomes quickly</div>
+
+          <ul class="nav nav-tabs mb-3" id="tabNav" role="tablist">
+            <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#builderTab">Builder</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#variantsTab">Variants</button></li>
+            <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#assessmentTab">Assessment</button></li>
+          </ul>
+
+          <div class="tab-content">
+            <!-- BUILDER -->
+            <div class="tab-pane fade show active" id="builderTab">
+              <div class="row g-3">
+                <div class="col-md-6">
+  <label class="form-label">Bloom</label>
+  <select id="bloom" class="form-select">
+    <option value="">Select Bloom</option>
+  </select>
+
+  <!-- Bloom description (UI only) -->
+  <div id="bloom_desc" class="muted mt-1" style="font-size:0.85rem;">
+    Select a Bloom level to see its description.
+  </div>
+</div>
+
+                <div id="bloom_level_guidance"
+     class="mt-2 p-2 rounded"
+     style="font-size:0.85rem; background:#f8f5ff;"></div>
+
+                
+              
+
+                <div class="col-md-6">
+                  <label class="form-label">Verb</label>
+                  <select id="verb" class="form-select"><option value="">Select Verb</option></select>
+                </div> 
+
+
+                <label class="form-label">Course Name</label>
+<input id="courseName"
+  class="form-control"
+  placeholder="e.g. Exercise Physiology II">
+
+                
+            
+                  <div id="content_inline_suggestions"
+     class="mt-2 muted"
+     style="font-size:0.85rem">
+</div>
+                <div class="col-12">
+                  <label class="form-label">
+  Content (learning focus / object)
+</label>
+<div class="muted mb-1" style="font-size:0.85rem">
+  Specify <strong>what</strong> the student will work on (procedure, concept,
+  skill, case, or professional task).
+</div>
+<input id="content" class="form-control"
+       placeholder="e.g., ECG waveform interpretation, laboratory testing procedure, ethical case scenario">
+</div>
+                <div class="col-12 d-flex gap-2 align-items-center">
+                  <button id="generateBtn" class="btn btn-primary"><i class="bi bi-magic me-1"></i> Generate CLO</button>
+                  <button id="copyBtn" class="btn btn-outline-secondary"><i class="bi bi-clipboard me-1"></i> Copy</button>
+                  <div id="busy" class="muted" style="display:none">Generating…</div>
+                </div>
+
+                <div id="cloCard" class="col-12 card-box" style="display:none; margin-top:12px;">
+                  <h6 class="mb-2">Generated CLO</h6>
+                  <div id="clo_text" style="line-height:1.4; font-weight:600;"></div>
+
+                  <div class="mt-3">
+                    <button id="toggleVariants" class="btn btn-outline-secondary btn-sm">Show variants</button>
+                    <div id="variantsPanel" style="display:none; margin-top:10px;"></div>
+                  </div>
+
+                  <div class="mt-3 d-flex gap-2">
+                    <button id="downloadBtn" class="btn btn-success"><i class="bi bi-download me-1"></i> Download CLO</button>
+                    <button id="downloadRubricBtn" class="btn btn-outline-secondary"><i class="bi bi-file-earmark-text me-1"></i> Download Rubric</button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- VARIANTS -->
+            <div class="tab-pane fade" id="variantsTab">
+              <div id="variants_list" class="muted">Variants will appear after generating a CLO.</div>
+            </div>
+
+            <!-- ASSESSMENT -->
+<div class="tab-pane fade" id="assessmentTab">
+
+  <div class="step-header">Step 4 · Assessment & Evidence</div>
+  <div class="step-desc">
+    Recommended assessment methods and supporting evidence aligned with
+    the selected Bloom’s domain and CLO.
+  </div>
+  <div class="step-divider"></div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card-box">
+        <h6>Suggested Assessment methods</h6>
+        <div id="assess_list" class="muted">—</div>
       </div>
     </div>
 
-    <hr>
-
-    <!-- ================= STEP 2 ================= -->
-    <div>
-      <div class="step-title">Step 2 · Programme Educational Objectives (PEO)</div>
-      <div class="step-desc">
-        Select or review Programme Educational Objectives aligned with institutional goals.
+    <div class="col-md-6">
+      <div class="card-box">
+        <h6>Suggested evidence</h6>
+        <div id="evidence_list" class="muted">—</div>
       </div>
+    </div>
+  </div>
 
-      <div class="mb-3">
-        <label class="form-label">Institutional Educational Goals (IEG)</label>
-        <textarea id="ieg" class="form-control" rows="2"
-                  placeholder="Optional: Institutional goals to guide PEO selection"></textarea>
-      </div>
-
-      <!-- Generate PEO -->
-<div class="col-12">
-  <button id="generatePEO" class="btn btn-outline-primary">
-    Suggest Programme Educational Objectives (PEOs)
-  </button>
 </div>
       
 
-      <div class="mb-3">
-        <label class="form-label">Select PEO</label>
-        <select id="peo" class="form-select">
-          <option value="">Select PEO</option>
-          <!-- existing JS will populate -->
-        </select>
-      </div>
-    </div>
-
-    <hr>
-
-    <!-- ================= STEP 3 ================= -->
-    <div>
-      <div class="step-title">Step 3 · Programme Learning Outcomes (PLO)</div>
-      <div class="step-desc">
-        Choose Programme Learning Outcomes aligned with the selected PEO.
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Select PLO</label>
-        <select id="plo" class="form-select">
-          <option value="">Select PLO</option>
-          <!-- existing JS will populate -->
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">PLO Indicator of Achievement</label>
-        <textarea id="plo_indicator" class="form-control" rows="2"
-                  placeholder="e.g. ≥70% of students achieve the intended learning outcome"></textarea>
-      </div>
-    </div>
-
-    <hr>
-
-    <!-- ================= STEP 4 ================= -->
-    <div>
-      <div class="step-title">Step 4 · Course Learning Outcome (CLO)</div>
-      <div class="step-desc">
-        Generate Course Learning Outcomes aligned with Bloom taxonomy, Scientific Core (SC),
-        and Values-Based Education (VBE).
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Bloom Level</label>
-        <select id="bloom" class="form-select">
-          <option value="">Select Bloom</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Action Verb</label>
-        <select id="verb" class="form-select">
-          <option value="">Select Verb</option>
-        </select>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label">Content / Learning Focus</label>
-        <input id="content" class="form-control"
-               placeholder="e.g. exercise metabolism">
-      </div>
-
-      <button id="generateBtn" class="btn btn-primary w-100">
-        Generate CLO
-      </button>
-
-      <!-- CLO OUTPUT -->
-      <div id="cloCard" class="card p-3 mt-3" style="display:none">
-        <strong>Generated CLO</strong>
-        <div id="clo_text" class="mt-2"></div>
-      </div>
-    </div>
-
     <footer>© 2025 • Assoc Prof Dr Hazwani Ahmad Yusof @ Hanafi — Universiti Sains Malaysia (USM)</footer>
   </div>
-
-<!-- Existing JS file or inline JS can remain unchanged -->
-
 
 
     
