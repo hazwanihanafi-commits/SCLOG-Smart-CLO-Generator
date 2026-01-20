@@ -14,6 +14,18 @@
 
   <h3 class="mb-4">⚡ CLO Only Generator</h3>
 
+  <!-- DEGREE -->
+  <div class="mb-3">
+    <label class="form-label">Degree Level</label>
+    <select id="degree" class="form-select">
+      <option value="">Select Degree</option>
+      <option>Diploma</option>
+      <option>Bachelor</option>
+      <option>Master</option>
+      <option>PhD</option>
+    </select>
+  </div>
+
   <!-- PLO -->
   <div class="mb-3">
     <label class="form-label">Programme Learning Outcome (PLO)</label>
@@ -33,7 +45,7 @@
     </select>
   </div>
 
-  <!-- Bloom -->
+  <!-- BLOOM -->
   <div class="mb-3">
     <label class="form-label">Bloom Level</label>
     <select id="bloom" class="form-select">
@@ -41,7 +53,7 @@
     </select>
   </div>
 
-  <!-- Verb -->
+  <!-- VERB -->
   <div class="mb-3">
     <label class="form-label">Action Verb</label>
     <select id="verb" class="form-select">
@@ -49,7 +61,7 @@
     </select>
   </div>
 
-  <!-- Content -->
+  <!-- CONTENT -->
   <div class="mb-3">
     <label class="form-label">Content / Learning Focus</label>
     <input id="content" class="form-control"
@@ -60,31 +72,13 @@
     Generate CLO
   </button>
 
-  <!-- CLO OUTPUT -->
+  <!-- OUTPUT -->
   <div id="cloCard" class="card p-3 mb-3" style="display:none">
     <strong>Generated CLO</strong>
     <div id="clo_text" class="mt-2"></div>
   </div>
 
-  <!-- VARIANTS -->
-  <div class="mb-3">
-    <h6>Variants</h6>
-    <div id="variants_list" class="text-muted"></div>
-  </div>
-
-  <!-- ASSESSMENT -->
-  <div class="mb-3">
-    <h6>Suggested Assessments</h6>
-    <div id="assess_list" class="text-muted"></div>
-  </div>
-
-  <!-- EVIDENCE -->
-  <div class="mb-3">
-    <h6>Suggested Evidence</h6>
-    <div id="evidence_list" class="text-muted"></div>
-  </div>
-
-  <button onclick="window.location='/download'" class="btn btn-success w-100">
+  <button id="downloadBtn" class="btn btn-success w-100">
     Download CLO (Excel)
   </button>
 
@@ -95,32 +89,35 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const $ = id => document.getElementById(id);
 
-  const ploSel   = $("plo");
-  const bloomSel = $("bloom");
-  const verbSel  = $("verb");
-  const content  = $("content");
+  const degreeSel = $("degree");
+  const ploSel    = $("plo");
+  const bloomSel  = $("bloom");
+  const verbSel   = $("verb");
+  const content   = $("content");
 
-  const cloCard  = $("cloCard");
-  const cloText  = $("clo_text");
+  const cloCard = $("cloCard");
+  const cloText = $("clo_text");
 
-  const variantsList = $("variants_list");
-  const assessList   = $("assess_list");
-  const evidenceList = $("evidence_list");
+  let generatedData = null;
 
   /* ---------------------------
-     PLO → BLOOM
+     DEGREE / PLO → BLOOM
   --------------------------- */
-  ploSel.addEventListener("change", async () => {
+  async function loadBlooms() {
     bloomSel.innerHTML = `<option value="">Select Bloom</option>`;
     verbSel.innerHTML  = `<option value="">Select Verb</option>`;
 
-    if (!ploSel.value) return;
+    if (!ploSel.value || !degreeSel.value) return;
 
-    const res = await fetch(`/api/get_blooms/${ploSel.value}`);
+    const res = await fetch(
+      `/api/get_blooms/${ploSel.value}?degree=${degreeSel.value}`
+    );
     const blooms = await res.json();
-
     blooms.forEach(b => bloomSel.add(new Option(b, b)));
-  });
+  }
+
+  degreeSel.addEventListener("change", loadBlooms);
+  ploSel.addEventListener("change", loadBlooms);
 
   /* ---------------------------
      BLOOM → VERB
@@ -129,46 +126,70 @@ document.addEventListener("DOMContentLoaded", () => {
     verbSel.innerHTML = `<option value="">Select Verb</option>`;
     if (!bloomSel.value || !ploSel.value) return;
 
-    const res = await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
+    const res = await fetch(
+      `/api/get_verbs/${ploSel.value}/${bloomSel.value}`
+    );
     const verbs = await res.json();
-
     verbs.forEach(v => verbSel.add(new Option(v, v)));
   });
 
   /* ---------------------------
-     GENERATE CLO
+     GENERATE CLO (CLO-ONLY)
   --------------------------- */
   $("generateBtn").addEventListener("click", async () => {
 
-    if (!ploSel.value || !bloomSel.value || !verbSel.value || !content.value.trim()) {
+    if (!degreeSel.value || !ploSel.value || !bloomSel.value ||
+        !verbSel.value || !content.value.trim()) {
       alert("Please complete all fields.");
       return;
     }
 
     const fd = new FormData();
+    fd.append("degree", degreeSel.value);
     fd.append("plo", ploSel.value);
     fd.append("bloom", bloomSel.value);
     fd.append("verb", verbSel.value);
     fd.append("content", content.value.trim());
 
-    const res = await fetch("/generate", { method:"POST", body: fd });
+    const res = await fetch("/clo-only/generate", {
+      method: "POST",
+      body: fd
+    });
+
     const data = await res.json();
+    if (data.error) {
+      alert(data.error);
+      return;
+    }
+
+    generatedData = data;
 
     cloText.innerText = data.clo;
     cloCard.style.display = "block";
+  });
 
-    variantsList.innerHTML =
-      Object.entries(data.variants || {})
-        .map(([k,v]) => `<p><strong>${k}:</strong> ${v}</p>`)
-        .join("");
+  /* ---------------------------
+     DOWNLOAD (POST, STATELESS)
+  --------------------------- */
+  $("downloadBtn").addEventListener("click", async () => {
+    if (!generatedData) {
+      alert("Generate CLO first.");
+      return;
+    }
 
-    assessList.innerHTML =
-      "<ul>" + (data.assessments || []).map(a => `<li>${a}</li>`).join("") + "</ul>";
+    const res = await fetch("/clo-only/download", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(generatedData)
+    });
 
-    evidenceList.innerHTML =
-      Object.entries(data.evidence || {})
-        .map(([k,v]) => `<div><strong>${k}</strong>: ${v.join(", ")}</div>`)
-        .join("");
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "CLO_Only.xlsx";
+    a.click();
   });
 
 });
