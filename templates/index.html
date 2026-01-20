@@ -130,6 +130,55 @@ body {
   padding: 32px;
 }
 
+    /* =========================
+   APP HEADER (FINAL)
+========================= */
+.app-header {
+  width: 100%;
+  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
+  padding: 20px 0;
+}
+
+.app-header-inner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* TITLE */
+.app-title {
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+}
+
+.app-subtitle {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.85);
+  margin-top: 2px;
+}
+
+/* ACTIONS */
+.header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.header-actions .btn {
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.6);
+}
+
+.header-actions .btn:hover {
+  background: rgba(255,255,255,0.18);
+}
+
+    
 /* =========================
    STEP CARD (IMPORTANT)
 ========================= */
@@ -380,39 +429,25 @@ body[data-theme="dark"] .logic-box {
 <body data-theme="light">
 
   <!-- FULL WIDTH HEADER -->
-  <div class="main-header-wrapper">
-    <div class="container-app">
-
-
-      <div class="main-header card-box">
-        <div class="d-flex align-items-center justify-content-between">
-
-          <!-- LEFT: TITLE -->
-          <div>
-            <div class="main-title">
-              <i class="bi bi-stars me-2"></i> SCLOG
-            </div>
-            <div class="main-subtitle">
-              Smart Course Learning Outcome Generator
-            </div>
-          </div>
-
-          <!-- RIGHT: ACTIONS -->
-          <div class="d-flex align-items-center gap-2">
-            <a href="/" class="btn btn-outline-light btn-sm">
-              <i class="bi bi-arrow-left"></i> Back
-            </a>
-
-            <button id="darkToggle" class="btn btn-outline-light btn-sm">
-              <i class="bi bi-moon"></i>
-            </button>
-          </div>
-
-        </div>
+<div class="app-header">
+  <div class="app-header-inner">
+    <div>
+      <div class="app-title">
+        <i class="bi bi-stars me-2"></i> SCLOG
       </div>
+      <div class="app-subtitle">
+        Smart Course Learning Outcome Generator
+      </div>
+    </div>
 
+    <div class="header-actions">
+      <a href="/" class="btn btn-outline-light btn-sm">← Back</a>
+      <button id="darkToggle" class="btn btn-outline-light btn-sm">
+        <i class="bi bi-moon"></i>
+      </button>
     </div>
   </div>
+</div>
 
  
 
