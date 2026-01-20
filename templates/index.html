@@ -130,128 +130,61 @@ body {
   padding: 32px;
 }
 
-    /* =========================
-   APP HEADER (FINAL)
-========================= */
-.app-header {
+    .app-header {
   width: 100%;
-  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-  padding: 20px 0;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  color: #ffffff;
+  padding: 12px 0;          /* buang padding kiri/kanan */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
+/* CONTAINER DALAM HEADER */
 .app-header-inner {
-  max-width: 1200px;
-  margin: auto;
-  padding: 0 16px;
-
+  width: 100%;
+  padding: 0 20px;          /* kawal jarak tepi */
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-/* TITLE */
-.app-title {
+/* BRAND — PAKSA KE KIRI */
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;       /* 🔥 ini kunci utama */
+  color: #fff;
+}
+
+.app-brand i {
   font-size: 1.6rem;
-  font-weight: 900;
-  color: #ffffff;
-  letter-spacing: 0.3px;
+  color: #ffd43b;
+}
+
+.app-title {
+  font-weight: 800;
+  font-size: 1.25rem;
 }
 
 .app-subtitle {
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.85);
-  margin-top: 2px;
+  font-size: 0.75rem;
+  opacity: 0.85;
 }
 
-/* ACTIONS */
+/* ACTIONS — KEKANAN */
 .header-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
 }
 
 .header-actions .btn {
-  color: #ffffff;
-  border-color: rgba(255,255,255,0.6);
-}
-
-.header-actions .btn:hover {
-  background: rgba(255,255,255,0.18);
-}
-
-
-    /* =========================
-   HEADER — FINAL FIX
-========================= */
-
-.app-header {
-  width: 100%;
-  background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-  padding: 20px 0;
-}
-
-.app-header-inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-
-  display: flex;
-  align-items: center;          /* 🔥 vertical center */
-  justify-content: space-between;
-}
-
-/* BRAND */
-.app-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #ffffff;
-}
-
-.app-title {
-  font-size: 1.6rem;
-  font-weight: 900;
-  line-height: 1.1;
-  letter-spacing: 0.3px;
-}
-
-.app-subtitle {
-  font-size: 0.95rem;
-  opacity: 0.9;
-}
-
-/* ACTION BUTTONS */
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.header-actions .btn {
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-weight: 700;
-  color: #ffffff;
+  color: #fff;
   border-color: rgba(255,255,255,0.7);
 }
 
-.header-actions .btn:hover {
-  background: rgba(255,255,255,0.15);
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
-  .app-header-inner {
-    flex-direction: column;
-    gap: 12px;
-    text-align: center;
-  }
-
-  .header-actions {
-    justify-content: center;
-  }
-}
-
-    
 /* =========================
    STEP CARD (IMPORTANT)
 ========================= */
@@ -501,13 +434,11 @@ body[data-theme="dark"] .logic-box {
 
 <body data-theme="light">
 
-  <!-- FULL WIDTH HEADER -->
-<header class="app-header">
+  <header class="app-header">
   <div class="app-header-inner">
 
-    <!-- LEFT: BRAND -->
     <div class="app-brand">
-      <i class="bi bi-stars me-2"></i>
+      <i class="bi bi-stars"></i>
       <div>
         <div class="app-title">SCLOG</div>
         <div class="app-subtitle">
@@ -516,11 +447,8 @@ body[data-theme="dark"] .logic-box {
       </div>
     </div>
 
-    <!-- RIGHT: ACTIONS -->
     <div class="header-actions">
-      <a href="/" class="btn btn-outline-light btn-sm">
-        ← Back
-      </a>
+      <a href="/" class="btn btn-outline-light btn-sm">← Back</a>
       <button id="darkToggle" class="btn btn-outline-light btn-sm">
         <i class="bi bi-moon"></i>
       </button>
@@ -528,7 +456,6 @@ body[data-theme="dark"] .logic-box {
 
   </div>
 </header>
-
  
 
 
