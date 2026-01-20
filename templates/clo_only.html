@@ -2,49 +2,32 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>SCLOG — CLO Only Generator</title>
+  <title>SCLOG — Workflow</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap -->
+  <!-- Bootstrap + Icons -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
   <style>
-    body {
-      background-color: #f4f6f9;
-    }
+    body { background-color: #f4f6f9; }
 
-    /* ===== HEADER ===== */
     .app-header {
-      background: linear-gradient(135deg, #1f3c88, #274b9f);
-      color: #fff;
-      padding: 1rem 0;
+      background: linear-gradient(135deg, #0d6efd, #084298);
+      color: white;
+      padding: 0.9rem 0;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
-    .app-header h1 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      margin: 0;
-    }
-
-    .app-header small {
-      font-size: 0.85rem;
-      opacity: 0.85;
-    }
-
-    /* ===== CARD ===== */
-    .app-card {
-      background: #remember;
+    .step-card {
       background: #fff;
       border-radius: 14px;
       box-shadow: 0 12px 28px rgba(0,0,0,0.08);
       padding: 1.75rem;
     }
 
-    .form-label {
-      font-weight: 500;
-    }
+    .step-title { font-weight: 600; margin-bottom: .5rem; }
+    .step-desc { font-size: .9rem; color: #6c757d; margin-bottom: 1rem; }
 
     #cloCard {
       background: #f8fafc;
@@ -55,32 +38,26 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
+<!-- ===== HEADER ===== -->
 <div class="app-header">
   <div class="container d-flex justify-content-between align-items-center">
-
-    <!-- LEFT -->
-    <div>
-      <h1>✨ SCLOG</h1>
-      <small>Smart Course Learning Outcome Generator</small>
-    </div>
-
-    <!-- RIGHT -->
-    <div>
-      <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3">
-        <i class="bi bi-arrow-left"></i> Back
-      </a>
-    </div>
-
+    <h5 class="mb-0">SCLOG — Workflow</h5>
+    <a href="/app" class="btn btn-outline-light btn-sm rounded-pill px-3">
+      <i class="bi bi-arrow-left"></i> Back to Workflow
+    </a>
   </div>
 </div>
 
-<!-- ================= CONTENT ================= -->
-<div class="container my-4" style="max-width:760px">
+<!-- ===== CONTENT ===== -->
+<div class="container my-4" style="max-width:900px">
 
-  <div class="app-card">
+  <div class="step-card">
 
-    <h5 class="mb-4">⚡ CLO Only Generator</h5>
+    <div class="step-title">⚡ CLO Construction (Quick Mode)</div>
+    <div class="step-desc">
+      Generate Course Learning Outcomes aligned with Bloom taxonomy,
+      Scientific Core (SC), and Values-Based Education (VBE).
+    </div>
 
     <!-- DEGREE -->
     <div class="mb-3">
@@ -107,11 +84,14 @@
     </div>
 
     <!-- BLOOM -->
-    <div class="mb-3">
+    <div class="mb-2">
       <label class="form-label">Bloom Level</label>
       <select id="bloom" class="form-select">
         <option value="">Select Bloom</option>
       </select>
+
+      <div id="bloomDesc" class="text-muted small mt-1"></div>
+      <div id="bloomWarn" class="alert alert-warning py-2 px-3 mt-2" style="display:none"></div>
     </div>
 
     <!-- VERB -->
@@ -126,7 +106,7 @@
     <div class="mb-4">
       <label class="form-label">Content / Learning Focus</label>
       <input id="content" class="form-control"
-        placeholder="e.g. ECG waveform abnormalities">
+             placeholder="e.g. exercise metabolism">
     </div>
 
     <!-- GENERATE -->
@@ -138,11 +118,26 @@
     <div id="cloCard" class="card p-3 mb-3" style="display:none">
       <strong>Generated CLO</strong>
       <div id="clo_text" class="mt-2"></div>
+
+      <hr>
+      <h6>Variants</h6>
+      <div id="variantBox"></div>
+
+      <hr>
+      <h6>Suggested Assessments</h6>
+      <div id="assessmentBox"></div>
+
+      <h6 class="mt-3">Suggested Evidence</h6>
+      <div id="evidenceBox"></div>
     </div>
 
     <!-- DOWNLOAD -->
-    <button id="downloadBtn" class="btn btn-success w-100">
+    <button id="downloadBtn" class="btn btn-success w-100 mb-2">
       Download CLO (Excel)
+    </button>
+
+    <button id="rubricBtn" class="btn btn-outline-secondary w-100">
+      Download Rubric
     </button>
 
   </div>
@@ -154,46 +149,76 @@ document.addEventListener("DOMContentLoaded", () => {
   const $ = id => document.getElementById(id);
 
   const degreeSel = $("degree");
-  const ploSel    = $("plo");
-  const bloomSel  = $("bloom");
-  const verbSel   = $("verb");
-  const content   = $("content");
+  const ploSel = $("plo");
+  const bloomSel = $("bloom");
+  const verbSel = $("verb");
+  const contentInput = $("content");
+
+  const bloomDesc = $("bloomDesc");
+  const bloomWarn = $("bloomWarn");
 
   const cloCard = $("cloCard");
   const cloText = $("clo_text");
+  const variantBox = $("variantBox");
+  const assessmentBox = $("assessmentBox");
+  const evidenceBox = $("evidenceBox");
+
+  const downloadBtn = $("downloadBtn");
+  const rubricBtn = $("rubricBtn");
 
   let generatedData = null;
 
+  /* =============================
+     LOAD BLOOMS (degree + plo)
+  ============================= */
   async function loadBlooms() {
-    bloomSel.innerHTML = `<option value="">Select Bloom</option>`;
-    verbSel.innerHTML  = `<option value="">Select Verb</option>`;
+    bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+    verbSel.innerHTML = '<option value="">Select Verb</option>';
+    bloomDesc.textContent = "";
+    bloomWarn.style.display = "none";
 
     if (!degreeSel.value || !ploSel.value) return;
 
     const res = await fetch(
-      `/api/get_blooms/${ploSel.value}?degree=${degreeSel.value}`
+      `/api/get_blooms/${encodeURIComponent(ploSel.value)}?degree=${encodeURIComponent(degreeSel.value)}`
     );
     const blooms = await res.json();
-    blooms.forEach(b => bloomSel.add(new Option(b, b)));
+    (blooms || []).forEach(b => bloomSel.add(new Option(b, b)));
   }
 
   degreeSel.addEventListener("change", loadBlooms);
   ploSel.addEventListener("change", loadBlooms);
 
+  /* =============================
+     BLOOM CHANGE
+  ============================= */
   bloomSel.addEventListener("change", async () => {
-    verbSel.innerHTML = `<option value="">Select Verb</option>`;
+    bloomDesc.textContent = "";
+    bloomWarn.style.display = "none";
+    verbSel.innerHTML = '<option value="">Select Verb</option>';
+
     if (!bloomSel.value || !ploSel.value) return;
 
-    const res = await fetch(
-      `/api/get_verbs/${ploSel.value}/${bloomSel.value}`
+    /* Bloom description */
+    const dRes = await fetch(
+      `/api/clo-only/bloom-desc/${encodeURIComponent(ploSel.value)}/${encodeURIComponent(bloomSel.value)}`
     );
-    const verbs = await res.json();
-    verbs.forEach(v => verbSel.add(new Option(v, v)));
+    bloomDesc.textContent = await dRes.json();
+
+    /* Load verbs */
+    const vRes = await fetch(
+      `/api/get_verbs/${encodeURIComponent(ploSel.value)}/${encodeURIComponent(bloomSel.value)}`
+    );
+    const verbs = await vRes.json();
+    (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
   });
 
+  /* =============================
+     GENERATE CLO
+  ============================= */
   $("generateBtn").addEventListener("click", async () => {
     if (!degreeSel.value || !ploSel.value || !bloomSel.value ||
-        !verbSel.value || !content.value.trim()) {
+        !verbSel.value || !contentInput.value.trim()) {
       alert("Please complete all fields.");
       return;
     }
@@ -203,25 +228,39 @@ document.addEventListener("DOMContentLoaded", () => {
     fd.append("plo", ploSel.value);
     fd.append("bloom", bloomSel.value);
     fd.append("verb", verbSel.value);
-    fd.append("content", content.value.trim());
+    fd.append("content", contentInput.value.trim());
 
-    const res = await fetch("/clo-only/generate", {
-      method: "POST",
-      body: fd
-    });
-
+    const res = await fetch("/clo-only/generate", { method:"POST", body: fd });
     const data = await res.json();
+
     if (data.error) {
       alert(data.error);
       return;
     }
 
     generatedData = data;
+
     cloText.innerText = data.clo;
+    variantBox.innerHTML =
+      Object.entries(data.variants || {})
+        .map(([k,v]) => `<p><strong>${k}:</strong> ${v}</p>`)
+        .join("");
+
+    assessmentBox.innerHTML =
+      "<ul>" + (data.assessments || []).map(a => `<li>${a}</li>`).join("") + "</ul>";
+
+    evidenceBox.innerHTML =
+      Object.entries(data.evidence || {})
+        .map(([k,v]) => `<div><strong>${k}</strong>: ${v.join(", ")}</div>`)
+        .join("");
+
     cloCard.style.display = "block";
   });
 
-  $("downloadBtn").addEventListener("click", async () => {
+  /* =============================
+     DOWNLOAD CLO
+  ============================= */
+  downloadBtn.addEventListener("click", async () => {
     if (!generatedData) {
       alert("Generate CLO first.");
       return;
@@ -238,6 +277,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const a = document.createElement("a");
     a.href = url;
     a.download = "CLO_Only.xlsx";
+    a.click();
+  });
+
+  /* =============================
+     DOWNLOAD RUBRIC
+  ============================= */
+  rubricBtn.addEventListener("click", async () => {
+    if (!generatedData) {
+      alert("Generate CLO first.");
+      return;
+    }
+
+    const res = await fetch("/clo-only/download-rubric", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(generatedData)
+    });
+
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "CLO_Rubric.xlsx";
     a.click();
   });
 
