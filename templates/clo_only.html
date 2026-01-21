@@ -343,30 +343,36 @@ levelSel.onchange=()=>{ if(ploSel.value) ploSel.dispatchEvent(new Event("change"
    BLOOM CHANGE
 ========================= */
 bloomSel.onchange = async () => {
-  const key = normaliseBloomKey(bloomSel.value);
-  const plo = PLO_MAP[ploSel.value];
+  const rawBloom = bloomSel.value;
+  const bloomKey = normaliseBloomKey(rawBloom);
+  const plo = ploSel.value;
 
-  if (!plo || !key) return;
+  if (!plo || !bloomKey) return;
 
-  const domain = plo.domain.toLowerCase();
-  const contentText = $("content").value.trim() || "the relevant disciplinary content";
+  // description
+  $("bloomDesc").innerText = BLOOM_DESC[bloomKey] || "";
 
+  // example CLO (domain-aware)
+  const ploData = PLO_MAP[plo];
+  const domain = ploData?.domain?.toLowerCase();
   const example =
-    CLO_EXAMPLE_BY_DOMAIN[domain]?.[key];
-
-  $("bloomDesc").innerText = BLOOM_DESC[key] || "";
+    CLO_EXAMPLE_BY_DOMAIN[domain]?.[bloomKey];
 
   $("cloExample").innerHTML = example
-    ? `<strong>Example CLO (${bloomSel.value} – ${domain}):</strong><br>
-       ${example.replace("disciplinary knowledge", contentText)}`
+    ? `<strong>Example CLO (${rawBloom} – ${domain}):</strong><br>${example}`
     : "";
-  
-  // verbs
-  const res = await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
+
+  /* ✅ FIXED VERB FETCH */
+  const res = await fetch(
+    `/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloomKey)}?profile=sc`
+  );
+
   const verbs = await res.json();
+
   verbSel.innerHTML = '<option value="">Select Verb</option>';
-  verbs.forEach(v => verbSel.add(new Option(v, v)));
+  (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
 };
+
 
 /* =========================
    GENERATE CLO
