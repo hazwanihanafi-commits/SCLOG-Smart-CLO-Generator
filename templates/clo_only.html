@@ -282,6 +282,65 @@ const CLO_EXAMPLE = {
 };
 
 
+  const CLO_EXAMPLE_BY_DOMAIN = {
+  cognitive: {
+    remember:
+      "Recall key concepts and principles related to the discipline.",
+
+    apply:
+      "Apply disciplinary knowledge to practical situations using appropriate methods.",
+
+    analyze:
+      "Analyse information by examining relationships and implications to support informed decision-making.",
+
+    evaluate:
+      "Evaluate evidence and arguments to justify decisions in accordance with professional standards.",
+
+    create:
+      "Design solutions by integrating knowledge and evidence guided by ethical considerations."
+  },
+
+  affective: {
+    receiving:
+      "Demonstrate awareness of professional values and ethical responsibilities.",
+
+    responding:
+      "Respond constructively by engaging responsibly in professional and learning activities.",
+
+    valuing:
+      "Demonstrate commitment to ethical principles and professional values in academic and professional contexts.",
+
+    organization:
+      "Organise personal and professional values into a coherent framework to guide ethical action.",
+
+    characterization:
+      "Consistently demonstrate ethical judgement and professional conduct in complex situations."
+  },
+
+  psychomotor: {
+    perception:
+      "Perform tasks by recognising relevant cues and safety considerations.",
+
+    set:
+      "Demonstrate readiness to perform professional skills responsibly.",
+
+    "guided response":
+      "Perform skills under guidance while adhering to professional standards.",
+
+    mechanism:
+      "Perform professional skills competently and confidently in practice.",
+
+    "complex overt response":
+      "Perform complex skills smoothly and accurately in professional contexts.",
+
+    adaptation:
+      "Adapt professional procedures to new situations appropriately.",
+
+    origination:
+      "Create new procedures or solutions to address professional challenges."
+  }
+};
+
   
 /* =========================
    LOAD PLO MAP
@@ -349,32 +408,26 @@ bloomSel.onchange = async () => {
 
   if (!plo || !bloomKey) return;
 
-  // Bloom description
+  const ploData = PLO_MAP[plo];
+  const domain = ploData.domain.toLowerCase();
+
+  // Bloom description (BETUL)
   $("bloomDesc").innerText = BLOOM_DESC[bloomKey] || "";
 
-  // Example CLO (generic but MQA-safe)
-  const contentText =
-    $("content").value.trim() || "the relevant disciplinary content";
+  // ✅ DOMAIN-AWARE CLO EXAMPLE
+  const example =
+    CLO_EXAMPLE_BY_DOMAIN[domain]?.[bloomKey];
 
-  if (CLO_EXAMPLE[bloomKey]) {
-    $("cloExample").innerHTML = `
-      <strong>Example CLO (${rawBloom}):</strong><br>
-      ${CLO_EXAMPLE[bloomKey].replace(
-        "disciplinary knowledge",
-        contentText
-      )}
-    `;
-  } else {
-    $("cloExample").innerHTML = "";
-  }
+  $("cloExample").innerHTML = example
+    ? `<strong>Example CLO (${rawBloom} – ${domain}):</strong><br>${example}`
+    : "";
 
-  // ✅ FIXED VERB FETCH
+  // Fetch verbs (domain-safe)
   const res = await fetch(
     `/api/get_verbs/${encodeURIComponent(plo)}/${encodeURIComponent(bloomKey)}?profile=sc`
   );
 
   const verbs = await res.json();
-
   verbSel.innerHTML = '<option value="">Select Verb</option>';
   (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
 };
