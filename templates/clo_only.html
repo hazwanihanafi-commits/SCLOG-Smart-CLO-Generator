@@ -1,51 +1,43 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>SCLOG — CLO Construction (Quick Mode)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8">
+<title>SCLOG — CLO Construction (Quick Mode)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Bootstrap + Icons -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-  <style>
-    body { background:#f4f6f9; }
-
-    .app-header {
-      background:linear-gradient(135deg,#0d6efd,#084298);
-      color:#fff; padding:14px 0;
-    }
-    .app-header-inner {
-      max-width:960px; margin:auto;
-      display:flex; justify-content:space-between; align-items:center;
-      padding:0 16px;
-    }
-    .card-box {
-      background:#fff; border-radius:14px;
-      padding:22px; box-shadow:0 12px 28px rgba(0,0,0,.08);
-      margin-bottom:20px;
-    }
-    .muted { color:#6c757d; }
-    .info-box {
-      background:#f7f8fc;
-      border-left:4px solid #0d6efd;
-      padding:14px;
-      border-radius:8px;
-    }
-    .warn-box {
-      background:#fff3cd;
-      border-left:4px solid #f0ad4e;
-      padding:10px;
-      border-radius:6px;
-      font-size:0.85rem;
-    }
-  </style>
+<style>
+  body { background:#f4f6f9; }
+  .app-header{
+    background:linear-gradient(135deg,#0d6efd,#084298);
+    color:#fff;padding:14px 0;
+  }
+  .app-header-inner{
+    max-width:960px;margin:auto;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:0 16px;
+  }
+  .card-box{
+    background:#fff;border-radius:14px;
+    padding:22px;box-shadow:0 12px 28px rgba(0,0,0,.08);
+    margin-bottom:20px;
+  }
+  .info-box{
+    background:#f7f8fc;border-left:4px solid #0d6efd;
+    padding:14px;border-radius:8px;
+  }
+  .warn-box{
+    background:#fff3cd;border-left:4px solid #f0ad4e;
+    padding:10px;border-radius:6px;font-size:.85rem;
+  }
+  .muted{color:#6c757d}
+</style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <header class="app-header">
   <div class="app-header-inner">
     <div>
@@ -58,9 +50,9 @@
 
 <div class="container my-4" style="max-width:960px">
 
-  <!-- INPUT CARD -->
+  <!-- INPUT -->
   <div class="card-box">
-    <h5 class="mb-3">⚡ CLO Construction (Quick Mode)</h5>
+    <h5>⚡ CLO Construction (Quick Mode)</h5>
 
     <!-- DEGREE -->
     <div class="mb-3">
@@ -87,18 +79,12 @@
     </div>
 
     <!-- PLO INFO -->
-    <div id="ploInfoBox" class="info-box mb-3" style="display:none">
-      <div class="fw-bold" id="ploTitle"></div>
-      <div id="ploRefers" class="mt-1" style="font-size:.9rem"></div>
-
+    <div id="ploInfo" class="info-box mb-3" style="display:none">
+      <strong id="ploTitle"></strong>
+      <div id="ploDesc" class="mt-1"></div>
       <div class="mt-2" style="font-size:.85rem">
-        <strong>SC:</strong> <span id="ploSC"></span> — <span id="ploSCDesc"></span>
-      </div>
-      <div class="mt-1" style="font-size:.85rem">
+        <strong>SC:</strong> <span id="ploSC"></span><br>
         <strong>VBE:</strong> <span id="ploVBE"></span>
-      </div>
-      <div class="mt-1" style="font-size:.85rem">
-        <strong>SDGs:</strong> <span id="ploSDG"></span>
       </div>
     </div>
 
@@ -108,10 +94,8 @@
       <select id="bloom" class="form-select">
         <option value="">Select Bloom</option>
       </select>
-
       <div id="bloomWarn" class="warn-box mt-2" style="display:none"></div>
-
-      <div id="ploExampleBox" class="muted mt-2" style="display:none;font-size:.85rem"></div>
+      <div id="cloExample" class="muted mt-2" style="font-size:.85rem"></div>
     </div>
 
     <!-- VERB -->
@@ -134,24 +118,22 @@
   <!-- OUTPUT -->
   <div id="cloCard" class="card-box" style="display:none">
     <h6>Generated CLO</h6>
-    <div id="clo_text" class="fw-semibold"></div>
-
-    <div class="mt-2 muted" id="cloJustification" style="font-size:.85rem"></div>
+    <div id="cloText" class="fw-semibold"></div>
 
     <hr>
     <h6>Variants</h6>
-    <div id="variantBox"></div>
+    <div id="variants"></div>
 
     <hr>
     <h6>Suggested Assessments</h6>
-    <div id="assessmentBox"></div>
+    <div id="assessments"></div>
 
     <h6 class="mt-2">Suggested Evidence</h6>
-    <div id="evidenceBox"></div>
+    <div id="evidence"></div>
 
     <div class="mt-3 d-flex gap-2">
-      <button id="downloadBtn" class="btn btn-success">Download CLO (Excel)</button>
-      <button id="rubricBtn" class="btn btn-outline-secondary">Download Rubric</button>
+      <button class="btn btn-success" onclick="window.location='/download'">Download CLO</button>
+      <button class="btn btn-outline-secondary" onclick="window.location='/download_rubric'">Download Rubric</button>
     </div>
   </div>
 
@@ -160,92 +142,171 @@
 <script>
 const $ = id => document.getElementById(id);
 
-const ploSel = $("plo");
-const bloomSel = $("bloom");
-const verbSel = $("verb");
-const degreeSel = $("degree");
+// =======================
+// BLOOM LIMIT (MQA)
+// =======================
+const BLOOM_BY_DEGREE_DOMAIN = {
+  Diploma: {
+    cognitive: ["remember","understand","apply"],
+    affective: ["receive","respond"],
+    psychomotor: ["perception","set","guided response"]
+  },
+  Degree: {
+    cognitive: ["apply","analyze"],
+    affective: ["respond","value"],
+    psychomotor: ["guided response","mechanism"]
+  },
+  Master: {
+    cognitive: ["analyze","evaluate"],
+    affective: ["value","organize"],
+    psychomotor: ["mechanism","adaptation"]
+  },
+  PhD: {
+    cognitive: ["create"],
+    affective: ["characterize"],
+    psychomotor: ["adaptation","origination"]
+  }
+};
 
+// =======================
+// CLO EXAMPLES (GUIDE)
+// =======================
+const CLO_EXAMPLE = {
+  remember:"Recall core disciplinary concepts while recognising future professional implications.",
+  apply:"Apply disciplinary knowledge using anticipatory thinking to address practical professional tasks.",
+  analyze:"Analyse complex issues using anticipatory and systems thinking to support ethical decision-making.",
+  evaluate:"Evaluate professional practices using anticipatory thinking guided by ethics.",
+  create:"Design innovative solutions using anticipatory and systems thinking aligned with professional values.",
+  respond:"Respond ethically in professional contexts through collaborative and anticipatory awareness.",
+  value:"Demonstrate commitment to ethical and sustainable professional practices.",
+  organize:"Organise professional actions by integrating systems and anticipatory thinking.",
+  characterize:"Consistently demonstrate ethical judgement and professional accountability.",
+  perception:"Perform skills by recognising relevant sensory cues and safety considerations.",
+  set:"Demonstrate readiness to perform professional skills responsibly.",
+  "guided response":"Perform skills under guidance while anticipating risks.",
+  mechanism:"Perform professional skills competently while anticipating long-term outcomes.",
+  adaptation:"Adapt professional procedures by anticipating future needs and constraints.",
+  origination:"Create new professional procedures guided by ethical foresight."
+};
+
+// =======================
+// LOAD PLO MAP
+// =======================
 let PLO_MAP = {};
 fetch("/static/data/plo_mapping.json")
   .then(r=>r.json())
   .then(d=>PLO_MAP=d);
 
-// PLO examples by Bloom
-const PLO_EXAMPLE_BY_BLOOM = {
-  remember:"Recall disciplinary knowledge while recognising future professional implications.",
-  analyze:"Analyse complex disciplinary issues using anticipatory and integrated thinking to support ethical and sustainable decision-making.",
-  adaptation:"Adapt professional procedures strategically in response to changing contexts.",
-  respond:"Respond constructively to professional situations by demonstrating ethical and collaborative awareness.",
-  value:"Demonstrate commitment to ethical and sustainable professional practices.",
-  organize:"Organise professional actions by considering interconnected systems and long-term implications.",
-  characterize:"Consistently demonstrate ethical judgement and professional accountability."
-};
+// =======================
+// DOM
+// =======================
+const degreeSel = $("degree");
+const ploSel    = $("plo");
+const bloomSel  = $("bloom");
+const verbSel   = $("verb");
 
-// PLO change
-ploSel.addEventListener("change",()=>{
-  const p=PLO_MAP[ploSel.value];
-  if(!p){ $("ploInfoBox").style.display="none"; return; }
+// =======================
+// PLO CHANGE
+// =======================
+ploSel.onchange = async () => {
+  const p = PLO_MAP[ploSel.value];
+  if (!p) { $("ploInfo").style.display="none"; return; }
 
-  $("ploTitle").innerText=`${ploSel.value} — ${p.title}`;
-  $("ploRefers").innerText=p.refers_to;
-  $("ploSC").innerText=p.sc_code;
-  $("ploSCDesc").innerText=p.sc_description;
-  $("ploVBE").innerText=p.vbe;
-  $("ploSDG").innerText=p.sdg.join(", ");
+  $("ploInfo").style.display="block";
+  $("ploTitle").innerText = `${ploSel.value} — ${p.title}`;
+  $("ploDesc").innerText  = p.refers_to;
+  $("ploSC").innerText    = `${p.sc_code} (${p.sc_description})`;
+  $("ploVBE").innerText   = p.vbe;
 
-  $("ploInfoBox").style.display="block";
+  // get blooms from backend
+  const res = await fetch(`/api/get_blooms/${ploSel.value}`);
+  const blooms = await res.json();
 
-  fetch(`/api/get_blooms/${ploSel.value}`)
-    .then(r=>r.json())
-    .then(b=>{
-      bloomSel.innerHTML='<option value="">Select Bloom</option>';
-      b.forEach(x=>bloomSel.add(new Option(x,x)));
-    });
-});
+  // filter by degree + domain
+  const domain = p.domain.toLowerCase();
+  const degree = degreeSel.value;
+  const allowed = BLOOM_BY_DEGREE_DOMAIN[degree]?.[domain] || [];
 
-// Bloom change
-bloomSel.addEventListener("change",()=>{
-  const p=PLO_MAP[ploSel.value];
-  if(!p) return;
+  bloomSel.innerHTML = '<option value="">Select Bloom</option>';
+  blooms.forEach(b=>{
+    if (allowed.includes(b.toLowerCase())) {
+      bloomSel.add(new Option(b,b));
+    }
+  });
 
-  const bloomKey=bloomSel.value.toLowerCase();
-
-  // example PLO
-  const ex=PLO_EXAMPLE_BY_BLOOM[bloomKey];
-  if(ex){
-    $("ploExampleBox").innerHTML=`<strong>Example PLO (${bloomSel.value}):</strong><br>${ex}`;
-    $("ploExampleBox").style.display="block";
-  } else $("ploExampleBox").style.display="none";
-
-  // mismatch warning
-  if(p.bloom_reason.toLowerCase()!==bloomKey){
-    $("bloomWarn").innerHTML=
-      `⚠ Selected Bloom (<strong>${bloomSel.value}</strong>) is higher than the recommended Bloom level (<strong>${p.bloom_reason}</strong>) for ${ploSel.value}.`;
+  if (bloomSel.options.length<=1) {
     $("bloomWarn").style.display="block";
+    $("bloomWarn").innerHTML =
+      `⚠ No suitable Bloom level for <strong>${degree}</strong> (${domain}).`;
   } else {
     $("bloomWarn").style.display="none";
   }
+};
 
-  fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`)
-    .then(r=>r.json())
-    .then(v=>{
-      verbSel.innerHTML='<option value="">Select Verb</option>';
-      v.forEach(x=>verbSel.add(new Option(x,x)));
-    });
-});
+// refresh bloom if degree changes
+degreeSel.onchange = () => {
+  if (ploSel.value) ploSel.dispatchEvent(new Event("change"));
+};
 
-// Generate CLO
-$("generateBtn").addEventListener("click",()=>{
-  if(!$("content").value.trim()) return alert("Please enter content.");
-  fetch("/generate",{
-    method:"POST",
-    body:new FormData(document.querySelector("form")||undefined)
-  });
-});
+// =======================
+// BLOOM CHANGE
+// =======================
+bloomSel.onchange = async () => {
+  const key = bloomSel.value.toLowerCase();
 
-// Downloads
-$("downloadBtn").addEventListener("click",()=>window.location="/download");
-$("rubricBtn").addEventListener("click",()=>window.location="/download_rubric");
+  // show CLO example
+  $("cloExample").innerHTML =
+    CLO_EXAMPLE[key]
+      ? `<strong>Example CLO (${bloomSel.value}):</strong><br>${CLO_EXAMPLE[key]}`
+      : "";
+
+  // load verbs
+  const res = await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
+  const verbs = await res.json();
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+  verbs.forEach(v=>verbSel.add(new Option(v,v)));
+};
+
+// =======================
+// GENERATE CLO (WORKING)
+// =======================
+$("generateBtn").onclick = async () => {
+
+  const level   = degreeSel.value;
+  const plo     = ploSel.value;
+  const bloom   = bloomSel.value;
+  const verb    = verbSel.value;
+  const content = $("content").value.trim();
+
+  if (!level || !plo || !bloom || !verb || !content) {
+    alert("Please complete Programme Level, PLO, Bloom, Verb, and Content.");
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("level", level);
+  fd.append("plo", plo);
+  fd.append("bloom", bloom);
+  fd.append("verb", verb);
+  fd.append("content", content);
+
+  const r = await fetch("/generate", { method:"POST", body:fd });
+  const d = await r.json();
+
+  $("cloCard").style.display="block";
+  $("cloText").innerText = d.clo;
+
+  $("variants").innerHTML =
+    Object.entries(d.variants||{})
+      .map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join("");
+
+  $("assessments").innerHTML =
+    "<ul>"+(d.assessments||[]).map(a=>`<li>${a}</li>`).join("")+"</ul>";
+
+  $("evidence").innerHTML =
+    Object.entries(d.evidence||{})
+      .map(([k,v])=>`<div><strong>${k}</strong>: ${v.join(", ")}</div>`).join("");
+};
 </script>
 
 </body>
