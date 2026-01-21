@@ -345,10 +345,14 @@ levelSel.onchange=()=>{ if(ploSel.value) ploSel.dispatchEvent(new Event("change"
 bloomSel.onchange=async()=>{
   const key=normaliseBloomKey(bloomSel.value);
   $("bloomDesc").innerText=BLOOM_DESC[key]||"";
- $("cloExample").innerHTML =
+ const contentText = $("content").value.trim() || "the relevant disciplinary content";
+
+$("cloExample").innerHTML =
   CLO_EXAMPLE[key]
-    ? `<strong>Example CLO (${bloomSel.value}):</strong><br>${CLO_EXAMPLE[key]}`
+    ? `<strong>Example CLO (${bloomSel.value}):</strong><br>
+       ${CLO_EXAMPLE[key].replace("disciplinary knowledge", contentText)}`
     : "";
+
 
 
   const res=await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
