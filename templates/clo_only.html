@@ -342,23 +342,30 @@ levelSel.onchange=()=>{ if(ploSel.value) ploSel.dispatchEvent(new Event("change"
 /* =========================
    BLOOM CHANGE
 ========================= */
-bloomSel.onchange=async()=>{
-  const key=normaliseBloomKey(bloomSel.value);
-  $("bloomDesc").innerText=BLOOM_DESC[key]||"";
- const contentText = $("content").value.trim() || "the relevant disciplinary content";
+bloomSel.onchange = async () => {
+  const key = normaliseBloomKey(bloomSel.value);
+  const plo = PLO_MAP[ploSel.value];
 
-$("cloExample").innerHTML =
-  CLO_EXAMPLE[key]
-    ? `<strong>Example CLO (${bloomSel.value}):</strong><br>
-       ${CLO_EXAMPLE[key].replace("disciplinary knowledge", contentText)}`
+  if (!plo || !key) return;
+
+  const domain = plo.domain.toLowerCase();
+  const contentText = $("content").value.trim() || "the relevant disciplinary content";
+
+  const example =
+    CLO_EXAMPLE_BY_DOMAIN[domain]?.[key];
+
+  $("bloomDesc").innerText = BLOOM_DESC[key] || "";
+
+  $("cloExample").innerHTML = example
+    ? `<strong>Example CLO (${bloomSel.value} – ${domain}):</strong><br>
+       ${example.replace("disciplinary knowledge", contentText)}`
     : "";
-
-
-
-  const res=await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
-  const verbs=await res.json();
-  verbSel.innerHTML='<option value="">Select Verb</option>';
-  verbs.forEach(v=>verbSel.add(new Option(v,v)));
+  
+  // verbs
+  const res = await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
+  const verbs = await res.json();
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+  verbs.forEach(v => verbSel.add(new Option(v, v)));
 };
 
 /* =========================
