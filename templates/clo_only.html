@@ -220,6 +220,69 @@ function normaliseBloomKey(value){
   return "";
 }
 
+
+  /* =========================
+   CLO EXAMPLE (ACADEMIC, MQA-ALIGNED)
+========================= */
+const CLO_EXAMPLE = {
+
+  // ===== COGNITIVE =====
+  remember:
+    "Recall disciplinary knowledge with awareness of its professional and societal implications.",
+
+  apply:
+    "Apply disciplinary knowledge to practical situations using anticipatory thinking in an ethical manner.",
+
+  analyze:
+    "Analyse disciplinary knowledge by examining relationships and implications using anticipatory thinking to support ethical and professional decision-making.",
+
+  evaluate:
+    "Evaluate concepts and evidence using anticipatory thinking to justify decisions in accordance with ethical and professional standards.",
+
+  create:
+    "Design informed solutions by integrating disciplinary knowledge with anticipatory thinking, guided by ethics and professionalism.",
+
+  // ===== AFFECTIVE =====
+  receiving:
+    "Demonstrate awareness and openness towards professional values and ethical responsibilities.",
+
+  responding:
+    "Respond constructively in learning activities by demonstrating collaboration and integrity in professional interactions.",
+
+  valuing:
+    "Demonstrate commitment to ethical principles and professional values in academic and professional contexts.",
+
+  organization:
+    "Organise personal and professional values into a coherent framework to guide ethical decision-making.",
+
+  characterization:
+    "Consistently demonstrate ethical judgement and professional conduct in complex situations.",
+
+  // ===== PSYCHOMOTOR =====
+  perception:
+    "Perform tasks by recognising relevant sensory cues and safety considerations in professional practice.",
+
+  set:
+    "Demonstrate readiness to perform professional skills responsibly and ethically.",
+
+  "guided response":
+    "Perform professional skills under guidance while anticipating risks and ethical considerations.",
+
+  mechanism:
+    "Perform professional skills competently and confidently while anticipating long-term outcomes.",
+
+  "complex overt response":
+    "Perform complex professional skills smoothly and accurately in accordance with ethical standards.",
+
+  adaptation:
+    "Adapt professional procedures to new situations using anticipatory and strategic thinking.",
+
+  origination:
+    "Create new professional procedures or solutions guided by ethical foresight and professional responsibility."
+};
+
+
+  
 /* =========================
    LOAD PLO MAP
 ========================= */
@@ -282,9 +345,11 @@ levelSel.onchange=()=>{ if(ploSel.value) ploSel.dispatchEvent(new Event("change"
 bloomSel.onchange=async()=>{
   const key=normaliseBloomKey(bloomSel.value);
   $("bloomDesc").innerText=BLOOM_DESC[key]||"";
-  $("cloExample").innerHTML=
-    `<strong>Example CLO (${bloomSel.value}):</strong><br>
-     ${BLOOM_DESC[key]||""}`;
+ $("cloExample").innerHTML =
+  CLO_EXAMPLE[key]
+    ? `<strong>Example CLO (${bloomSel.value}):</strong><br>${CLO_EXAMPLE[key]}`
+    : "";
+
 
   const res=await fetch(`/api/get_verbs/${ploSel.value}/${bloomSel.value}`);
   const verbs=await res.json();
