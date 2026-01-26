@@ -42,6 +42,135 @@ def get_plo_details(plo, profile="sc"):
     }
 
 # -------------------------
+# GET VERBS
+# -------------------------
+def get_verbs(plo, bloom, profile="sc"):
+    details = get_plo_details(plo, profile)
+    if not details:
+        return []
+
+    domain = details["Domain"].lower()
+    b = bloom.lower()
+
+    return BLOOM_VERBS.get(domain, {}).get(b, [])
+
+# -------------------------
+# VERBS (BLOOM × DOMAIN)
+# -------------------------
+
+BLOOM_VERBS = {
+
+    # =====================
+    # COGNITIVE DOMAIN
+    # =====================
+    "cognitive": {
+
+        "remember": [
+            "Recall", "Recognise", "Identify", "Define", "List",
+            "Name", "State", "Label", "Outline"
+        ],
+
+        "understand": [
+            "Explain", "Describe", "Summarise", "Interpret", "Clarify",
+            "Classify", "Discuss", "Illustrate", "Paraphrase"
+        ],
+
+        "apply": [
+            "Apply", "Use", "Demonstrate", "Implement", "Execute",
+            "Carry out", "Solve", "Calculate", "Perform"
+        ],
+
+        "analyze": [
+            "Analyse", "Differentiate", "Compare", "Contrast", "Examine",
+            "Deconstruct", "Investigate", "Categorise", "Relate"
+        ],
+
+        "analyse": [  # alias support
+            "Analyse", "Differentiate", "Compare", "Contrast", "Examine",
+            "Deconstruct", "Investigate", "Categorise", "Relate"
+        ],
+
+        "evaluate": [
+            "Evaluate", "Assess", "Critique", "Justify", "Appraise",
+            "Judge", "Validate", "Review", "Defend", "Prioritise"
+        ],
+
+        "create": [
+            "Design", "Develop", "Formulate", "Construct", "Propose",
+            "Generate", "Produce", "Devise", "Synthesise", "Model"
+        ]
+    },
+
+    # =====================
+    # AFFECTIVE DOMAIN
+    # =====================
+    "affective": {
+
+        "receiving": [
+            "Acknowledge", "Recognise", "Attend", "Notice", "Accept"
+        ],
+
+        "responding": [
+            "Respond", "Participate", "Contribute", "Engage",
+            "Comply", "Discuss", "Follow"
+        ],
+
+        "valuing": [
+            "Demonstrate", "Commit", "Support", "Appreciate",
+            "Advocate", "Respect", "Value"
+        ],
+
+        "organization": [
+            "Organise", "Integrate", "Prioritise", "Reconcile",
+            "Structure", "Align"
+        ],
+
+        "characterization": [
+            "Demonstrate", "Internalise", "Exemplify",
+            "Advocate", "Uphold", "Consistently apply"
+        ]
+    },
+
+    # =====================
+    # PSYCHOMOTOR DOMAIN
+    # =====================
+    "psychomotor": {
+
+        "perception": [
+            "Detect", "Identify", "Recognise", "Distinguish", "Sense"
+        ],
+
+        "set": [
+            "Prepare", "Initiate", "Position", "Ready", "Adjust"
+        ],
+
+        "guided response": [
+            "Perform", "Execute", "Imitate", "Follow",
+            "Practise", "Replicate"
+        ],
+
+        "mechanism": [
+            "Operate", "Manipulate", "Calibrate", "Assemble",
+            "Measure", "Control"
+        ],
+
+        "complex overt response": [
+            "Perform", "Execute", "Operate", "Carry out",
+            "Demonstrate proficiency"
+        ],
+
+        "adaptation": [
+            "Adapt", "Modify", "Adjust", "Reconfigure", "Refine"
+        ],
+
+        "origination": [
+            "Create", "Construct", "Innovate", "Design",
+            "Develop new procedures"
+        ]
+    }
+}
+
+# -------------------------
 # META (CRITERION + CONDITION)
 # -------------------------
 def get_meta_data(plo, bloom, profile="sc"):
