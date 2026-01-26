@@ -97,7 +97,7 @@ def clo_only_generate():
     bloom   = data.get("bloom", "")
     verb    = data.get("verb", "")
     content = data.get("content", "")
-    level   = data.get("level", "Degree")
+    level   = data.get("level", "Degree")   # ✔️ satu sahaja
 
     # -------------------------
     # REQUIRED FIELD CHECK
@@ -115,22 +115,19 @@ def clo_only_generate():
     sc_desc = details["SC_Desc"]
     vbe     = details["VBE"]
 
-
     # -------------------------
-# DEGREE × BLOOM ENFORCEMENT (FINAL & CORRECT)
-# -------------------------
-level = data.get("level", "Degree")   # penting: ikut frontend
+    # DEGREE × BLOOM ENFORCEMENT (FINAL & CORRECT)
+    # -------------------------
+    allowed = DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])
 
-allowed = DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])
+    bloom_key = bloom.strip().lower()
+    allowed   = [a.strip().lower() for a in allowed]
 
-bloom_key = bloom.strip().lower()
-allowed   = [a.strip().lower() for a in allowed]
+    if bloom_key not in allowed:
+        return jsonify({
+            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
+        }), 400
 
-if bloom_key not in allowed:
-    return jsonify({
-        "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
-    }), 400
-    
     # -------------------------
     # CLEAN VERB DUPLICATION
     # -------------------------
@@ -139,7 +136,7 @@ if bloom_key not in allowed:
         content = " ".join(words[1:])
 
     # -------------------------
-    # CLO CONSTRUCTION (FULL STYLE)
+    # CLO CONSTRUCTION
     # -------------------------
     connector = "when" if domain != "psychomotor" else "by"
     condition_clean = (
@@ -159,16 +156,12 @@ if bloom_key not in allowed:
         "Short": f"{verb.capitalize()} {content}."
     }
 
-    # -------------------------
-    # ASSESSMENT & EVIDENCE
-    # -------------------------
     assessments = get_assessment(plo, bloom, domain)
     evidence = {a: get_evidence_for(a) for a in assessments}
 
     return jsonify({
         "clo": clo,
         "variants": variants,
-
         "meta": {
             "plo": plo,
             "domain": domain,
@@ -178,7 +171,6 @@ if bloom_key not in allowed:
             "criterion": meta.get("criterion", ""),
             "condition": meta.get("condition", "")
         },
-
         "assessments": assessments,
         "evidence": evidence
     })
