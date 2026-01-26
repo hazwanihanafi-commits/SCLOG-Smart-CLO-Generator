@@ -50,7 +50,6 @@ body { background:#f4f6f9; }
 
 <div class="container my-4" style="max-width:960px">
 
-<!-- INPUT -->
 <div class="card-box">
 <h5>⚡ CLO Construction (Quick Mode)</h5>
 
@@ -110,26 +109,17 @@ body { background:#f4f6f9; }
 <button id="generateBtn" class="btn btn-primary w-100">Generate CLO</button>
 </div>
 
-<!-- OUTPUT -->
 <div id="cloCard" class="card-box" style="display:none">
 <h6>Generated CLO</h6>
 <div id="cloText" class="fw-semibold"></div>
-
 <hr>
 <h6>Variants</h6>
 <div id="variants"></div>
-
 <hr>
 <h6>Suggested Assessments</h6>
 <div id="assessments"></div>
-
 <h6 class="mt-2">Suggested Evidence</h6>
 <div id="evidence"></div>
-
-<div class="mt-3 d-flex gap-2">
-<button class="btn btn-success" onclick="window.location='/download'">Download CLO</button>
-<button class="btn btn-outline-secondary" onclick="window.location='/download_rubric'">Download Rubric</button>
-</div>
 </div>
 
 </div>
@@ -137,338 +127,99 @@ body { background:#f4f6f9; }
 <script>
 const $ = id => document.getElementById(id);
 
-/* =========================
-   BLOOM DESCRIPTIONS
-========================= */
-const BLOOM_DESC = {
-  remember:"Recall facts, terms, or basic concepts.",
-  understand:"Explain ideas or concepts in your own words.",
-  apply:"Use knowledge in new but familiar situations.",
-  analyze:"Break information into parts and examine relationships.",
-  evaluate:"Make judgments based on criteria or standards.",
-  create:"Produce new or original work by combining elements.",
-
-  receiving:"Willingness to attend to or be aware of stimuli.",
-  responding:"Active participation by responding or reacting.",
-  valuing:"Demonstrating commitment or belief in a value.",
-  organization:"Integrating values into a consistent value system.",
-  characterization:"Acting consistently according to internalised values.",
-
-  perception:"Use sensory cues to guide motor activity.",
-  set:"Demonstrate readiness to perform a skill.",
-  "guided response":"Perform skill under guidance or imitation.",
-  mechanism:"Carry out skill with confidence and proficiency.",
-  "complex overt response":"Perform complex skills smoothly and accurately.",
-  adaptation:"Modify learned skills to suit new situations.",
-  origination:"Create new movement patterns or procedures."
-};
-
-/* =========================
-   BLOOM RECOMMENDATION BY LEVEL
-========================= */
 const BLOOM_RECOMMENDATION_BY_LEVEL = {
-  Diploma:{
-    cognitive:["Remember","Understand","Apply"],
-    affective:["Receiving","Responding"],
-    psychomotor:["Perception","Set","Guided Response"]
-  },
-  Degree:{
-    cognitive:["Understand","Apply","Analyze"],
-    affective:["Responding","Valuing"],
-    psychomotor:["Guided Response","Mechanism"]
-  },
-  Master:{
-    cognitive:["Analyze","Evaluate","Create"],
-    affective:["Valuing","Organization"],
-    psychomotor:["Mechanism","Complex Overt Response","Adaptation"]
-  },
-  PhD:{
-    cognitive:["Create"],
-    affective:["Characterization"],
-    psychomotor:["Adaptation","Origination"]
-  }
+  Diploma:{ cognitive:["Remember","Understand","Apply"] },
+  Degree:{ cognitive:["Understand","Apply","Analyze"] },
+  Master:{ cognitive:["Analyze","Evaluate","Create"] },
+  PhD:{ cognitive:["Create"] }
 };
 
-/* =========================
-   NORMALISE BLOOM
-========================= */
-function normaliseBloomKey(value){
-  if(!value) return "";
-  const v=value.toLowerCase();
-
-  if(v.includes("receiv")) return "receiving";
-  if(v.includes("respond")) return "responding";
-  if(v.includes("valu")) return "valuing";
-  if(v.includes("organiz")) return "organization";
-  if(v.includes("character")) return "characterization";
-
+function normaliseBloomKey(v){
+  if(!v) return "";
+  v = v.toLowerCase();
   if(v.includes("remember")) return "remember";
   if(v.includes("understand")) return "understand";
   if(v.includes("apply")) return "apply";
   if(v.includes("analy")) return "analyze";
   if(v.includes("evaluate")) return "evaluate";
   if(v.includes("create")) return "create";
-
-  if(v.includes("perception")) return "perception";
-  if(v==="set") return "set";
-  if(v.includes("guided")) return "guided response";
-  if(v.includes("mechanism")) return "mechanism";
-  if(v.includes("complex")) return "complex overt response";
-  if(v.includes("adaptation")) return "adaptation";
-  if(v.includes("origination")) return "origination";
-
   return "";
 }
 
-
-  /* =========================
-   CLO EXAMPLE (ACADEMIC, MQA-ALIGNED)
-========================= */
-const CLO_EXAMPLE = {
-
-  // ===== COGNITIVE =====
-  remember:
-    "Recall disciplinary knowledge with awareness of its professional and societal implications.",
-
-  apply:
-    "Apply disciplinary knowledge to practical situations using anticipatory thinking in an ethical manner.",
-
-  analyze:
-    "Analyse disciplinary knowledge by examining relationships and implications using anticipatory thinking to support ethical and professional decision-making.",
-
-  evaluate:
-    "Evaluate concepts and evidence using anticipatory thinking to justify decisions in accordance with ethical and professional standards.",
-
-  create:
-    "Design informed solutions by integrating disciplinary knowledge with anticipatory thinking, guided by ethics and professionalism.",
-
-  // ===== AFFECTIVE =====
-  receiving:
-    "Demonstrate awareness and openness towards professional values and ethical responsibilities.",
-
-  responding:
-    "Respond constructively in learning activities by demonstrating collaboration and integrity in professional interactions.",
-
-  valuing:
-    "Demonstrate commitment to ethical principles and professional values in academic and professional contexts.",
-
-  organization:
-    "Organise personal and professional values into a coherent framework to guide ethical decision-making.",
-
-  characterization:
-    "Consistently demonstrate ethical judgement and professional conduct in complex situations.",
-
-  // ===== PSYCHOMOTOR =====
-  perception:
-    "Perform tasks by recognising relevant sensory cues and safety considerations in professional practice.",
-
-  set:
-    "Demonstrate readiness to perform professional skills responsibly and ethically.",
-
-  "guided response":
-    "Perform professional skills under guidance while anticipating risks and ethical considerations.",
-
-  mechanism:
-    "Perform professional skills competently and confidently while anticipating long-term outcomes.",
-
-  "complex overt response":
-    "Perform complex professional skills smoothly and accurately in accordance with ethical standards.",
-
-  adaptation:
-    "Adapt professional procedures to new situations using anticipatory and strategic thinking.",
-
-  origination:
-    "Create new professional procedures or solutions guided by ethical foresight and professional responsibility."
-};
-
-
-  const CLO_EXAMPLE_BY_DOMAIN = {
-  cognitive: {
-    remember:
-      "Recall key concepts and principles related to the discipline.",
-
-    apply:
-      "Apply disciplinary knowledge to practical situations using appropriate methods.",
-
-    analyze:
-      "Analyse information by examining relationships and implications to support informed decision-making.",
-
-    evaluate:
-      "Evaluate evidence and arguments to justify decisions in accordance with professional standards.",
-
-    create:
-      "Design solutions by integrating knowledge and evidence guided by ethical considerations."
-  },
-
-  affective: {
-    receiving:
-      "Demonstrate awareness of professional values and ethical responsibilities.",
-
-    responding:
-      "Respond constructively by engaging responsibly in professional and learning activities.",
-
-    valuing:
-      "Demonstrate commitment to ethical principles and professional values in academic and professional contexts.",
-
-    organization:
-      "Organise personal and professional values into a coherent framework to guide ethical action.",
-
-    characterization:
-      "Consistently demonstrate ethical judgement and professional conduct in complex situations."
-
-  },
-
-  psychomotor: {
-    perception:
-      "Perform tasks by recognising relevant cues and safety considerations.",
-
-    set:
-      "Demonstrate readiness to perform professional skills responsibly.",
-
-    "guided response":
-      "Perform skills under guidance while adhering to professional standards.",
-
-    mechanism:
-      "Perform professional skills competently and confidently in practice.",
-
-    "complex overt response":
-      "Perform complex skills smoothly and accurately in professional contexts.",
-
-    adaptation:
-      "Adapt professional procedures to new situations appropriately.",
-
-    origination:
-      "Create new procedures or solutions to address professional challenges."
-  }
-};
-
-  
-/* =========================
-   LOAD PLO MAP
-========================= */
 let PLO_MAP = {};
 fetch("/static/data/plo_mapping.json")
   .then(r=>r.json())
   .then(d=>PLO_MAP=d);
 
-/* =========================
-   DOM
-========================= */
-const levelSel=$("level"), ploSel=$("plo"),
-      bloomSel=$("bloom"), verbSel=$("verb");
+const levelSel = $("level");
+const ploSel = $("plo");
+const bloomSel = $("bloom");
+const verbSel = $("verb");
 
 /* =========================
    PLO CHANGE
 ========================= */
 ploSel.onchange = async () => {
 
-  const p=PLO_MAP[ploSel.value];
-  if(!p){ $("ploInfo").style.display="none"; return; }
+  const p = PLO_MAP[ploSel.value];
+  if(!p){
+    $("ploInfo").style.display="none";
+    return;
+  }
 
   $("ploInfo").style.display="block";
-  $("ploTitle").innerText=`${ploSel.value} — ${p.title}`;
-  $("ploDesc").innerText=p.refers_to;
-  $("ploSC").innerText=`${p.sc_code} (${p.sc_description})`;
-  $("ploVBE").innerText=p.vbe;
+  $("ploTitle").innerText = `${ploSel.value} — ${p.title}`;
+  $("ploDesc").innerText = p.refers_to;
+  $("ploSC").innerText = `${p.sc_code} (${p.sc_description})`;
+  $("ploVBE").innerText = p.vbe;
 
-  const res=await fetch(`/api/get_blooms/${ploSel.value}`);
-  const blooms=await res.json();
+  const domain = p.domain.toLowerCase();
+  const degree = levelSel.value;
 
-  console.log("Blooms from API:", blooms);
-console.log("Domain:", domain);
-console.log("Degree:", degree);
-console.log("Recommended:", recommended);
-console.log("Allowed (normalized):", allowed);
+  const res = await fetch(
+    `/api/get_blooms/${ploSel.value}?profile=sc`   // ✅ FIX
+  );
+  const blooms = await res.json();
 
-  
-  
+  const allowed =
+    (BLOOM_RECOMMENDATION_BY_LEVEL[degree]?.[domain] || [])
+      .map(normaliseBloomKey);
 
-  const domain=p.domain.toLowerCase();
-  const degree=levelSel.value;
-  const recommended=BLOOM_RECOMMENDATION_BY_LEVEL[degree]?.[domain]||[];
-  const allowed=recommended.map(b=>normaliseBloomKey(b));
-
-  bloomSel.innerHTML='<option value="">Select Bloom</option>';
+  bloomSel.innerHTML = '<option value="">Select Bloom</option>';
 
   blooms.forEach(b=>{
-    const key=normaliseBloomKey(b);
-    if(allowed.includes(key)){
+    if(allowed.includes(normaliseBloomKey(b))){
       bloomSel.add(new Option(b,b));
     }
   });
 
   $("bloomWarn").style.display =
-    bloomSel.options.length<=1 ? "block":"none";
-
-  if(bloomSel.options.length<=1){
-    $("bloomWarn").innerHTML=
-      `⚠ No recommended <strong>${domain}</strong> Bloom level for <strong>${degree}</strong>.`;
-  }
+    bloomSel.options.length <= 1 ? "block":"none";
 };
 
-levelSel.onchange=()=>{ if(ploSel.value) ploSel.dispatchEvent(new Event("change")); };
+/* =========================
+   LEVEL CHANGE (OUTSIDE) ✅ FIX
+========================= */
+levelSel.onchange = () => {
+  if (ploSel.value) {
+    ploSel.dispatchEvent(new Event("change"));
+  }
+};
 
 /* =========================
    BLOOM CHANGE
 ========================= */
 bloomSel.onchange = async () => {
-  const rawBloom = bloomSel.value;
-  const bloomKey = normaliseBloomKey(rawBloom);
-  const plo = ploSel.value;
+  const bloomKey = normaliseBloomKey(bloomSel.value);
+  if(!bloomKey) return;
 
-  if (!plo || !bloomKey) return;
+  const res = await fetch(
+    `/api/get_verbs/${encodeURIComponent(bloomKey)}?profile=sc`
+  );
+  const verbs = await res.json();
 
-  const ploData = PLO_MAP[plo];
-  const domain = ploData.domain.toLowerCase();
-
-  // Bloom description (BETUL)
-  $("bloomDesc").innerText = BLOOM_DESC[bloomKey] || "";
-
-  // ✅ DOMAIN-AWARE CLO EXAMPLE
-  const example =
-    CLO_EXAMPLE_BY_DOMAIN[domain]?.[bloomKey];
-
-  $("cloExample").innerHTML = example
-  ? `<strong>Example CLO (${rawBloom} – ${domain}):</strong><br>${example}`
-  : "";
-
-// Fetch verbs
-const res = await fetch(
-  `/api/get_verbs/${encodeURIComponent(bloomKey)}?profile=sc`
-);
-
-const verbs = await res.json();
-verbSel.innerHTML = '<option value="">Select Verb</option>';
-(verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-};
-
-/* =========================
-   GENERATE CLO
-========================= */
-$("generateBtn").onclick=async()=>{
-  const fd=new FormData();
-  fd.append("level",levelSel.value);
-  fd.append("plo",ploSel.value);
-  fd.append("bloom",bloomSel.value);
-  fd.append("verb",verbSel.value);
-  fd.append("content",$("content").value.trim());
-
-  const r=await fetch("/generate",{method:"POST",body:fd});
-  const d=await r.json();
-
-  $("cloCard").style.display="block";
-  $("cloText").innerText=d.clo;
-
-  $("variants").innerHTML=
-    Object.entries(d.variants||{})
-      .map(([k,v])=>`<div><strong>${k}:</strong> ${v}</div>`).join("");
-
-  $("assessments").innerHTML=
-    "<ul>"+(d.assessments||[]).map(a=>`<li>${a}</li>`).join("")+"</ul>";
-
-  $("evidence").innerHTML=
-    Object.entries(d.evidence||{})
-      .map(([k,v])=>`<div><strong>${k}</strong>: ${v.join(", ")}</div>`).join("");
+  verbSel.innerHTML = '<option value="">Select Verb</option>';
+  (verbs||[]).forEach(v=>verbSel.add(new Option(v,v)));
 };
 </script>
 
