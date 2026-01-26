@@ -45,21 +45,22 @@
   },
 
   "PLO6": {
-    "title": "Systems and Holistic Thinking",
-    "refers_to": "Ability to understand and manage interrelated systems and their long-term implications in professional practice.",
-    "sc_code": "SC8",
-    "sc_description": "Systems thinking",
-    "vbe": "Ethics and Professionalism",
-    "domain": "Affective"
+  "title": "Systems and Holistic Thinking",
+  "refers_to": "Ability to analyse, evaluate, and manage interrelated systems and their long-term implications in professional practice.",
+  "sc_code": "SC8",
+  "sc_description": "Systems thinking",
+  "vbe": "Ethics and Professionalism",
+  "domain": "cognitive"
+
   },
 
   "PLO7": {
-    "title": "Problem Solving in Professional Contexts",
-    "refers_to": "Ability to solve complex professional problems through integrated and reflective approaches.",
-    "sc_code": "SC6",
-    "sc_description": "Integrated problem solving",
-    "vbe": "Ethics and Professionalism",
-    "domain": "Affective"
+  "title": "Problem Solving in Professional Contexts",
+  "refers_to": "Ability to analyse and solve complex professional problems using integrated and reflective approaches.",
+  "sc_code": "SC6",
+  "sc_description": "Integrated problem solving",
+  "vbe": "Ethics and Professionalism",
+  "domain": "cognitive"
   },
 
   "PLO8": {
