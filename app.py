@@ -333,21 +333,26 @@ def api_get_blooms(plo):
 # ------------------------------------------------------
 @app.route("/api/get_verbs/<bloom>")
 def api_get_verbs_by_bloom(bloom):
-    profile = request.args.get("profile","sc").lower()
+    bloom_key = bloom.strip().lower()
 
-    # Bloom → domain mapping is NOT needed here
-    # Verbs are universal per Bloom level
-    df = load_df("Bloom_Cognitive")
-    if df.empty:
-        return jsonify([])
+    # Try all Bloom sheets (Bloom taxonomy is domain-based)
+    for sheet in ["Bloom_Cognitive", "Bloom_Affective", "Bloom_Psychomotor"]:
+        df = load_df(sheet)
+        if df.empty:
+            continue
 
-    mask = df.iloc[:,0].astype(str).str.lower() == bloom.lower()
-    if not mask.any():
-        return jsonify([])
+        if "Bloom Level" not in df.columns:
+            continue
 
-    raw = df[mask].iloc[0,1]
-    verbs = [v.strip() for v in str(raw).split(",") if v.strip()]
-    return jsonify(verbs)
+        mask = df["Bloom Level"].astype(str).str.lower() == bloom_key
+        if mask.any():
+            # Column 2 = verbs (based on your Excel)
+            raw = df.loc[mask].iloc[0, 1]
+            verbs = [v.strip() for v in str(raw).split(",") if v.strip()]
+            return jsonify(verbs)
+
+    return jsonify([])
+
 
 # ------------------------------------------------------
 # META endpoint
@@ -588,6 +593,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
