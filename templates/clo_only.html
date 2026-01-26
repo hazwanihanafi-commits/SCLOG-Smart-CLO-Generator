@@ -374,6 +374,15 @@ ploSel.onchange = async () => {
   const res=await fetch(`/api/get_blooms/${ploSel.value}`);
   const blooms=await res.json();
 
+  console.log("Blooms from API:", blooms);
+console.log("Domain:", domain);
+console.log("Degree:", degree);
+console.log("Recommended:", recommended);
+console.log("Allowed (normalized):", allowed);
+
+  
+  
+
   const domain=p.domain.toLowerCase();
   const degree=levelSel.value;
   const recommended=BLOOM_RECOMMENDATION_BY_LEVEL[degree]?.[domain]||[];
