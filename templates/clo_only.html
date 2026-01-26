@@ -125,6 +125,74 @@ body { background:#f4f6f9; }
 </div>
 
 <script>
+
+  const CLO_EXAMPLE_BY_VERB = {
+  cognitive: {
+    remember: {
+      identify: "Identify fundamental concepts related to the course content",
+      list: "List key principles relevant to the discipline"
+    },
+    understand: {
+      explain: "Explain core concepts using appropriate terminology",
+      describe: "Describe processes involved in the selected topic"
+    },
+    apply: {
+      apply: "Apply theoretical knowledge to solve practical problems",
+      demonstrate: "Demonstrate the application of concepts in real-world contexts"
+    },
+    analyze: {
+      analyze: "Analyse data to identify patterns and relationships",
+      examine: "Examine evidence to support informed decision making"
+    },
+    evaluate: {
+      evaluate: "Evaluate solutions based on established criteria",
+      justify: "Justify decisions using relevant evidence and reasoning"
+    },
+    create: {
+      design: "Design solutions to address complex disciplinary problems",
+      develop: "Develop proposals that integrate knowledge and skills"
+    }
+  },
+
+  affective: {
+    receiving: {
+      listen: "Demonstrate awareness by listening attentively during learning activities",
+      observe: "Observe professional values demonstrated in practice"
+    },
+    responding: {
+      participate: "Participate actively in collaborative learning activities",
+      discuss: "Discuss issues respectfully with peers"
+    },
+    valuing: {
+      demonstrate: "Demonstrate commitment to professional values",
+      support: "Support ethical decision making in professional contexts"
+    }
+  },
+
+  psychomotor: {
+  "guided response": {
+    perform: "Perform skills under guidance following established procedures"
+  },
+  mechanism: {
+    execute: "Execute professional skills competently with minimal supervision"
+  }
+}
+};
+
+ const PLO_SC_VBE = {
+  PLO1: { sc_code: "SC2", sc_desc: "Anticipatory thinking", vbe: "Ethics and Professionalism" },
+  PLO2: { sc_code: "SC6", sc_desc: "Integrated problem solving", vbe: "Ethics and Professionalism" },
+  PLO3: { sc_code: "SC4", sc_desc: "Strategic thinking", vbe: "Professional practice standards" },
+  PLO4: { sc_code: "SC5", sc_desc: "Collaboration", vbe: "Integrity" },
+  PLO5: { sc_code: "SC8", sc_desc: "Normative thinking", vbe: "Ethics and Etiquette" },
+  PLO6: { sc_code: "SC8", sc_desc: "Systems thinking", vbe: "Ethics and Professionalism" },
+  PLO7: { sc_code: "SC6", sc_desc: "Integrated problem solving", vbe: "Ethics and Professionalism" },
+  PLO8: { sc_code: "SC9", sc_desc: "Leadership", vbe: "Professionalism and Teamwork" },
+  PLO9: { sc_code: "SC7", sc_desc: "Self-awareness", vbe: "Professionalism and Well-being" },
+  PLO10:{ sc_code: "ENT", sc_desc: "Entrepreneurial thinking", vbe: "Honesty and Integrity" },
+  PLO11:{ sc_code: "ETH", sc_desc: "Ethical awareness", vbe: "Professional conduct" }
+};
+  
 const $ = id => document.getElementById(id);
 
 const BLOOM_RECOMMENDATION_BY_LEVEL = {
@@ -153,12 +221,30 @@ const BLOOM_RECOMMENDATION_BY_LEVEL = {
 function normaliseBloomKey(v){
   if(!v) return "";
   v = v.toLowerCase();
+
+  // Cognitive
   if(v.includes("remember")) return "remember";
   if(v.includes("understand")) return "understand";
   if(v.includes("apply")) return "apply";
   if(v.includes("analy")) return "analyze";
   if(v.includes("evaluate")) return "evaluate";
   if(v.includes("create")) return "create";
+
+  // Affective
+  if(v.includes("receiv")) return "receiving";
+  if(v.includes("respond")) return "responding";
+  if(v.includes("valu")) return "valuing";
+  if(v.includes("organ")) return "organization";
+  if(v.includes("character")) return "characterization";
+
+  // Psychomotor
+  if(v.includes("guided")) return "guided response";
+  if(v.includes("mechanism")) return "mechanism";
+  if(v.includes("adaptation")) return "adaptation";
+  if(v.includes("origination")) return "origination";
+  if(v.includes("perception")) return "perception";
+  if(v === "set") return "set";
+
   return "";
 }
 
@@ -216,6 +302,32 @@ ploSel.onchange = async () => {
     bloomSel.options.length <= 1 ? "block":"none";
 };
 
+
+ verbSel.onchange = () => {
+  const verb = verbSel.value?.toLowerCase();
+  if (!verb) return;
+
+  const plo = ploSel.value;
+  if (!plo || !PLO_MAP[plo] || !PLO_SC_VBE[plo]) return;
+
+  const domain = PLO_MAP[plo].domain.toLowerCase();
+  const bloomKey = normaliseBloomKey(bloomSel.value);
+
+  const scInfo = PLO_SC_VBE[plo];
+  const scText = `${scInfo.sc_code} (${scInfo.sc_desc.toLowerCase()})`;
+  const vbeText = scInfo.vbe.toLowerCase();
+
+  const baseExample =
+    CLO_EXAMPLE_BY_VERB?.[domain]?.[bloomKey]?.[verb];
+
+  const finalExample = baseExample
+    ? `${baseExample} using ${scText}, guided by ${vbeText}.`
+    : "";
+
+  document.getElementById("cloExample").innerHTML = finalExample
+    ? `<strong>Example CLO (SC & VBE aligned):</strong><br>${finalExample}`
+    : "";
+}; 
 /* =========================
    LEVEL CHANGE (OUTSIDE) ✅ FIX
 ========================= */
