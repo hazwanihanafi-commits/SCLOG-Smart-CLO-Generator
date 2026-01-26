@@ -22,19 +22,19 @@ clo_only = Blueprint("clo_only", __name__)
 DEGREE_BLOOM_LIMIT = {
     "cognitive": {
         "Diploma": ["remember", "understand", "apply"],
-        "Bachelor": ["apply", "analyze", "analyse", "evaluate"],
+        "Degree": ["apply", "analyze", "analyse", "evaluate"],
         "Master": ["analyze", "analyse", "evaluate", "create"],
         "PhD": ["evaluate", "create"]
     },
     "affective": {
         "Diploma": ["receive", "respond"],
-        "Bachelor": ["respond", "value"],
+        "Degree": ["respond", "value"],
         "Master": ["value", "organization"],
         "PhD": ["organization", "characterization"]
     },
     "psychomotor": {
         "Diploma": ["perception", "set", "guided response"],
-        "Bachelor": ["guided response", "mechanism"],
+        "Degree": ["guided response", "mechanism"],
         "Master": ["complex overt response", "adaptation"],
         "PhD": ["adaptation", "origination"]
     }
@@ -97,7 +97,7 @@ def clo_only_generate():
     bloom   = data.get("bloom", "")
     verb    = data.get("verb", "")
     content = data.get("content", "")
-    level   = data.get("degree", "Bachelor")
+    level   = data.get("degree", "Degree")
 
     # -------------------------
     # REQUIRED FIELD CHECK
