@@ -289,24 +289,41 @@ def logic_peo_plo(peo, plo):
 # ------------------------------------------------------
 @app.route("/api/get_blooms/<plo>")
 def api_get_blooms(plo):
-    profile = request.args.get("profile","sc").lower()
+    profile = request.args.get("profile", "sc").lower()
+
     details = get_plo_details(plo, profile)
     if not details:
         return jsonify([])
-    domain = details["Domain"].lower()
+
+    domain = str(details.get("Domain", "")).strip().lower()
 
     sheet_map = {
-        "cognitive":"Bloom_Cognitive",
-        "affective":"Bloom_Affective",
-        "psychomotor":"Bloom_Psychomotor"
+        "cognitive": "Bloom_Cognitive",
+        "affective": "Bloom_Affective",
+        "psychomotor": "Bloom_Psychomotor"
     }
-    df = load_df(sheet_map.get(domain,"Bloom_Cognitive"))
+
+    sheet = sheet_map.get(domain)
+    if not sheet:
+        return jsonify([])
+
+    df = load_df(sheet)
     if df.empty:
         return jsonify([])
 
-    blooms = df.iloc[:,0].dropna().astype(str).tolist()
-    return jsonify(blooms)
+    # ✅ BACA MENGGUNAKAN NAMA COLUMN SEBENAR EXCEL
+    if "Bloom Level" not in df.columns:
+        return jsonify([])
 
+    blooms = (
+        df["Bloom Level"]
+        .dropna()
+        .astype(str)
+        .str.strip()
+        .tolist()
+    )
+
+    return jsonify(blooms)
 
 
 
@@ -571,6 +588,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
