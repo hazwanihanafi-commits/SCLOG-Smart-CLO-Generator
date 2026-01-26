@@ -147,9 +147,12 @@ function normaliseBloomKey(v){
 }
 
 let PLO_MAP = {};
-fetch("/static/data/plo_mapping.json")
-  .then(r=>r.json())
-  .then(d=>PLO_MAP=d);
+fetch("/api/mapping")
+  .then(r => r.json())
+  .then(d => {
+    PLO_MAP = d.PLOs || d;
+  });
+
 
 const levelSel = $("level");
 const ploSel = $("plo");
