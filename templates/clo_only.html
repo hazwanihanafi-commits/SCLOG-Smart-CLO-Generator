@@ -147,10 +147,10 @@ function normaliseBloomKey(v){
 }
 
 let PLO_MAP = {};
-fetch("/api/mapping")
+fetch("/static/data/plo_mapping.json")
   .then(r => r.json())
   .then(d => {
-    PLO_MAP = d.PLOs || d;
+    PLO_MAP = d;
   });
 
 
