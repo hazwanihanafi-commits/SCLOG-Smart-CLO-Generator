@@ -128,10 +128,26 @@ body { background:#f4f6f9; }
 const $ = id => document.getElementById(id);
 
 const BLOOM_RECOMMENDATION_BY_LEVEL = {
-  Diploma:{ cognitive:["Remember","Understand","Apply"] },
-  Degree:{ cognitive:["Understand","Apply","Analyze"] },
-  Master:{ cognitive:["Analyze","Evaluate","Create"] },
-  PhD:{ cognitive:["Create"] }
+  Diploma:{
+    cognitive:["Remember","Understand","Apply"],
+    affective:["Receiving","Responding"],
+    psychomotor:["Perception","Set","Guided Response"]
+  },
+  Degree:{
+    cognitive:["Understand","Apply","Analyze"],
+    affective:["Responding","Valuing"],
+    psychomotor:["Guided Response","Mechanism"]
+  },
+  Master:{
+    cognitive:["Analyze","Evaluate","Create"],
+    affective:["Valuing","Organization"],
+    psychomotor:["Mechanism","Adaptation"]
+  },
+  PhD:{
+    cognitive:["Create"],
+    affective:["Characterization"],
+    psychomotor:["Adaptation","Origination"]
+  }
 };
 
 function normaliseBloomKey(v){
