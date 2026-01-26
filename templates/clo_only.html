@@ -91,7 +91,7 @@ body { background:#f4f6f9; }
 </select>
 <div id="bloomWarn" class="warn-box mt-2" style="display:none"></div>
 <div id="bloomDesc" class="muted mt-2" style="font-size:.85rem"></div>
-<div id="cloExample" class="muted mt-1" style="font-size:.85rem"></div>
+
 </div>
 
 <div class="mb-3">
@@ -99,6 +99,7 @@ body { background:#f4f6f9; }
 <select id="verb" class="form-select">
   <option value="">Select Verb</option>
 </select>
+  <div id="cloExample" class="muted mt-1" style="font-size:.85rem"></div>
 </div>
 
 <div class="mb-3">
@@ -324,9 +325,15 @@ ploSel.onchange = async () => {
     ? `${baseExample} using ${scText}, guided by ${vbeText}.`
     : "";
 
-  document.getElementById("cloExample").innerHTML = finalExample
-    ? `<strong>Example CLO (SC & VBE aligned):</strong><br>${finalExample}`
-    : "";
+  const ruleMessage =
+  "Example CLO is provided selectively for representative action verbs that " +
+  "demonstrate good practice in CLO construction. " +
+  "This verb requires contextual formulation by the course lecturer.";
+
+document.getElementById("cloExample").innerHTML = baseExample
+  ? `<strong>Example CLO (SC & VBE aligned):</strong><br>
+     ${baseExample} using ${scText}, guided by ${vbeText}.`
+  : `<em>${ruleMessage}</em>`;
 }; 
 /* =========================
    LEVEL CHANGE (OUTSIDE) ✅ FIX
