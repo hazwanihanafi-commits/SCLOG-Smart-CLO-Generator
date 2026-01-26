@@ -420,19 +420,17 @@ bloomSel.onchange = async () => {
     CLO_EXAMPLE_BY_DOMAIN[domain]?.[bloomKey];
 
   $("cloExample").innerHTML = example
-    ? `<strong>Example CLO (${rawBloom} – ${domain}):</strong><br>${example}`
-    : "";
+  ? `<strong>Example CLO (${rawBloom} – ${domain}):</strong><br>${example}`
+  : "";
 
-  // Fetch verbs (domain-safe)
-  const res = await fetch(
-    `const res = await fetch(
+// Fetch verbs (domain-safe)
+const res = await fetch(
   `/api/get_verbs/${encodeURIComponent(bloomKey)}?profile=sc`
 );
 
-  const verbs = await res.json();
-  verbSel.innerHTML = '<option value="">Select Verb</option>';
-  (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-};
+const verbs = await res.json();
+verbSel.innerHTML = '<option value="">Select Verb</option>';
+(verbs || []).forEach(v => verbSel.add(new Option(v, v)));
 
 /* =========================
    GENERATE CLO
