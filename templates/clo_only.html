@@ -431,7 +431,7 @@ const res = await fetch(
 const verbs = await res.json();
 verbSel.innerHTML = '<option value="">Select Verb</option>';
 (verbs || []).forEach(v => verbSel.add(new Option(v, v)));
-
+};
 
 /* =========================
    GENERATE CLO
