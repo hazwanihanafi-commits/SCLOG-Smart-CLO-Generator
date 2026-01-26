@@ -97,7 +97,7 @@ def clo_only_generate():
     bloom   = data.get("bloom", "")
     verb    = data.get("verb", "")
     content = data.get("content", "")
-    level   = data.get("degree", "Degree")
+    level   = data.get("level", "Degree")
 
     # -------------------------
     # REQUIRED FIELD CHECK
@@ -115,15 +115,22 @@ def clo_only_generate():
     sc_desc = details["SC_Desc"]
     vbe     = details["VBE"]
 
-    # -------------------------
-    # DEGREE × BLOOM ENFORCEMENT
-    # -------------------------
-    allowed = DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])
-    if bloom.lower() not in allowed:
-        return jsonify({
-            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
-        }), 400
 
+    # -------------------------
+# DEGREE × BLOOM ENFORCEMENT (FINAL & CORRECT)
+# -------------------------
+level = data.get("level", "Degree")   # penting: ikut frontend
+
+allowed = DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])
+
+bloom_key = bloom.strip().lower()
+allowed   = [a.strip().lower() for a in allowed]
+
+if bloom_key not in allowed:
+    return jsonify({
+        "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
+    }), 400
+    
     # -------------------------
     # CLEAN VERB DUPLICATION
     # -------------------------
