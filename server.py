@@ -2,6 +2,9 @@ from flask import Blueprint, request, jsonify, send_file
 from openpyxl import Workbook
 from io import BytesIO
 from datetime import datetime
+from flask import send_from_directory
+import os
+
 
 from utils import (
     load_df,
@@ -182,6 +185,15 @@ def clo_only_generate():
         "assessments": assessments,
         "evidence": evidence
     })
+
+@clo_only.route("/static/data/plo_mapping.json")
+def serve_plo_mapping():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    return send_from_directory(
+        os.path.join(base_dir, "static", "data"),
+        "plo_mapping.json"
+    )
+
 
 # ======================================================
 # DOWNLOAD — CLO EXCEL
