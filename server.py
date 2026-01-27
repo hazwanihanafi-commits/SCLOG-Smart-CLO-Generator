@@ -136,10 +136,20 @@ def clo_only_generate():
     # BLOOM METADATA (SAFE FALLBACK)
     # -------------------------
     meta = get_meta_data(plo, bloom, "sc") or {}
-    condition = meta.get(
-        "condition",
-        f"when applying {bloom} level cognitive processes"
-    )
+
+# ✅ NORMALISE condition (NO "when", NO "guided by")
+raw_condition = meta.get(
+    "condition",
+    f"applying {bloom} level cognitive processes"
+)
+
+condition = (
+    raw_condition
+    .replace("when ", "")
+    .replace("guided by", "")
+    .strip()
+)
+
 
     # -------------------------
     # DEGREE × BLOOM ENFORCEMENT
