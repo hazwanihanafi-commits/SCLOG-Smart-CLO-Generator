@@ -649,6 +649,19 @@ LAST_CLO = {}
 def generate():
     global LAST_CLO
 
+    PROFILE_ALIAS = {
+    "sc": "computer science & it",
+    "health": "medical & health",
+    "eng": "engineering & technology",
+    "socs": "social sciences",
+    "edu": "education",
+    "bus": "business & management",
+    "arts": "arts & humanities"
+}
+
+raw_profile = request.form.get("profile", "medical & health").strip().lower()
+profile = PROFILE_ALIAS.get(raw_profile, raw_profile)
+
     profile = request.form.get("profile", "sc")
     plo = request.form.get("plo", "")
     bloom = request.form.get("bloom", "")
@@ -703,7 +716,7 @@ def generate():
         ieg = next((i for i, peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
 
     assessments = get_assessment(plo, bloom, domain, profile)
-evidence = {a: get_evidence_for(a) for a in assessments}
+    evidence = {a: get_evidence_for(a) for a in assessments}
 
 
     LAST_CLO = {
@@ -854,6 +867,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
