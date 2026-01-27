@@ -186,13 +186,14 @@ def clo_only_generate():
         "evidence": evidence
     })
 
-@clo_only.route("/static/data/plo_mapping.json")
+@clo_only.route("/clo-only/plo-mapping")
 def serve_plo_mapping():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     return send_from_directory(
         os.path.join(base_dir, "static", "data"),
         "plo_mapping.json"
     )
+
 
 
 # ======================================================
