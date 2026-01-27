@@ -1,10 +1,8 @@
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint, request, jsonify, send_file, current_app, send_from_directory
 from openpyxl import Workbook
 from io import BytesIO
 from datetime import datetime
-from flask import send_from_directory
 import os
-
 
 from utils import (
     load_df,
@@ -14,10 +12,18 @@ from utils import (
     get_evidence_for
 )
 
+
 # ======================================================
 # Blueprint
 # ======================================================
 clo_only = Blueprint("clo_only", __name__)
+
+@clo_only.route("/clo-only/plo-mapping")
+def serve_plo_mapping():
+    return send_from_directory(
+        os.path.join(current_app.root_path, "static", "data"),
+        "plo_mapping.json"
+    )
 
 # ======================================================
 # DEGREE × DOMAIN × BLOOM LIMIT
@@ -185,15 +191,6 @@ def clo_only_generate():
         "assessments": assessments,
         "evidence": evidence
     })
-
-@clo_only.route("/clo-only/plo-mapping")
-def serve_plo_mapping():
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    return send_from_directory(
-        os.path.join(base_dir, "static", "data"),
-        "plo_mapping.json"
-    )
-
 
 
 # ======================================================
