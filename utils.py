@@ -210,57 +210,137 @@ def get_meta_data(plo, bloom, profile="sc"):
 # -------------------------
 # ASSESSMENT
 # -------------------------
+# utils.py
 def get_assessment(plo, bloom, domain):
-    b = bloom.lower()
-    d = domain.lower()
+    b = bloom.lower().strip()
+    d = domain.lower().strip()
 
     cognitive = {
-        "remember": ["MCQ","Recall quiz"],
-        "understand": ["Short answer","Concept explanation"],
-        "apply": ["Case study","Problem-solving"],
-        "analyze": ["Data analysis","Critique"],
-        "analyse": ["Data analysis","Critique"],
-        "evaluate": ["Evaluation report"],
-        "create": ["Design project","Proposal"]
+        "Medical & Health": {
+            "remember": ["MCQ", "Quiz", "Recall questions"],
+            "understand": ["Short answer", "Concept explanation"],
+            "apply": ["Case-based discussion", "Short case", "Screening task"],
+            "analyze": ["Case analysis", "Journal critique"],
+            "analyse": ["Case analysis", "Journal critique"],
+            "evaluate": ["Long case", "Viva Voce", "Clinical decision justification"],
+            "create": ["Clinical management plan", "Health intervention proposal"]
+        },
+        "Computer Science & IT": {
+            "remember": ["MCQ", "Quiz"],
+            "understand": ["Short answer", "Code explanation"],
+            "apply": ["Programming assignment", "Coding exercise"],
+            "analyze": ["Code analysis", "Debugging task"],
+            "analyse": ["Code analysis", "Debugging task"],
+            "evaluate": ["Code review", "System evaluation report"],
+            "create": ["Software project", "Capstone project"]
+        },
+        "Engineering & Technology": {
+            "remember": ["Test", "Quiz"],
+            "understand": ["Technical explanation"],
+            "apply": ["Problem-solving assignment", "Design exercise"],
+            "analyze": ["System analysis", "Technical report"],
+            "analyse": ["System analysis", "Technical report"],
+            "evaluate": ["Design evaluation", "Oral presentation"],
+            "create": ["Design project", "Capstone project"]
+        },
+        "Social Sciences": {
+            "remember": ["Test", "Reading quiz"],
+            "understand": ["Essay", "Discussion"],
+            "apply": ["Case study", "Fieldwork report"],
+            "analyze": ["Thematic analysis", "Policy analysis"],
+            "analyse": ["Thematic analysis", "Policy analysis"],
+            "evaluate": ["Critical review", "Oral presentation"],
+            "create": ["Research project", "Policy proposal"]
+        },
+        "Education": {
+            "remember": ["Test", "Quiz"],
+            "understand": ["Essay", "Reflection"],
+            "apply": ["Lesson plan", "Microteaching"],
+            "analyze": ["Teaching reflection report"],
+            "analyse": ["Teaching reflection report"],
+            "evaluate": ["Teaching evaluation", "Portfolio review"],
+            "create": ["Curriculum design project", "Action research"]
+        },
+        "Business & Management": {
+            "remember": ["Test", "Quiz"],
+            "understand": ["Essay", "Case discussion"],
+            "apply": ["Business case study", "Problem-solving assignment"],
+            "analyze": ["Financial analysis", "Market analysis"],
+            "analyse": ["Financial analysis", "Market analysis"],
+            "evaluate": ["Strategy evaluation", "Oral presentation"],
+            "create": ["Business plan", "Consultancy project"]
+        },
+        "Arts & Humanities": {
+            "remember": ["Quiz", "Visual identification"],
+            "understand": ["Essay", "Artwork interpretation"],
+            "apply": ["Studio exercise", "Creative task"],
+            "analyze": ["Artwork analysis", "Critical review"],
+            "analyse": ["Artwork analysis", "Critical review"],
+            "evaluate": ["Portfolio critique", "Oral presentation"],
+            "create": ["Creative project", "Final portfolio"]
+        }
     }
 
     affective = {
-        "receive": ["Reflection log"],
-        "respond": ["Participation","Peer feedback"],
-        "value": ["Value essay"],
-        "organization": ["Group portfolio"],
-        "characterization": ["Professional behaviour assessment"]
+        "receive": ["Reflection log", "Learning journal"],
+        "respond": ["Participation", "Peer feedback", "Discussion activity"],
+        "value": ["Values / ethics essay", "Reflective portfolio"],
+        "organization": ["Group portfolio", "Team-based project"],
+        "characterization": ["Professional behaviour assessment", "360° feedback"]
     }
 
     psychomotor = {
-        "perception": ["Observation"],
-        "set": ["Preparation checklist"],
-        "guided response": ["Guided task"],
-        "mechanism": ["Skills test"],
-        "complex overt response": ["OSCE"],
-        "adaptation": ["Adapted task"],
-        "origination": ["Capstone practical"]
+        "perception": ["Observation", "Recognition task"],
+        "set": ["Preparation checklist", "Readiness assessment"],
+        "guided response": ["Guided task", "Supervised practical"],
+        "mechanism": ["Skills test", "Practical examination"],
+        "complex overt response": ["OSCE", "Simulation assessment"],
+        "adaptation": ["Adapted task", "Advanced practical"],
+        "origination": ["Capstone practical", "Independent performance task"]
     }
 
-    if d == "affective": return affective.get(b, [])
-    if d == "psychomotor": return psychomotor.get(b, [])
-    return cognitive.get(b, [])
+    if d == "cognitive":
+        return {field: items[b] for field, items in cognitive.items() if b in items}
+    if d == "affective":
+        return {"Affective domain": affective.get(b, [])}
+    if d == "psychomotor":
+        return {"Psychomotor domain": psychomotor.get(b, [])}
 
-# -------------------------
-# EVIDENCE
-# -------------------------
-def get_evidence_for(assessment):
-    a = assessment.lower()
+    return {}
+    
+    def get_evidence_for(assessment):
+    a = assessment.lower().strip()
+
     mapping = {
-        "mcq": ["score report"],
-        "quiz": ["quiz score"],
-        "analysis": ["analysis sheet"],
-        "critique": ["written critique"],
-        "skills": ["skills checklist"],
+        "mcq": ["Score report"],
+        "quiz": ["Quiz score"],
+        "test": ["Test score report"],
+        "recall": ["Marked answer script"],
+
+        "short answer": ["Marked answer script"],
+        "essay": ["Written essay"],
+        "concept": ["Written explanation"],
+
+        "case": ["Case report / assessment form"],
+        "analysis": ["Analysis worksheet"],
+        "critique": ["Written critique"],
+
+        "project": ["Project report"],
+        "proposal": ["Proposal document"],
+
+        "skills": ["Skills checklist"],
         "osce": ["OSCE score sheet"],
-        "reflection": ["reflection journal"]
+        "simulation": ["Simulation checklist"],
+
+        "presentation": ["Presentation rubric"],
+        "portfolio": ["Portfolio evidence"],
+        "reflection": ["Reflection journal"]
     }
-    for k,v in mapping.items():
+
+    evidence = []
+    for k, v in mapping.items():
         if k in a:
-            return v
-    return ["assessment evidence"]
+            evidence.extend(v)
+
+    return list(dict.fromkeys(evidence)) if evidence else ["Assessment evidence"]
+
