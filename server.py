@@ -113,10 +113,15 @@ def clo_only_generate():
     content = data.get("content", "")
     level = data.get("level", "Degree")
 
+    # -------------------------
+    # REQUIRED FIELD CHECK
+    # -------------------------
     if not all([plo, bloom, verb, content]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    # ✅ SINGLE SOURCE OF TRUTH
+    # -------------------------
+    # SINGLE SOURCE OF TRUTH — PLO
+    # -------------------------
     plo_map = load_plo_mapping()
     details = plo_map.get(plo)
 
@@ -127,10 +132,18 @@ def clo_only_generate():
     sc_desc = details["sc_description"]
     vbe = details["vbe"]
 
-    meta = get_meta_data(plo, bloom, "sc")
-    if not meta or "condition" not in meta:
-        return jsonify({"error": "Invalid Bloom–PLO metadata configuration"}), 400
+    # -------------------------
+    # BLOOM METADATA (SAFE FALLBACK)
+    # -------------------------
+    meta = get_meta_data(plo, bloom, "sc") or {}
+    condition = meta.get(
+        "condition",
+        f"when applying {bloom} level cognitive processes"
+    )
 
+    # -------------------------
+    # DEGREE × BLOOM ENFORCEMENT
+    # -------------------------
     allowed = [b.lower() for b in DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])]
     if bloom not in allowed:
         return jsonify({
@@ -138,13 +151,19 @@ def clo_only_generate():
             "allowed": allowed
         }), 400
 
+    # -------------------------
+    # CLEAN VERB DUPLICATION
+    # -------------------------
     words = content.strip().split()
     if words and words[0].lower() == verb.lower():
         content = " ".join(words[1:])
 
+    # -------------------------
+    # CLO CONSTRUCTION
+    # -------------------------
     clo = (
         f"{verb.lower()} {content} using {sc_desc.lower()} "
-        f"when {meta['condition'].replace('when ', '')} "
+        f"when {condition.replace('when ', '')} "
         f"guided by {vbe.lower()}."
     ).capitalize()
 
@@ -157,20 +176,23 @@ def clo_only_generate():
     evidence = {a: get_evidence_for(a) for a in assessments}
 
     return jsonify({
-    "clo": clo,
-    "variants": variants,
-    "meta": {
-        "domain": domain,
-        "bloom": bloom,
-        "sc": sc_desc,
-        "vbe": vbe,
-        "condition": meta["condition"]
-    },
-    "assessments": assessments,
-    "evidence": evidence
-})
+        "clo": clo,
+        "variants": variants,
+        "meta": {
+            "domain": domain,
+            "bloom": bloom,
+            "sc": sc_desc,
+            "vbe": vbe,
+            "condition": condition
+        },
+        "assessments": assessments,
+        "evidence": evidence
+    })
 
-   
+
+
+
+
 
 # ======================================================
 # DOWNLOAD — CLO EXCEL
