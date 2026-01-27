@@ -183,26 +183,30 @@ def clo_only_generate():
         "Short": f"{verb.capitalize()} {content}."
     }
 
+
+    # =========================
+    # ASSESSMENT (BY FIELD)
+    # =========================
     assessments_by_field = get_assessment(plo, bloom, domain)
 
-# =========================
-# FLATTEN UNTUK FRONTEND
-# =========================
-flat_assessments = sorted(
-    set(
-        a
-        for items in assessments_by_field.values()
-        for a in items
+    # =========================
+    # FLATTEN UNTUK FRONTEND
+    # =========================
+    flat_assessments = sorted(
+        set(
+            a
+            for items in assessments_by_field.values()
+            for a in items
+        )
     )
-)
 
-# =========================
-# EVIDENCE (FIELD-AGNOSTIC)
-# =========================
-evidence = {
-    a: get_evidence_for(a)
-    for a in flat_assessments
-}
+    # =========================
+    # EVIDENCE (FIELD-AGNOSTIC)
+    # =========================
+    evidence = {
+        a: get_evidence_for(a)
+        for a in flat_assessments
+    }
 
     return jsonify({
         "clo": clo,
@@ -214,9 +218,16 @@ evidence = {
             "vbe": vbe,
             "condition": condition
         },
-        "assessments": assessments,
-        "evidence": evidence
+
+        # ✅ FRONTEND SELAMAT
+        "assessments": flat_assessments,
+        "evidence": evidence,
+
+        # ✅ UNTUK SEMUA ORANG NAMPAK CONTOH FIELD
+        "assessments_by_field": assessments_by_field
     })
+
+    
 # ======================================================
 # DOWNLOAD — CLO EXCEL
 # ======================================================
