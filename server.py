@@ -113,18 +113,11 @@ def clo_only_generate():
     content = data.get("content", "")
     level = data.get("level", "Degree")
 
-    # -------------------------
-    # REQUIRED FIELD CHECK
-    # -------------------------
     if not all([plo, bloom, verb, content]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    # -------------------------
-    # SINGLE SOURCE OF TRUTH — PLO
-    # -------------------------
     plo_map = load_plo_mapping()
     details = plo_map.get(plo)
-
     if not details:
         return jsonify({"error": "Invalid PLO"}), 400
 
@@ -132,30 +125,23 @@ def clo_only_generate():
     sc_desc = details["sc_description"]
     vbe = details["vbe"]
 
-    # -------------------------
-    # BLOOM METADATA (SAFE FALLBACK)
-    # -------------------------
+    # ✅ CONDITION MUST BE DEFINED HERE
     meta = get_meta_data(plo, bloom, "sc") or {}
 
-#meta = get_meta_data(plo, bloom, "sc") or {}
+    raw_condition = meta.get(
+        "condition",
+        f"applying {bloom} level cognitive processes"
+    )
 
-# ✅ NORMALISE condition (NO "when", NO "guided by")
-raw_condition = meta.get(
-    "condition",
-    f"applying {bloom} level cognitive processes"
-)
+    condition = (
+        raw_condition
+        .replace("when ", "")
+        .replace("by ", "")
+        .replace("guided by", "")
+        .strip()
+    )
 
-condition = (
-    raw_condition
-    .replace("when ", "")
-    .replace("guided by", "")
-    .strip()
-)
-
-
-    # -------------------------
-    # DEGREE × BLOOM ENFORCEMENT
-    # -------------------------
+    # 🔒 Bloom enforcement (after condition is defined)
     allowed = [b.lower() for b in DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])]
     if bloom not in allowed:
         return jsonify({
@@ -163,20 +149,15 @@ condition = (
             "allowed": allowed
         }), 400
 
-    # -------------------------
-    # CLEAN VERB DUPLICATION
-    # -------------------------
     words = content.strip().split()
     if words and words[0].lower() == verb.lower():
         content = " ".join(words[1:])
 
-    # -------------------------
-    # CLO CONSTRUCTION
-    # -------------------------
+    # ✅ NOW THIS LINE WILL WORK
     clo = (
-    f"{verb.lower()} {content} using {sc_desc.lower()} "
-    f"when {condition} guided by {vbe.lower()}."
-).capitalize()
+        f"{verb.lower()} {content} using {sc_desc.lower()} "
+        f"when {condition} guided by {vbe.lower()}."
+    ).capitalize()
 
     variants = {
         "Standard": clo,
