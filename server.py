@@ -93,14 +93,14 @@ def clo_only_generate():
     data = request.form
 
     profile = data.get("profile", "sc")
-    plo     = data.get("plo", "")
-    bloom   = (
+    plo = data.get("plo", "")
+    bloom = (
         data.get("bloom_key")
         or data.get("bloom", "")
     ).strip().lower()
-    verb    = data.get("verb", "")
+    verb = data.get("verb", "")
     content = data.get("content", "")
-    level   = data.get("level", "Degree")
+    level = data.get("level", "Degree")
 
     # -------------------------
     # REQUIRED FIELD CHECK
@@ -114,17 +114,15 @@ def clo_only_generate():
 
     meta = get_meta_data(plo, bloom, profile)
 
-# 🔒 SAFETY GUARD — ADD THIS
-if not meta or "condition" not in meta:
-    return jsonify({
-        "error": "Invalid Bloom–PLO metadata configuration"
-    }), 400
+    # 🔒 SAFETY GUARD (THIS IS THE PART YOU ASKED ABOUT)
+    if not meta or "condition" not in meta:
+        return jsonify({
+            "error": "Invalid Bloom–PLO metadata configuration"
+        }), 400
 
-domain  = details["Domain"].lower()
-sc_desc = details["SC_Desc"]
-vbe     = details["VBE"]
-
-
+    domain = details["Domain"].lower()
+    sc_desc = details["SC_Desc"]
+    vbe = details["VBE"]
 
     # -------------------------
     # DEGREE × BLOOM ENFORCEMENT
