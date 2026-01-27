@@ -94,10 +94,13 @@ def clo_only_generate():
 
     profile = data.get("profile", "sc")
     plo     = data.get("plo", "")
-    bloom   = data.get("bloom", "")
+    bloom   = (
+        data.get("bloom_key")
+        or data.get("bloom", "")
+    ).strip().lower()
     verb    = data.get("verb", "")
     content = data.get("content", "")
-    level   = data.get("level", "Degree")   # ✔️ satu sahaja
+    level   = data.get("level", "Degree")
 
     # -------------------------
     # REQUIRED FIELD CHECK
@@ -116,16 +119,15 @@ def clo_only_generate():
     vbe     = details["VBE"]
 
     # -------------------------
-    # DEGREE × BLOOM ENFORCEMENT (FINAL & CORRECT)
+    # DEGREE × BLOOM ENFORCEMENT
     # -------------------------
     allowed = DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])
+    allowed = [a.strip().lower() for a in allowed]
 
-    bloom_key = bloom.strip().lower()
-    allowed   = [a.strip().lower() for a in allowed]
-
-    if bloom_key not in allowed:
+    if bloom not in allowed:
         return jsonify({
-            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})"
+            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})",
+            "allowed": allowed
         }), 400
 
     # -------------------------
