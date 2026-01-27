@@ -155,59 +155,320 @@ def get_meta_data(plo, bloom, profile="sc"):
 # ------------------------------------------------------
 # Assessment / Evidence
 # ------------------------------------------------------
-def get_assessment(plo, bloom, domain):
-    b = bloom.lower()
-    d = domain.lower()
+def get_assessment(plo, bloom, domain, profile):
+    b = bloom.lower().strip()
+    d = domain.lower().strip()
+    p = profile.strip().lower()
 
+    # ===============================
+    # COGNITIVE — BY PROFILE
+    # ===============================
     cognitive = {
-        "remember": ["MCQ","Recall quiz"],
-        "understand": ["Short answer","Concept explanation"],
-        "apply": ["Case study","Problem-solving"],
-        "analyze": ["Data analysis","Critique"],
-        "analyse": ["Data analysis","Critique"],
-        "evaluate": ["Evaluation report"],
-        "create": ["Design project","Proposal"]
+
+        "medical & health": {
+            "remember": ["MCQ", "Quiz", "Recall questions"],
+            "understand": ["Short answer", "Concept explanation"],
+            "apply": ["Case-based discussion", "Short case", "Screening task"],
+            "analyze": ["Case analysis", "Journal critique"],
+            "analyse": ["Case analysis", "Journal critique"],
+            "evaluate": ["Long case", "Viva Voce", "Clinical decision justification"],
+            "create": ["Clinical management plan", "Health intervention proposal"]
+        },
+
+        "computer science & it": {
+            "remember": ["MCQ", "Quiz"],
+            "understand": ["Short answer", "Code explanation"],
+            "apply": ["Programming assignment", "Coding exercise"],
+            "analyze": ["Code analysis", "Debugging task"],
+            "analyse": ["Code analysis", "Debugging task"],
+            "evaluate": ["Code review", "System evaluation report"],
+            "create": ["Software project", "Capstone project"]
+        },
+
+        "engineering & technology": {
+            "remember": ["Test", "Quiz"],
+            "understand": ["Technical explanation"],
+            "apply": ["Problem-solving assignment", "Design exercise"],
+            "analyze": ["System analysis", "Technical report"],
+            "analyse": ["System analysis", "Technical report"],
+            "evaluate": ["Design evaluation", "Oral presentation"],
+            "create": ["Design project", "Capstone project"]
+        },
+
+        "social sciences": {
+            "remember": ["Test", "Reading quiz"],
+            "understand": ["Essay", "Discussion"],
+            "apply": ["Case study", "Fieldwork report"],
+            "analyze": ["Thematic analysis", "Policy analysis"],
+            "analyse": ["Thematic analysis", "Policy analysis"],
+            "evaluate": ["Critical review", "Oral presentation"],
+            "create": ["Research project", "Policy proposal"]
+        },
+
+        "education": {
+            "remember": ["Test", "Quiz"],
+            "understand": ["Essay", "Reflection"],
+            "apply": ["Lesson plan", "Microteaching"],
+            "analyze": ["Teaching reflection report"],
+            "analyse": ["Teaching reflection report"],
+            "evaluate": ["Teaching evaluation", "Portfolio review"],
+            "create": ["Curriculum design project", "Action research"]
+        },
+
+        "business & management": {
+            "remember": ["Test", "Quiz"],
+            "understand": ["Essay", "Case discussion"],
+            "apply": ["Business case study", "Problem-solving assignment"],
+            "analyze": ["Financial analysis", "Market analysis"],
+            "analyse": ["Financial analysis", "Market analysis"],
+            "evaluate": ["Strategy evaluation", "Oral presentation"],
+            "create": ["Business plan", "Consultancy project"]
+        },
+
+        "arts & humanities": {
+            "remember": ["Quiz", "Visual identification"],
+            "understand": ["Essay", "Artwork interpretation"],
+            "apply": ["Studio exercise", "Creative task"],
+            "analyze": ["Artwork analysis", "Critical review"],
+            "analyse": ["Artwork analysis", "Critical review"],
+            "evaluate": ["Portfolio critique", "Oral presentation"],
+            "create": ["Creative project", "Final portfolio"]
+        }
     }
 
+    # ===============================
+    # AFFECTIVE — BY PROFILE
+    # ===============================
     affective = {
-        "receive": ["Reflection log"],
-        "respond": ["Participation","Peer feedback"],
-        "value": ["Value essay"],
-        "organization": ["Group portfolio"],
-        "characterization": ["Professional behaviour assessment"]
+
+        "medical & health": {
+            "receive": ["Professional awareness reflection"],
+            "respond": ["Ward / clinical participation"],
+            "value": ["Ethics & patient safety reflection"],
+            "organization": ["Interprofessional teamwork portfolio"],
+            "characterization": ["Clinical professionalism assessment"]
+        },
+
+        "computer science & it": {
+            "receive": ["Learning reflection"],
+            "respond": ["Participation in technical discussions"],
+            "value": ["Ethics in computing essay"],
+            "organization": ["Team-based software project portfolio"],
+            "characterization": ["Professional conduct in computing"]
+        },
+
+        "engineering & technology": {
+            "receive": ["Safety awareness reflection"],
+            "respond": ["Lab participation"],
+            "value": ["Engineering ethics reflection"],
+            "organization": ["Project team portfolio"],
+            "characterization": ["Professional engineering behaviour"]
+        },
+
+        "social sciences": {
+            "receive": ["Social awareness reflection"],
+            "respond": ["Seminar participation"],
+            "value": ["Ethical reasoning essay"],
+            "organization": ["Group research portfolio"],
+            "characterization": ["Professional social conduct"]
+        },
+
+        "education": {
+            "receive": ["Teaching values reflection"],
+            "respond": ["Classroom participation"],
+            "value": ["Ethics in education essay"],
+            "organization": ["Teaching portfolio"],
+            "characterization": ["Teacher professionalism assessment"]
+        },
+
+        "business & management": {
+            "receive": ["Business awareness reflection"],
+            "respond": ["Case discussion participation"],
+            "value": ["Business ethics essay"],
+            "organization": ["Team consultancy portfolio"],
+            "characterization": ["Professional business conduct"]
+        },
+
+        "arts & humanities": {
+            "receive": ["Creative awareness reflection"],
+            "respond": ["Studio participation"],
+            "value": ["Artistic values reflection"],
+            "organization": ["Creative portfolio"],
+            "characterization": ["Professional artistic practice"]
+        }
     }
 
+    # ===============================
+    # PSYCHOMOTOR — BY PROFILE
+    # ===============================
     psychomotor = {
-        "perception": ["Observation"],
-        "set": ["Preparation checklist"],
-        "guided response": ["Guided task"],
-        "mechanism": ["Skills test"],
-        "complex overt response": ["OSCE"],
-        "adaptation": ["Adapted task"],
-        "origination": ["Capstone practical"]
+
+        "medical & health": {
+            "perception": ["Recognition of clinical signs"],
+            "set": ["Clinical preparation checklist"],
+            "guided response": ["Supervised clinical task"],
+            "mechanism": ["Clinical skills test", "OSCE"],
+            "complex overt response": ["OSCE", "Clinical simulation"],
+            "adaptation": ["Management of complex patients"],
+            "origination": ["Independent patient management"]
+        },
+
+        "computer science & it": {
+            "perception": ["Recognition of system requirements"],
+            "set": ["Development environment setup"],
+            "guided response": ["Guided coding task"],
+            "mechanism": ["Hands-on coding test"],
+            "complex overt response": ["System simulation"],
+            "adaptation": ["Code optimisation task"],
+            "origination": ["Independent software development"]
+        },
+
+        "engineering & technology": {
+            "perception": ["Identification of system components"],
+            "set": ["Lab setup checklist"],
+            "guided response": ["Guided laboratory task"],
+            "mechanism": ["Laboratory practical"],
+            "complex overt response": ["Integrated lab assessment"],
+            "adaptation": ["System troubleshooting"],
+            "origination": ["Independent engineering task"]
+        },
+
+        "social sciences": {
+            "perception": ["Observation of social phenomena"],
+            "set": ["Fieldwork preparation"],
+            "guided response": ["Guided data collection"],
+            "mechanism": ["Fieldwork practical"],
+            "complex overt response": ["Community-based simulation"],
+            "adaptation": ["Contextual analysis task"],
+            "origination": ["Independent field study"]
+        },
+
+        "education": {
+            "perception": ["Classroom observation"],
+            "set": ["Lesson preparation"],
+            "guided response": ["Guided teaching practice"],
+            "mechanism": ["Microteaching practical"],
+            "complex overt response": ["Teaching simulation"],
+            "adaptation": ["Adaptive teaching task"],
+            "origination": ["Independent teaching session"]
+        },
+
+        "business & management": {
+            "perception": ["Observation of business processes"],
+            "set": ["Business case preparation"],
+            "guided response": ["Guided business simulation"],
+            "mechanism": ["Business skills practical"],
+            "complex overt response": ["Management simulation"],
+            "adaptation": ["Strategic adjustment task"],
+            "origination": ["Independent consultancy task"]
+        },
+
+        "arts & humanities": {
+            "perception": ["Observation of artistic techniques"],
+            "set": ["Studio preparation"],
+            "guided response": ["Guided studio task"],
+            "mechanism": ["Studio practical"],
+            "complex overt response": ["Performance / exhibition simulation"],
+            "adaptation": ["Creative adaptation task"],
+            "origination": ["Independent creative production"]
+        }
     }
 
-    if d == "affective": return affective.get(b, [])
-    if d == "psychomotor": return psychomotor.get(b, [])
-    return cognitive.get(b, [])
+    if d == "cognitive":
+        return cognitive.get(p, {}).get(b, [])
+    if d == "affective":
+        return affective.get(p, {}).get(b, [])
+    if d == "psychomotor":
+        return psychomotor.get(p, {}).get(b, [])
 
+    return []
 
 def get_evidence_for(assessment):
-    a = assessment.lower()
-    mapping = {
-        "mcq": ["score report"],
-        "quiz": ["quiz score"],
-        "analysis": ["analysis sheet"],
-        "critique": ["written critique"],
-        "skills": ["skills checklist"],
-        "osce": ["OSCE score sheet"],
-        "reflection": ["reflection journal"]
-    }
-    for k,v in mapping.items():
-        if k in a:
-            return v
-    return ["assessment evidence"]
+    a = assessment.lower().strip()
 
+    mapping = {
+
+        # TEST / QUIZ
+        "mcq": ["Score report"],
+        "quiz": ["Quiz score"],
+        "test": ["Test score report"],
+        "recall": ["Marked answer script"],
+
+        # WRITTEN / ESSAY
+        "short answer": ["Marked answer script"],
+        "essay": ["Written essay"],
+        "concept explanation": ["Written explanation"],
+        "code explanation": ["Annotated code explanation"],
+        "technical explanation": ["Written technical explanation"],
+
+        # CASE / DISCUSSION
+        "case-based discussion": ["CbD record", "Supervisor feedback"],
+        "short case": ["Short case assessment form"],
+        "long case": ["Long case report", "Examiner evaluation form"],
+        "case study": ["Case study report"],
+        "case analysis": ["Case analysis worksheet"],
+        "discussion": ["Discussion participation record"],
+        "journal critique": ["Journal critique report"],
+
+        # CLINICAL / PRACTICAL
+        "screening": ["Screening checklist"],
+        "skills test": ["Skills checklist"],
+        "osce": ["OSCE score sheet"],
+        "simulation": ["Simulation checklist"],
+        "observation": ["Observation checklist"],
+        "guided task": ["Supervisor observation form"],
+
+        # PROGRAMMING / IT
+        "programming assignment": ["Source code submission", "Grading rubric"],
+        "coding exercise": ["Code submission"],
+        "debugging": ["Debugging report"],
+        "code analysis": ["Code review report"],
+        "code review": ["Code review rubric"],
+
+        # ENGINEERING / DESIGN
+        "design exercise": ["Design documentation"],
+        "design project": ["Project report", "Design artefact"],
+        "system analysis": ["System analysis report"],
+        "technical report": ["Technical report"],
+
+        # EDUCATION
+        "lesson plan": ["Lesson plan document"],
+        "microteaching": ["Teaching observation rubric"],
+        "teaching evaluation": ["Teaching evaluation form"],
+        "portfolio review": ["Portfolio evidence"],
+
+        # BUSINESS / SOCIAL SCIENCE
+        "financial analysis": ["Financial analysis report"],
+        "market analysis": ["Market analysis report"],
+        "policy analysis": ["Policy analysis report"],
+        "fieldwork": ["Fieldwork report"],
+        "consultancy": ["Consultancy report"],
+
+        # PROJECT / RESEARCH / CREATIVE
+        "project": ["Project documentation"],
+        "capstone": ["Capstone project report"],
+        "research": ["Research report"],
+        "proposal": ["Proposal document"],
+        "business plan": ["Business plan document"],
+        "creative project": ["Creative artefact", "Project reflection"],
+        "portfolio": ["Portfolio evidence"],
+
+        # AFFECTIVE / PROFESSIONAL
+        "reflection": ["Reflection journal"],
+        "participation": ["Participation record"],
+        "peer feedback": ["Peer feedback form"],
+        "professional": ["Professional behaviour evaluation"],
+        "ethics": ["Ethics reflection"],
+        "presentation": ["Presentation rubric"]
+    }
+
+    evidence = []
+    for key, items in mapping.items():
+        if key in a:
+            evidence.extend(items)
+
+    evidence = list(dict.fromkeys(evidence))
+    return evidence if evidence else ["Assessment evidence"]
 
 # ------------------------------------------------------
 # CONTENT suggestions
@@ -441,8 +702,8 @@ def generate():
     else:
         ieg = next((i for i, peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
 
-    assessments = get_assessment(plo, bloom, domain)
-    evidence = {a: get_evidence_for(a) for a in assessments}
+    assessments = get_assessment(plo, bloom, domain, profile)
+evidence = {a: get_evidence_for(a) for a in assessments}
 
 
     LAST_CLO = {
@@ -593,6 +854,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
