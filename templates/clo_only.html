@@ -374,29 +374,29 @@ document.getElementById("generateBtn").onclick = async () => {
     return;
   }
 
+  // ✅ DEFINE ploObj FIRST
   const ploObj = PLO_MAP[plo];
 
-if (!ploObj) {
-  alert("PLO data not loaded yet. Please wait a moment and try again.");
-  return;
-}
+  if (!ploObj || !ploObj.title || !ploObj.domain) {
+    alert("PLO reference data failed to load. Please refresh the page.");
+    return;
+  }
 
-const fd = new FormData();
-fd.append("profile", "sc");
+  const fd = new FormData();
+  fd.append("profile", "sc");
 
-fd.append("plo", plo);                         // 🔑 REQUIRED (legacy)
-fd.append("plo_code", plo);                    // extended
-fd.append("plo_title", ploObj.title);
-fd.append("plo_domain", ploObj.domain);
-fd.append("plo_sc", ploObj.sc_code);
-fd.append("plo_vbe", ploObj.vbe);
+  fd.append("plo", plo);                         // legacy
+  fd.append("plo_code", plo);
+  fd.append("plo_title", ploObj.title);
+  fd.append("plo_domain", ploObj.domain);
+  fd.append("plo_sc", ploObj.sc_code);
+  fd.append("plo_vbe", ploObj.vbe);
 
-fd.append("bloom", bloom);
-fd.append("bloom_key", normaliseBloomKey(bloom));
-fd.append("verb", verb);
-fd.append("content", content);
-fd.append("level", level);
-
+  fd.append("bloom", bloom);
+  fd.append("bloom_key", normaliseBloomKey(bloom));
+  fd.append("verb", verb);
+  fd.append("content", content);
+  fd.append("level", level);
 
   try {
     const res = await fetch("/clo-only/generate", {
@@ -433,6 +433,7 @@ fd.append("level", level);
     alert("Error generating CLO. See console.");
   }
 };
+
 </script>
 
 
