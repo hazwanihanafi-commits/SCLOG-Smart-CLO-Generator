@@ -113,6 +113,12 @@ body { background:#f4f6f9; }
 <div id="cloCard" class="card-box" style="display:none">
 <h6>Generated CLO</h6>
 <div id="cloText" class="fw-semibold"></div>
+<div class="mt-3 d-flex gap-2 flex-wrap">
+  <button id="copyCloBtn" class="btn btn-outline-secondary btn-sm">📋 Copy CLO</button>
+  <button id="downloadCloBtn" class="btn btn-outline-primary btn-sm">⬇️ Download CLO</button>
+  <button id="downloadRubricBtn" class="btn btn-outline-success btn-sm">📑 Download Rubric</button>
+</div>
+
 <hr>
 <h6>Variants</h6>
 <div id="variants"></div>
@@ -123,7 +129,6 @@ body { background:#f4f6f9; }
 <div id="evidence"></div>
 </div>
 
-</div>
 
 <script>
 
@@ -411,6 +416,7 @@ document.getElementById("generateBtn").onclick = async () => {
     }
 
     const data = await res.json();
+    window.lastCloResponse = data;
 
     document.getElementById("cloCard").style.display = "block";
     document.getElementById("cloText").innerText = data.clo;
@@ -433,6 +439,55 @@ document.getElementById("generateBtn").onclick = async () => {
     alert("Error generating CLO. See console.");
   }
 };
+
+  document.getElementById("copyCloBtn").onclick = () => {
+  const text = document.getElementById("cloText").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("CLO copied to clipboard!");
+  });
+};
+
+  document.getElementById("downloadCloBtn").onclick = async () => {
+  const payload = window.lastCloResponse; // we’ll store this below
+
+  const res = await fetch("/clo-only/download", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "CLO.xlsx";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+};
+
+  document.getElementById("downloadRubricBtn").onclick = async () => {
+  const payload = window.lastCloResponse;
+
+  const res = await fetch("/clo-only/download-rubric", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "CLO_Rubric.xlsx";
+  a.click();
+
+  window.URL.revokeObjectURL(url);
+};
+
+
 
 </script>
 
