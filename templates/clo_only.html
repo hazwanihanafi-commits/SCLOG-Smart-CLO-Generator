@@ -359,7 +359,66 @@ bloomSel.onchange = async () => {
   verbSel.innerHTML = '<option value="">Select Verb</option>';
   (verbs||[]).forEach(v=>verbSel.add(new Option(v,v)));
 };
+
+<script>
+document.getElementById("generateBtn").onclick = async () => {
+
+  const plo = ploSel.value;
+  const bloom = bloomSel.value;
+  const verb = verbSel.value;
+  const content = document.getElementById("content").value.trim();
+  const level = levelSel.value;
+
+  if (!plo || !bloom || !verb || !content || !level) {
+    alert("Please complete Programme Level, PLO, Bloom, Verb, and Content.");
+    return;
+  }
+
+  const fd = new FormData();
+  fd.append("profile", "sc");          // fixed for clo-only
+  fd.append("plo", plo);
+  fd.append("bloom", bloom);
+  fd.append("verb", verb);
+  fd.append("content", content);
+  fd.append("level", level);
+
+  try {
+    const res = await fetch("/clo-only/generate", {
+      method: "POST",
+      body: fd
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert(err.error || "Failed to generate CLO");
+      return;
+    }
+
+    const data = await res.json();
+
+    document.getElementById("cloCard").style.display = "block";
+    document.getElementById("cloText").innerText = data.clo;
+
+    document.getElementById("variants").innerHTML =
+      Object.entries(data.variants || {})
+        .map(([k,v]) => `<div><strong>${k}:</strong> ${v}</div>`)
+        .join("");
+
+    document.getElementById("assessments").innerHTML =
+      "<ul>" + (data.assessments || []).map(a => `<li>${a}</li>`).join("") + "</ul>";
+
+    document.getElementById("evidence").innerHTML =
+      Object.entries(data.evidence || {})
+        .map(([k,v]) => `<div><strong>${k}</strong>: ${v.join(", ")}</div>`)
+        .join("");
+
+  } catch (e) {
+    console.error(e);
+    alert("Error generating CLO. See console.");
+  }
+};
 </script>
+
 
 </body>
 </html>
