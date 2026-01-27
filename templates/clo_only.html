@@ -376,19 +376,27 @@ document.getElementById("generateBtn").onclick = async () => {
 
   const ploObj = PLO_MAP[plo];
 
+if (!ploObj) {
+  alert("PLO data not loaded yet. Please wait a moment and try again.");
+  return;
+}
+
 const fd = new FormData();
 fd.append("profile", "sc");
-fd.append("plo_code", plo);                     // PLO1
-fd.append("plo_title", ploObj.title);           // Knowledge and Understanding
-fd.append("plo_domain", ploObj.domain);         // cognitive / affective / psychomotor
-fd.append("plo_sc", ploObj.sc_code);            // SC2
-fd.append("plo_vbe", ploObj.vbe);               // Ethics and Professionalism
 
-fd.append("bloom", bloom);                      // Analyze
-fd.append("bloom_key", normaliseBloomKey(bloom)); // analyze
+fd.append("plo", plo);                         // 🔑 REQUIRED (legacy)
+fd.append("plo_code", plo);                    // extended
+fd.append("plo_title", ploObj.title);
+fd.append("plo_domain", ploObj.domain);
+fd.append("plo_sc", ploObj.sc_code);
+fd.append("plo_vbe", ploObj.vbe);
+
+fd.append("bloom", bloom);
+fd.append("bloom_key", normaliseBloomKey(bloom));
 fd.append("verb", verb);
 fd.append("content", content);
 fd.append("level", level);
+
 
   try {
     const res = await fetch("/clo-only/generate", {
