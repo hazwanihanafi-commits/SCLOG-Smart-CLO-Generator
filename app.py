@@ -644,26 +644,30 @@ LAST_CLO = {}
 # ------------------------------------------------------
 # GENERATE CLO
 # ------------------------------------------------------
-
 @app.route("/generate", methods=["POST"])
 def generate():
     global LAST_CLO
 
-    # ----------------------------------
-    # NORMALISE PROFILE FROM UI
-    # ----------------------------------
-    PROFILE_ALIAS = {
-        "sc": "computer science & it",
+    # ==============================
+    # PROFILE (DUA VERSI)
+    # ==============================
+    raw_profile = request.form.get("profile", "health").strip().lower()
+
+    # ✅ UNTUK EXCEL (KEKAL)
+    profile_excel = raw_profile   # health, sc, eng
+
+    # ✅ UNTUK ASSESSMENT SAHAJA
+    PROFILE_ASSESSMENT = {
         "health": "medical & health",
+        "sc": "computer science & it",
         "eng": "engineering & technology",
         "socs": "social sciences",
         "edu": "education",
         "bus": "business & management",
         "arts": "arts & humanities"
     }
-
-    raw_profile = request.form.get("profile", "medical & health").strip().lower()
-    profile = PROFILE_ALIAS.get(raw_profile, raw_profile)
+    profile_assessment = PROFILE_ASSESSMENT.get(raw_profile, raw_profile)
+    
 
     # ----------------------------------
     # CONTINUE NORMAL FLOW
@@ -682,14 +686,11 @@ def generate():
     plo_indicator = request.form.get("plo_indicator", "").strip()
 
     # ✅ REQUIRED FIELD CHECK
-    if not plo or not bloom or not verb or not content:
+    if not plo or not bloom or not content:
         return jsonify({"error": "Missing required fields"}), 400
-    
-    details = get_plo_details(plo, profile)
-    if not details:
-        return jsonify({"error": "Invalid PLO"}), 400
 
-    meta = get_meta_data(plo, bloom, profile)
+    details = get_plo_details(plo, profile_excel)
+    meta = get_meta_data(plo, bloom, profile_excel)
 
     domain = details["Domain"].lower()
     sc_desc = details["SC_Desc"]
@@ -721,7 +722,7 @@ def generate():
     else:
         ieg = next((i for i, peos in MAP["IEGtoPEO"].items() if peo in peos), "Paste IEG")
 
-    assessments = get_assessment(plo, bloom, domain, profile)
+    assessments = get_assessment(plo, bloom, domain, profile_assessment)
     evidence = {a: get_evidence_for(a) for a in assessments}
 
 
@@ -873,6 +874,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
