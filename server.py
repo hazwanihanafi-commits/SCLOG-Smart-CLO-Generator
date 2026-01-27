@@ -183,8 +183,26 @@ def clo_only_generate():
         "Short": f"{verb.capitalize()} {content}."
     }
 
-    assessments = get_assessment(plo, bloom, domain)
-    evidence = {a: get_evidence_for(a) for a in assessments}
+    assessments_by_field = get_assessment(plo, bloom, domain)
+
+# =========================
+# FLATTEN UNTUK FRONTEND
+# =========================
+flat_assessments = sorted(
+    set(
+        a
+        for items in assessments_by_field.values()
+        for a in items
+    )
+)
+
+# =========================
+# EVIDENCE (FIELD-AGNOSTIC)
+# =========================
+evidence = {
+    a: get_evidence_for(a)
+    for a in flat_assessments
+}
 
     return jsonify({
         "clo": clo,
