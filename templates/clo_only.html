@@ -250,7 +250,7 @@ function normaliseBloomKey(v){
 }
 
 let PLO_MAP = {};
-fetch("/static/data/plo_mapping.json")
+fetch("/clo-only/plo-mapping")
   .then(r => r.json())
   .then(d => {
     PLO_MAP = d;
