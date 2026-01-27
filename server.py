@@ -114,9 +114,17 @@ def clo_only_generate():
 
     meta = get_meta_data(plo, bloom, profile)
 
-    domain  = details["Domain"].lower()
-    sc_desc = details["SC_Desc"]
-    vbe     = details["VBE"]
+# 🔒 SAFETY GUARD — ADD THIS
+if not meta or "condition" not in meta:
+    return jsonify({
+        "error": "Invalid Bloom–PLO metadata configuration"
+    }), 400
+
+domain  = details["Domain"].lower()
+sc_desc = details["SC_Desc"]
+vbe     = details["VBE"]
+
+
 
     # -------------------------
     # DEGREE × BLOOM ENFORCEMENT
