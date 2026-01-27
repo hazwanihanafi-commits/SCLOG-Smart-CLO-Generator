@@ -649,20 +649,25 @@ LAST_CLO = {}
 def generate():
     global LAST_CLO
 
+    # ----------------------------------
+    # NORMALISE PROFILE FROM UI
+    # ----------------------------------
     PROFILE_ALIAS = {
-    "sc": "computer science & it",
-    "health": "medical & health",
-    "eng": "engineering & technology",
-    "socs": "social sciences",
-    "edu": "education",
-    "bus": "business & management",
-    "arts": "arts & humanities"
-}
+        "sc": "computer science & it",
+        "health": "medical & health",
+        "eng": "engineering & technology",
+        "socs": "social sciences",
+        "edu": "education",
+        "bus": "business & management",
+        "arts": "arts & humanities"
+    }
 
-raw_profile = request.form.get("profile", "medical & health").strip().lower()
-profile = PROFILE_ALIAS.get(raw_profile, raw_profile)
+    raw_profile = request.form.get("profile", "medical & health").strip().lower()
+    profile = PROFILE_ALIAS.get(raw_profile, raw_profile)
 
-    profile = request.form.get("profile", "sc")
+    # ----------------------------------
+    # CONTINUE NORMAL FLOW
+    # ----------------------------------
     plo = request.form.get("plo", "")
     bloom = request.form.get("bloom", "")
     verb = request.form.get("verb", "")
@@ -671,7 +676,6 @@ profile = PROFILE_ALIAS.get(raw_profile, raw_profile)
     programme_name = request.form.get("programmeName", "")
     ieg_input = request.form.get("ieg", "").strip()
     course_name = request.form.get("courseName", "")
-
     peo_statement = request.form.get("peo_statement", "").strip()
     plo_indicator = request.form.get("plo_indicator", "").strip()
 
@@ -867,6 +871,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
