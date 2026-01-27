@@ -128,41 +128,47 @@ def clo_only_generate():
     # ✅ CONDITION MUST BE DEFINED HERE
     meta = get_meta_data(plo, bloom, "sc") or {}
 
+    # ✅ Use meaningful academic behaviour, NOT Bloom labels
     raw_condition = meta.get(
-        "condition",
-        f"applying {bloom} level cognitive processes"
+       "condition",
+       "evaluating information from multiple sources"
     )
 
-    condition = (
-        raw_condition
-        .replace("when ", "")
-        .replace("by ", "")
-        .replace("guided by", "")
-        .strip()
-    )
+  # Normalise condition (remove structural + Bloom jargon)
+condition = (
+    raw_condition
+    .replace("when ", "")
+    .replace("by ", "")
+    .replace("guided by", "")
+    .replace("applying analyze level cognitive processes", "evaluating information from multiple sources")
+    .replace("applying evaluate level cognitive processes", "making judgments based on criteria")
+    .replace("applying create level cognitive processes", "synthesising ideas into new solutions")
+    .strip()
+)
 
-    # 🔒 Bloom enforcement (after condition is defined)
-    allowed = [b.lower() for b in DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])]
-    if bloom not in allowed:
-        return jsonify({
-            "error": f"Bloom '{bloom}' not allowed for {level} ({domain})",
-            "allowed": allowed
-        }), 400
+# 🔒 Bloom enforcement (after condition is defined)
+allowed = [b.lower() for b in DEGREE_BLOOM_LIMIT.get(domain, {}).get(level, [])]
+if bloom not in allowed:
+    return jsonify({
+        "error": f"Bloom '{bloom}' not allowed for {level} ({domain})",
+        "allowed": allowed
+    }), 400
 
-    words = content.strip().split()
-    if words and words[0].lower() == verb.lower():
-        content = " ".join(words[1:])
+# Clean verb duplication
+words = content.strip().split()
+if words and words[0].lower() == verb.lower():
+    content = " ".join(words[1:])
 
-    # ✅ NOW THIS LINE WILL WORK
-    clo = (
-        f"{verb.lower()} {content} using {sc_desc.lower()} "
-        f"when {condition} guided by {vbe.lower()}."
-    ).capitalize()
+# ✅ Final CLO (correct grammar, no duplication)
+clo = (
+    f"{verb.lower()} {content} using {sc_desc.lower()} "
+    f"when {condition} guided by {vbe.lower()}."
+).capitalize()
 
-    variants = {
-        "Standard": clo,
-        "Short": f"{verb.capitalize()} {content}."
-    }
+variants = {
+    "Standard": clo,
+    "Short": f"{verb.capitalize()} {content}."
+}
 
     assessments = get_assessment(plo, bloom, domain)
     evidence = {a: get_evidence_for(a) for a in assessments}
