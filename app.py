@@ -672,7 +672,7 @@ def generate():
     bloom = request.form.get("bloom", "")
     verb = request.form.get("verb", "")
     if not verb:
-    verb = bloom.lower()   # fallback: remember, analyze, etc.
+        verb = bloom.lower()   # fallback: remember, analyze, etc.
     content = request.form.get("content", "")
     level = request.form.get("level", "Degree")
     programme_name = request.form.get("programmeName", "")
@@ -873,6 +873,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
