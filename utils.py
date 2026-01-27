@@ -308,7 +308,7 @@ def get_assessment(plo, bloom, domain):
 
     return {}
     
-    def get_evidence_for(assessment):
+def get_evidence_for(assessment):
     a = assessment.lower().strip()
 
     mapping = {
