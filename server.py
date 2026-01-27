@@ -137,6 +137,8 @@ def clo_only_generate():
     # -------------------------
     meta = get_meta_data(plo, bloom, "sc") or {}
 
+#meta = get_meta_data(plo, bloom, "sc") or {}
+
 # ✅ NORMALISE condition (NO "when", NO "guided by")
 raw_condition = meta.get(
     "condition",
@@ -172,10 +174,9 @@ condition = (
     # CLO CONSTRUCTION
     # -------------------------
     clo = (
-        f"{verb.lower()} {content} using {sc_desc.lower()} "
-        f"when {condition.replace('when ', '')} "
-        f"guided by {vbe.lower()}."
-    ).capitalize()
+    f"{verb.lower()} {content} using {sc_desc.lower()} "
+    f"when {condition} guided by {vbe.lower()}."
+).capitalize()
 
     variants = {
         "Standard": clo,
