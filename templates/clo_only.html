@@ -132,58 +132,142 @@ body { background:#f4f6f9; }
 
 <script>
 
-  const CLO_EXAMPLE_BY_VERB = {
+ const CLO_EXAMPLE_BY_VERB = {
+
+  /* =========================
+     COGNITIVE DOMAIN (MQF)
+  ========================= */
   cognitive: {
+
     remember: {
       identify: "Identify fundamental concepts related to the course content",
-      list: "List key principles relevant to the discipline"
+      list: "List key principles relevant to the discipline",
+      recall: "Recall essential facts and definitions relevant to professional practice",
+      recognize: "Recognize basic concepts and terminology used in the field"
     },
+
     understand: {
       explain: "Explain core concepts using appropriate terminology",
-      describe: "Describe processes involved in the selected topic"
+      describe: "Describe processes involved in the selected topic",
+      summarize: "Summarize key ideas and concepts accurately",
+      interpret: "Interpret information and concepts presented in different formats"
     },
+
     apply: {
       apply: "Apply theoretical knowledge to solve practical problems",
-      demonstrate: "Demonstrate the application of concepts in real-world contexts"
+      demonstrate: "Demonstrate the application of concepts in real-world contexts",
+      use: "Use appropriate methods or procedures to complete assigned tasks",
+      implement: "Implement relevant techniques to address structured problems"
     },
+
     analyze: {
       analyze: "Analyse data to identify patterns and relationships",
-      examine: "Examine evidence to support informed decision making"
+      examine: "Examine evidence to support informed decision making",
+      differentiate: "Differentiate components of complex information or problems",
+      compare: "Compare alternative approaches or solutions critically"
     },
+
     evaluate: {
       evaluate: "Evaluate solutions based on established criteria",
-      justify: "Justify decisions using relevant evidence and reasoning"
+      justify: "Justify decisions using relevant evidence and reasoning",
+      critique: "Critique existing practices or solutions using professional standards",
+      assess: "Assess outcomes or processes to support informed judgments"
     },
+
     create: {
       design: "Design solutions to address complex disciplinary problems",
-      develop: "Develop proposals that integrate knowledge and skills"
+      develop: "Develop proposals that integrate knowledge and skills",
+      formulate: "Formulate innovative solutions or models for complex issues",
+      construct: "Construct original outputs that demonstrate synthesis of ideas"
     }
   },
 
+  /* =========================
+     AFFECTIVE DOMAIN (MQF)
+     PLO4, PLO5, PLO8, PLO9, PLO11
+  ========================= */
   affective: {
+
+    /* Receiving (Diploma–Degree) */
     receiving: {
-      listen: "Demonstrate awareness by listening attentively during learning activities",
-      observe: "Observe professional values demonstrated in practice"
+      listen: "Demonstrate awareness of appropriate professional communication by listening attentively",
+      observe: "Observe professional values demonstrated in academic or workplace settings",
+      acknowledge: "Acknowledge the importance of ethical and professional practices"
     },
+
+    /* Responding (Diploma–Degree) */
     responding: {
-      participate: "Participate actively in collaborative learning activities",
-      discuss: "Discuss issues respectfully with peers"
+      participate: "Participate actively in collaborative learning and professional discussions",
+      discuss: "Discuss issues respectfully with peers and stakeholders",
+      communicate: "Communicate ideas and information clearly in professional interactions",
+      respond: "Respond appropriately to feedback and professional instructions"
     },
+
+    /* Valuing (Degree–Master) */
     valuing: {
-      demonstrate: "Demonstrate commitment to professional values",
-      support: "Support ethical decision making in professional contexts"
+      demonstrate: "Demonstrate commitment to professional and ethical values",
+      support: "Support ethical decision making in professional contexts",
+      justify: "Justify professional viewpoints ethically through oral or written communication",
+      advocate: "Advocate responsible and ethical practices within the discipline"
+    },
+
+    /* Organization (Master–PhD) */
+    organization: {
+      integrate: "Integrate professional values into decision making and communication practices",
+      organize: "Organize communication strategies to support effective teamwork",
+      coordinate: "Coordinate professional communication within multidisciplinary teams"
+    },
+
+    /* Characterization (PhD) */
+    characterization: {
+      uphold: "Uphold ethical and professional values consistently in all professional activities",
+      model: "Model integrity and professionalism in leadership and scholarly communication",
+      internalize: "Internalize ethical values as a guiding principle in professional practice"
     }
   },
 
+  /* =========================
+     PSYCHOMOTOR DOMAIN (MQF)
+  ========================= */
   psychomotor: {
-  "guided response": {
-    perform: "Perform skills under guidance following established procedures"
-  },
-  mechanism: {
-    execute: "Execute professional skills competently with minimal supervision"
+
+    perception: {
+      detect: "Detect relevant cues or signals required for task performance",
+      recognize: "Recognize appropriate tools and equipment for professional tasks"
+    },
+
+    set: {
+      prepare: "Prepare appropriately for professional tasks and procedures",
+      demonstrate: "Demonstrate readiness to perform required skills safely"
+    },
+
+    "guided response": {
+      perform: "Perform skills under guidance following established procedures",
+      practice: "Practice professional skills with supervision and feedback"
+    },
+
+    mechanism: {
+      execute: "Execute professional skills competently with minimal supervision",
+      carry_out: "Carry out standard procedures accurately and efficiently"
+    },
+
+    "complex overt response": {
+      perform: "Perform complex professional skills smoothly and accurately",
+      manage: "Manage integrated tasks requiring coordination of multiple skills"
+    },
+
+    adaptation: {
+      adapt: "Adapt learned skills to suit new or changing professional situations",
+      modify: "Modify procedures to address non-routine or complex conditions"
+    },
+
+    origination: {
+      create: "Create new procedures or skill sequences to address novel problems",
+      design: "Design innovative approaches to professional practice"
+    }
   }
-}
 };
+
 
  const PLO_SC_VBE = {
   PLO1: { sc_code: "SC2", sc_desc: "Anticipatory thinking", vbe: "Ethics and Professionalism" },
