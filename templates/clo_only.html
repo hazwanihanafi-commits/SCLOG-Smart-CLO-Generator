@@ -215,7 +215,7 @@ const BLOOM_RECOMMENDATION_BY_LEVEL = {
   Master:{
     cognitive:["Analyze","Evaluate","Create"],
     affective:["Valuing","Organization"],
-    psychomotor:["Mechanism","Adaptation"]
+    psychomotor:["Complex Overt Response","Adaptation"]
   },
   PhD:{
     cognitive:["Create"],
@@ -246,6 +246,7 @@ function normaliseBloomKey(v){
   // Psychomotor
   if(v.includes("guided")) return "guided response";
   if(v.includes("mechanism")) return "mechanism";
+  if(v.includes("complex")) return "complex overt response"; 
   if(v.includes("adaptation")) return "adaptation";
   if(v.includes("origination")) return "origination";
   if(v.includes("perception")) return "perception";
