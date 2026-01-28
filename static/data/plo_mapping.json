@@ -10,7 +10,7 @@
 
   "PLO2": {
     "title": "Cognitive Skills",
-    "refers_to": "Apply critical, analytical, and systems thinking to analyse complex problems and make informed decisions.",
+    "refers_to": "Apply critical and analytical thinking to analyse complex problems and make informed decisions.",
     "sc_code": "SC6",
     "sc_description": "Integrated problem solving",
     "vbe": "Ethics and Professionalism",
@@ -45,19 +45,19 @@
   },
 
   "PLO6": {
-    "title": "Numeracy Skills",
-    "refers_to": "Apply mathematical, statistical, and quantitative reasoning to interpret data and support decision-making.",
-    "sc_code": "SC8",
-    "sc_description": "Normative and systems-based reasoning",
+    "title": "Digital Skills",
+    "refers_to": "Use digital tools, data, and technologies responsibly to analyse problems and solve tasks in professional contexts.",
+    "sc_code": "SC6",
+    "sc_description": "Integrated problem solving",
     "vbe": "Ethics and Professionalism",
     "domain": "Cognitive"
   },
 
   "PLO7": {
-    "title": "Digital Skills",
-    "refers_to": "Use digital tools, data, and technologies responsibly to analyse problems and solve tasks in professional contexts.",
-    "sc_code": "SC6",
-    "sc_description": "Integrated problem solving",
+    "title": "Numeracy Skills",
+    "refers_to": "Apply mathematical, statistical, and quantitative reasoning to interpret data and support decision-making.",
+    "sc_code": "SC2",
+    "sc_description": "Analytical reasoning",
     "vbe": "Ethics and Professionalism",
     "domain": "Cognitive"
   },
@@ -94,7 +94,7 @@
     "refers_to": "Uphold ethical principles, professional conduct, and responsible decision-making in practice.",
     "sc_code": "ETH",
     "sc_description": "Ethical awareness",
-    "vbe": "Professional conduct",
+    "vbe": "Ethics and Professionalism",
     "domain": "Affective"
   }
 }
