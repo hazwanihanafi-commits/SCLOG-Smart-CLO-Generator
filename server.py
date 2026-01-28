@@ -41,10 +41,10 @@ DEGREE_BLOOM_LIMIT = {
         "PhD": ["evaluate", "create"]
     },
     "affective": {
-        "Diploma": ["receive", "respond"],
-        "Degree": ["respond", "value"],
-        "Master": ["value", "organization"],
-        "PhD": ["organization", "characterization"]
+    "Diploma": ["receiving", "responding"],
+    "Degree": ["responding", "valuing"],
+    "Master": ["valuing", "organization"],
+    "PhD": ["organization", "characterization"]
     },
     "psychomotor": {
         "Diploma": ["perception", "set", "guided response"],
@@ -67,9 +67,9 @@ BLOOM_DESCRIPTIONS = {
         "create": "Put elements together to form a novel structure."
     },
     "affective": {
-        "receive": "Willingness to listen and be aware of values.",
-        "respond": "Active participation through response or compliance.",
-        "value": "Attach worth or value to behaviours or ideas.",
+        "receiving": "Willingness to listen and be aware of values.",
+        "responding": "Active participation through response or compliance.",
+        "valuing": "Attach worth or value to behaviours or ideas.",
         "organization": "Integrate values into a coherent system.",
         "characterization": "Consistent value-driven behaviour."
     },
