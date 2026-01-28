@@ -526,24 +526,41 @@ def logic_ieg_peo(ieg):
     }
     return explanation.get(ieg, "No logic found."), 200, {"Content-Type": "text/plain"}
 
-
 @app.route("/api/logic/peo_plo/<peo>/<plo>")
 def logic_peo_plo(peo, plo):
     logic_map = {
         "PEO1": {
-            "PLO1":"Knowledge → foundation for PEO1",
-            "PLO2":"Critical thinking → supports PEO1",
-            "PLO3":"Analysis ability → supports PEO1",
-            "PLO6":"Real-world application → supports PEO1",
-            "PLO7":"Problem-solving → supports PEO1"
+            "PLO1": "Disciplinary knowledge forms the foundation of professional competence.",
+            "PLO2": "Cognitive and analytical skills enable critical thinking and problem solving.",
+            "PLO3": "Practical and technical skills support professional practice.",
+            "PLO6": "Systems and holistic thinking enhance informed professional decision-making.",
+            "PLO7": "Digital skills support problem-solving in contemporary professional contexts."
         },
-        "PEO2": {"PLO11":"Ethics & professionalism → supports PEO2"},
-        "PEO3": {"PLO9":"Sustainability → supports PEO3","PLO10":"Societal wellbeing → supports PEO3"},
-        "PEO4": {"PLO5":"Communication skills → supports PEO4"},
-        "PEO5": {"PLO4":"Teamwork → supports PEO5","PLO8":"Leadership → supports PEO5","PLO9":"Global challenges → supports PEO5"}
-    }
-    return logic_map.get(peo, {}).get(plo, "No logic available."), 200, {"Content-Type":"text/plain"}
 
+        "PEO2": {
+            "PLO4": "Interpersonal and teamwork skills enable effective collaboration with stakeholders.",
+            "PLO5": "Communication skills support clear and responsible professional interaction."
+        },
+
+        "PEO3": {
+            "PLO8": "Leadership and responsibility support autonomy in professional contexts.",
+            "PLO9": "Personal and professional development promotes lifelong learning."
+        },
+
+        "PEO4": {
+            "PLO10": "Entrepreneurial and innovative skills enable value creation and innovation."
+        },
+
+        "PEO5": {
+            "PLO11": "Ethics and professional conduct ensure responsible and ethical practice."
+        }
+    }
+
+    return (
+        logic_map.get(peo, {}).get(plo, "No logic available."),
+        200,
+        {"Content-Type": "text/plain"}
+    )
 
 # ------------------------------------------------------
 # BLOOM & VERB endpoints (Excel)
@@ -874,6 +891,7 @@ app.register_blueprint(clo_only_bp)
 # ------------------------------------------------------
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0")
+
 
 
 
