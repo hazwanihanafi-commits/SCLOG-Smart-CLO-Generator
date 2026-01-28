@@ -308,19 +308,84 @@ body { background:#f4f6f9; }
 
 
  const PLO_SC_VBE = {
-  PLO1: { sc_code: "SC2", sc_desc: "Anticipatory thinking", vbe: "Ethics and Professionalism" },
-  PLO2: { sc_code: "SC6", sc_desc: "Integrated problem solving", vbe: "Ethics and Professionalism" },
-  PLO3: { sc_code: "SC4", sc_desc: "Strategic thinking", vbe: "Professional practice standards" },
-  PLO4: { sc_code: "SC5", sc_desc: "Collaboration", vbe: "Integrity" },
-  PLO5: { sc_code: "SC8", sc_desc: "Normative thinking", vbe: "Ethics and Etiquette" },
-  PLO6: { sc_code: "SC8", sc_desc: "Systems thinking", vbe: "Ethics and Professionalism" },
-  PLO7: { sc_code: "SC6", sc_desc: "Integrated problem solving", vbe: "Ethics and Professionalism" },
-  PLO8: { sc_code: "SC9", sc_desc: "Leadership", vbe: "Professionalism and Teamwork" },
-  PLO9: { sc_code: "SC7", sc_desc: "Self-awareness", vbe: "Professionalism and Well-being" },
-  PLO10:{ sc_code: "ENT", sc_desc: "Entrepreneurial thinking", vbe: "Honesty and Integrity" },
-  PLO11:{ sc_code: "ETH", sc_desc: "Ethical awareness", vbe: "Professional conduct" }
+  // PLO1 – Knowledge & Understanding
+  PLO1: {
+    sc_code: "SC2",
+    sc_desc: "Anticipatory thinking",
+    vbe: "Ethics and Professionalism"
+  },
+
+  // PLO2 – Cognitive Skills
+  PLO2: {
+    sc_code: "SC6",
+    sc_desc: "Integrated problem solving",
+    vbe: "Ethics and Professionalism"
+  },
+
+  // PLO3 – Practical Skills
+  PLO3: {
+    sc_code: "SC4",
+    sc_desc: "Strategic thinking",
+    vbe: "Professional practice standards"
+  },
+
+  // PLO4 – Interpersonal Skills
+  PLO4: {
+    sc_code: "SC5",
+    sc_desc: "Collaboration",
+    vbe: "Integrity"
+  },
+
+  // ✅ PLO5 – Communication Skills (BETULKAN)
+  PLO5: {
+    sc_code: "SC5",
+    sc_desc: "Collaboration",
+    vbe: "Integrity"
+  },
+
+  // ✅ PLO6 – Digital Skills (BETULKAN)
+  PLO6: {
+    sc_code: "SC6",
+    sc_desc: "Integrated problem solving (digital context)",
+    vbe: "Ethics and Professionalism"
+  },
+
+  // ✅ PLO7 – Numeracy Skills (BETULKAN)
+  PLO7: {
+    sc_code: "SC2",
+    sc_desc: "Analytical and quantitative reasoning",
+    vbe: "Ethics and Professionalism"
+  },
+
+  // PLO8 – Leadership, Autonomy & Responsibility
+  PLO8: {
+    sc_code: "SC9",
+    sc_desc: "Leadership",
+    vbe: "Professionalism and Teamwork"
+  },
+
+  // PLO9 – Personal Skills
+  PLO9: {
+    sc_code: "SC7",
+    sc_desc: "Self-awareness",
+    vbe: "Professionalism and Well-being"
+  },
+
+  // PLO10 – Entrepreneurship Skills
+  PLO10: {
+    sc_code: "ENT",
+    sc_desc: "Entrepreneurial thinking",
+    vbe: "Honesty and Integrity"
+  },
+
+  // ✅ PLO11 – Ethics & Professionalism (KEMAS)
+  PLO11: {
+    sc_code: "ETH",
+    sc_desc: "Ethical judgement and professional conduct",
+    vbe: "Ethics and Professionalism"
+  }
 };
-  
+
 const $ = id => document.getElementById(id);
 
 const BLOOM_RECOMMENDATION_BY_LEVEL = {
