@@ -1,7 +1,7 @@
 {
   "PLO1": {
     "title": "Knowledge and Understanding",
-    "refers_to": "Foundational and advanced disciplinary knowledge with awareness of future professional and societal implications.",
+    "refers_to": "Demonstrate foundational and advanced disciplinary knowledge with awareness of professional, societal, and global contexts.",
     "sc_code": "SC2",
     "sc_description": "Anticipatory thinking",
     "vbe": "Ethics and Professionalism",
@@ -9,8 +9,8 @@
   },
 
   "PLO2": {
-    "title": "Cognitive and Analytical Skills",
-    "refers_to": "Ability to analyse complex problems by integrating knowledge, evidence, and anticipatory thinking for ethical decision-making.",
+    "title": "Cognitive Skills",
+    "refers_to": "Apply critical, analytical, and systems thinking to analyse complex problems and make informed decisions.",
     "sc_code": "SC6",
     "sc_description": "Integrated problem solving",
     "vbe": "Ethics and Professionalism",
@@ -18,8 +18,8 @@
   },
 
   "PLO3": {
-    "title": "Practical and Technical Skills",
-    "refers_to": "Ability to perform, adapt, and refine professional practices in accordance with established standards.",
+    "title": "Practical Skills",
+    "refers_to": "Perform, adapt, and refine practical and technical skills in accordance with professional standards.",
     "sc_code": "SC4",
     "sc_description": "Strategic thinking",
     "vbe": "Professional practice standards",
@@ -27,8 +27,8 @@
   },
 
   "PLO4": {
-    "title": "Interpersonal and Teamwork Skills",
-    "refers_to": "Ability to collaborate effectively and ethically with diverse individuals and teams.",
+    "title": "Interpersonal Skills",
+    "refers_to": "Collaborate effectively and ethically with individuals and teams from diverse backgrounds.",
     "sc_code": "SC5",
     "sc_description": "Collaboration",
     "vbe": "Integrity",
@@ -36,36 +36,35 @@
   },
 
   "PLO5": {
-    "title": "Ethical Reasoning and Values",
-    "refers_to": "Ability to evaluate and uphold ethical norms, principles, and professional etiquette in decision-making.",
-    "sc_code": "SC8",
-    "sc_description": "Normative thinking",
-    "vbe": "Ethics and Etiquette",
+    "title": "Communication Skills",
+    "refers_to": "Communicate ideas, information, and arguments clearly and ethically in oral, written, and digital forms.",
+    "sc_code": "SC5",
+    "sc_description": "Collaboration",
+    "vbe": "Integrity",
     "domain": "Affective"
   },
 
   "PLO6": {
-  "title": "Systems and Holistic Thinking",
-  "refers_to": "Ability to analyse, evaluate, and manage interrelated systems and their long-term implications in professional practice.",
-  "sc_code": "SC8",
-  "sc_description": "Systems thinking",
-  "vbe": "Ethics and Professionalism",
-  "domain": "Cognitive"
-
+    "title": "Numeracy Skills",
+    "refers_to": "Apply mathematical, statistical, and quantitative reasoning to interpret data and support decision-making.",
+    "sc_code": "SC8",
+    "sc_description": "Normative and systems-based reasoning",
+    "vbe": "Ethics and Professionalism",
+    "domain": "Cognitive"
   },
 
   "PLO7": {
-  "title": "Problem Solving in Professional Contexts",
-  "refers_to": "Ability to analyse and solve complex professional problems using integrated and reflective approaches.",
-  "sc_code": "SC6",
-  "sc_description": "Integrated problem solving",
-  "vbe": "Ethics and Professionalism",
-  "domain": "Cognitive"
+    "title": "Digital Skills",
+    "refers_to": "Use digital tools, data, and technologies responsibly to analyse problems and solve tasks in professional contexts.",
+    "sc_code": "SC6",
+    "sc_description": "Integrated problem solving",
+    "vbe": "Ethics and Professionalism",
+    "domain": "Cognitive"
   },
 
   "PLO8": {
-    "title": "Leadership and Responsibility",
-    "refers_to": "Ability to demonstrate leadership, accountability, and responsibility in professional and organisational contexts.",
+    "title": "Leadership, Autonomy and Responsibility",
+    "refers_to": "Demonstrate leadership, accountability, and autonomy in professional and organisational environments.",
     "sc_code": "SC9",
     "sc_description": "Leadership",
     "vbe": "Professionalism and Teamwork",
@@ -73,8 +72,8 @@
   },
 
   "PLO9": {
-    "title": "Personal and Professional Development",
-    "refers_to": "Ability to demonstrate self-awareness, reflective practice, and commitment to personal well-being and lifelong learning.",
+    "title": "Personal Skills",
+    "refers_to": "Demonstrate self-awareness, reflective practice, and commitment to personal development and well-being.",
     "sc_code": "SC7",
     "sc_description": "Self-awareness",
     "vbe": "Professionalism and Well-being",
@@ -82,8 +81,8 @@
   },
 
   "PLO10": {
-    "title": "Entrepreneurial and Innovative Skills",
-    "refers_to": "Ability to apply entrepreneurial and innovative thinking to create value in professional contexts.",
+    "title": "Entrepreneurial Skills",
+    "refers_to": "Apply entrepreneurial and innovative thinking to create value in professional and societal contexts.",
     "sc_code": "ENT",
     "sc_description": "Entrepreneurial thinking",
     "vbe": "Honesty and Integrity",
@@ -91,8 +90,8 @@
   },
 
   "PLO11": {
-    "title": "Ethics and Professional Conduct",
-    "refers_to": "Ability to uphold ethical awareness, professional conduct, and responsible decision-making.",
+    "title": "Ethics and Professionalism",
+    "refers_to": "Uphold ethical principles, professional conduct, and responsible decision-making in practice.",
     "sc_code": "ETH",
     "sc_description": "Ethical awareness",
     "vbe": "Professional conduct",
